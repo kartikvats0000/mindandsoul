@@ -15,6 +15,17 @@ class Wellness extends StatefulWidget {
 }
 
 class _WellnessState extends State<Wellness> {
+
+  List taglist = [
+    'Mindfulness',
+    'Spiritual',
+    'Sleep',
+    'Meditation',
+    'Concentration',
+    'Study',
+    'Work',
+
+  ];
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -53,45 +64,73 @@ class _WellnessState extends State<Wellness> {
                 shrinkWrap: true,
                 itemCount: widget.data.length,
                 itemBuilder: (context,index){
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-                      child: Container(
-                       // padding: EdgeInsets.only(top: 5,right: 5,bottom: 5),
-                        decoration: BoxDecoration(
-                         // color: Colors.black26,
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        margin: EdgeInsets.symmetric(horizontal: 8,vertical: 5),
-                        height: MediaQuery.of(context).size.height * 0.13,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                    child: CachedNetworkImage(imageUrl: widget.data[index]['image'],fit: BoxFit.cover,height: MediaQuery.of(context).size.height * 0.13,))),
-                            Expanded(
-                              flex: 7,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                     children: [
-                                      Text(widget.data[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 17),),
-                                      SizedBox(height: 10,),
-                                      Expanded(child: Text(widget.data[index]['desc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70,fontSize: 12),maxLines:2 ,overflow: TextOverflow.ellipsis,)),
-                                      SizedBox(height: 5,),
-                                      Text('17 min',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white),)
-                                    ],
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 3,
-                                child: Components(context).BlurBackgroundCircularButton(icon: Icons.play_arrow_rounded))
-                          ],
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 6),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
+                        child: Container(
+
+                         // padding: EdgeInsets.only(top: 5,right: 5,bottom: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                         // margin: EdgeInsets.symmetric(horizontal: 8,vertical: 6),
+                          padding: EdgeInsets.only(bottom: 4),
+                          height: MediaQuery.of(context).size.height * 0.21,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                            child: CachedNetworkImage(imageUrl: widget.data[index]['image'],fit: BoxFit.cover,height: MediaQuery.of(context).size.height * 0.13,))),
+                                    Expanded(
+                                      flex: 7,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                             children: [
+                                              Text(widget.data[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 17),),
+                                              SizedBox(height: 10,),
+                                              Expanded(child: Text(widget.data[index]['desc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70,fontSize: 12),maxLines:2 ,overflow: TextOverflow.ellipsis,)),
+                                              SizedBox(height: 5,),
+                                              Text('17 min',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white),)
+                                            ],
+                                          ),
+                                        )),
+                                    Expanded(
+                                      flex: 3,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Icon(Icons.bookmark_add,color: Colors.white70,),
+                                            Components(context).BlurBackgroundCircularButton(icon: Icons.play_arrow_rounded)
+                                          ],
+                                        )
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                               // height: 25,
+                                child: Wrap(
+                                  //spacing: 5,
+                                  alignment: WrapAlignment.start,
+                                  children: taglist.map((e) => tags(e, context)).toList(),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -103,3 +142,17 @@ class _WellnessState extends State<Wellness> {
     );
   }
 }
+
+Widget tags(String title,BuildContext context) => Container(
+  //height: 25,
+  padding: const EdgeInsets.all(3),
+  margin: const EdgeInsets.all(1.5),
+  decoration: BoxDecoration(
+    border: Border.all(
+      width: 0.65,
+      color: Colors.white70,
+    ),
+    borderRadius: BorderRadius.circular(10)
+  ),
+  child: Text(title,style: Theme.of(context).textTheme.labelSmall,),
+);
