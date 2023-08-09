@@ -7,6 +7,14 @@ import 'package:provider/provider.dart';
 
 class ThemeProvider extends ChangeNotifier {
 
+  bool isScrolling = false;
+
+  void changeScrollStatus(bool status){
+    isScrolling = status;
+    notifyListeners();
+  }
+
+
 
   List<dynamic> themesList = [];
   String baseurl = '';

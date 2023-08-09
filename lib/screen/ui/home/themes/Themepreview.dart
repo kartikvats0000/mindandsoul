@@ -72,8 +72,7 @@ class _ThemePreviewState extends State<ThemePreview> {
          data: Theme.of(context).copyWith(
            useMaterial3: true,
                colorScheme: ColorScheme.fromSeed(seedColor:Color(int.parse('0xff' + widget.themeDetails['baseColor1'])),),
-           //filledButtonTheme: Theme.of(context).filledButtonTheme.
-         ),
+        ),
          child: Builder(
            builder: (context) =>
             Scaffold(
@@ -90,7 +89,6 @@ class _ThemePreviewState extends State<ThemePreview> {
                 )
               ),
               actions: [
-
                 Components(context).BlurBackgroundCircularButton(
                     icon: (previewVideoPlayer.value.volume >0)?Icons.volume_up:Icons.volume_off,
                    onTap: (){
@@ -168,27 +166,29 @@ class _ThemePreviewState extends State<ThemePreview> {
                                       ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        child: Row(
-                                          children: [
-                                            Text('“',style: GoogleFonts.imFellGreatPrimerSc(
-                                                textStyle: TextStyle(
-                                                    color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.50),
-                                                    fontSize: 75
-                                                )
-                                            )),
-                                            Expanded(child: Text(' ${widget.themeDetails['tagline']} ',textAlign: TextAlign.center,style: TextStyle(
-                                                color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.70),
-                                                height:2),)),
-                                            Text('”',style: GoogleFonts.imFellGreatPrimerSc(
-                                                textStyle: TextStyle(
-                                                    color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.50),
-                                                    fontSize: 75
-                                                )
-                                            )),
-                                            //Text('"',style: Theme.of(context).textTheme.displayMedium?.copyWith(fontSize: 100,color: Colors.white70),),
-                                          ],
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                          child: Row(
+                                            children: [
+                                              Text('“',style: GoogleFonts.imFellGreatPrimerSc(
+                                                  textStyle: TextStyle(
+                                                      color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.50),
+                                                      fontSize: 75
+                                                  )
+                                              )),
+                                              Expanded(child: Text(' ${widget.themeDetails['tagline']} ',textAlign: TextAlign.center,style: TextStyle(
+                                                  color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.70),
+                                                  height:2),)),
+                                              Text('”',style: GoogleFonts.imFellGreatPrimerSc(
+                                                  textStyle: TextStyle(
+                                                      color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.50),
+                                                      fontSize: 75
+                                                  )
+                                              )),
+                                              //Text('"',style: Theme.of(context).textTheme.displayMedium?.copyWith(fontSize: 100,color: Colors.white70),),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -304,28 +304,4 @@ class _ThemePreviewState extends State<ThemePreview> {
     );
   }
 
-/*  Route _createRoute(){
-    return PageRouteBuilder(
-      pageBuilder: (context,animation,secondaryAnimation) => BottomNavScreen(),
-      transitionDuration: const Duration(milliseconds: 1000),
-      reverseTransitionDuration: const Duration(milliseconds: 1000),
-      transitionsBuilder: (context,animation,secondaryAnimation,child) {
-          double beginRadius = 0.0;
-          double endRadius = MediaQuery.of(context).size.height * 1.2;
-
-          var radiusTween = Tween(begin: beginRadius,end: endRadius);
-          var radiusTweenAnimation = animation.drive(radiusTween);
-
-          var screenSize = MediaQuery.of(context).size;
-          var centerCircleClipper = Offset(screenSize.width / 2, screenSize.height/2);
-          return ClipPath(
-            child: child,
-            clipper: CircleTransitionClipper(
-                center: centerCircleClipper,
-                radius: radiusTweenAnimation.value,
-            ),
-          );
-      }
-    );
-  }*/
 }

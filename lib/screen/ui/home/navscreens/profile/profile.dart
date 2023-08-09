@@ -68,16 +68,16 @@ class _ProfileState extends State<Profile> {
             ),
             child: Column(
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 50),
+                Padding(
+                  padding: EdgeInsets.only(top: 50),
                   child: Column(
                     children: [
                       CircleAvatar(
-                        radius: 65,
+                        radius: 50,
                         backgroundImage: CachedNetworkImageProvider(user.profilePicture),
                       ),
                       SizedBox(height: 12.5,),
-                      Text(user.name,style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 20,color: theme.textColor.withOpacity(0.9)),),
+                      Text(user.name,style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 19,color: theme.textColor.withOpacity(0.9)),),
                       SizedBox(height: 10,),
                       Text(user.email,style: TextStyle(color: theme.textColor.withOpacity(0.8)),),
                       SizedBox(height: 15,),
@@ -86,7 +86,7 @@ class _ProfileState extends State<Profile> {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile()));
                           },
                           style: ButtonStyle(
-                            fixedSize: MaterialStatePropertyAll(Size(MediaQuery.of(context).size.width * 0.85,kToolbarHeight - 5)),
+                            fixedSize: MaterialStatePropertyAll(Size(MediaQuery.of(context).size.width * 0.85,kToolbarHeight - 12)),
                             shape: MaterialStatePropertyAll(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)
@@ -99,7 +99,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Expanded(
-                  flex: 6,
+                  flex: 5,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
                       child: ClipRRect(
@@ -112,51 +112,70 @@ class _ProfileState extends State<Profile> {
                             ),
                             child: Column(
                               children: [
-                                ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: Colors.white70,
-                                  leading: Icon(Icons.settings),
-                                  title: Text('Account Settings'),
-                                  onTap: (){},
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                    textColor: Colors.white70,
+                                    leading: Icon(Icons.settings),
+                                    title: Text('Account Settings'),
+                                    onTap: (){},
+                                  ),
                                 ),
-                                ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: Colors.white70,
-                                  leading: Icon(Icons.download_outlined),
-                                  title: Text('Downloads'),
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                    textColor: Colors.white70,
+                                    leading: Icon(Icons.download_outlined),
+                                    title: Text('Downloads'),
+                                  ),
                                 ),
-                                ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: Colors.white70,
-                                  leading: Icon(Icons.read_more),
-                                  title: Text('Terms & Conditions'),
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                    textColor: Colors.white70,
+                                    leading: Icon(Icons.read_more),
+                                    title: Text('Terms & Conditions'),
+                                  ),
                                 ),
-                                ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: Colors.white70,
-                                  leading: Icon(Icons.favorite_border),
-                                  title: Text('Favourites'),
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                    textColor: Colors.white70,
+                                    leading: Icon(Icons.favorite_border),
+                                    title: Text('Favourites'),
+                                  ),
                                 ),
-                                ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: Colors.white70,
-                                  leading: Icon(Icons.share),
-                                  title: Text('Share App'),
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                    textColor: Colors.white70,
+                                    leading: Icon(Icons.share),
+                                    title: Text('Share App'),
+                                  ),
                                 ),
-                                ListTile(
-                                 onTap: ()async{
-                                  /// showLogoutDialog();
-                                   await GoogleSignInAPI.logout();
-                                   await user.clear();
-                                   await user.updateLoginStatus(false);
-                                   SharedPreferences sharedPreference = await SharedPreferences.getInstance();
-                                   await sharedPreference.remove('loginData');
-                                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
-                                 },
-                                  textColor: Colors.white70,
-                                  //tileColor: Theme.of(context).colorScheme.primary,
-                                  leading: Icon(Icons.logout,color: Colors.red,),
-                                  title: Text('Logout'),),
+
+                                Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                   onTap: ()async{
+                                    /// showLogoutDialog();
+                                     await GoogleSignInAPI.logout();
+                                     await user.clear();
+                                     await user.updateLoginStatus(false);
+                                     SharedPreferences sharedPreference = await SharedPreferences.getInstance();
+                                     await sharedPreference.remove('loginData');
+                                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
+                                   },
+                                    textColor: Colors.white70,
+                                    //tileColor: Theme.of(context).colorScheme.primary,
+                                    leading: Icon(Icons.logout,color: Colors.red,),
+                                    title: Text('Logout'),),
+                                ),
                               ],
                             ),
                           ),

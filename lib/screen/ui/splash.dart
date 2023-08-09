@@ -13,6 +13,7 @@ import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/bottomNavigationbarScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../provider/themeProvider.dart';
 import '../../services/services.dart';
@@ -60,43 +61,12 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     }
 
   }
-  String madewithlovetext = '';
+
+  late VideoPlayerController videoPlayerController;
 
   @override
   void initState() {
-
-    Future.delayed(Duration(seconds: 1),(){
-      setState(() {
-        madewithlovetext = 'Crafted with ❤️ by Rajmith';
-      });
-    });
-    motionController = AnimationController(
-      duration: Duration(milliseconds: 1500),
-      vsync: this,
-      lowerBound: 0.5,
-    );
-
-    motionAnimation = CurvedAnimation(
-      parent: motionController,
-      curve: Curves.ease,
-    );
-
-    motionController.forward();
-    motionController.addStatusListener((status) {
-      setState(() {
-        if (status == AnimationStatus.completed) {
-          motionController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          motionController.forward();
-        }
-      });
-    });
-
-    motionController.addListener(() {
-      setState(() {
-        size = motionController.value * 200;
-      });
-    });
+    initVideo();
     setTheme();
     getdevicedata();
     getData();
@@ -104,9 +74,20 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     super.initState();
   }
 
+  void initVideo(){
+    /*ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
+    MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);*/
+    videoPlayerController = VideoPlayerController.asset('assets/splash/splash.mp4')..initialize()
+        .then((_) {
+      videoPlayerController.play();
+    });
+   // videoPlayerController.setVolume(0.60);
+
+  }
+
   @override
   void dispose() {
-    motionController.dispose();
+    videoPlayerController.dispose();
     super.dispose();
   }
 
@@ -184,18 +165,16 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
   getData() async {
     User user = Provider.of<User>(context,listen: false);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var data = await sharedPreferences.getString('loginData');
+    var data = sharedPreferences.getString('loginData');
 
     if(data == null){
-      Timer(const Duration(seconds: 4), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>Login()))));
+      Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>Login()))));
     }
     else{
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);
-      Timer(const Duration(seconds: 4), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>BottomNavScreen()))));
+      Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>BottomNavScreen()))));
     }
-
-
   }
 
   @override
@@ -205,50 +184,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
        Scaffold(
          backgroundColor: theme.themeColorA.withOpacity(0.3),
         extendBody: true,
-        body: Stack(
-          children: [
-            AnimatedContainer(
-              alignment: Alignment.center,
-              duration: Duration(milliseconds: 555),
-              color: theme.themeColorB.withOpacity(0.35),
-              child: Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.all(50),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.themeColorB.withOpacity(0.55),blurRadius: 200,spreadRadius: 200
-                    )
-                  ],
-                    shape: BoxShape.circle,
-                    //color: theme.themeColorB.withOpacity(0.1)
-                ),
-                child:  Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(25),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    //color: theme.themeColorB.withOpacity(0.95)
-                  ),
-                  height: size,
-                  child: Image.asset('assets/logo/mindnsoul_white.png'),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 10,
-                right: 0,
-                left: 0,
-                child: AnimatedOpacity(
-                  duration: Duration(seconds: 1),
-                    opacity: madewithlovetext=='' ? 0 : 1,
-                    child: Text(madewithlovetext,textAlign: TextAlign.center,style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      color: Colors.white60,
-                      fontSize: 16
-                    ),))
-            )
-          ],
-        ),
+        body: VideoPlayer(
+          videoPlayerController
+        )
       ),
     );
   }

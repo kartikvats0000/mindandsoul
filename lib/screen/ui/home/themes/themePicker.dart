@@ -26,19 +26,24 @@ class _ThemePickerState extends State<ThemePicker> {
          backgroundColor: themeData.themeColorA,
         //extendBody: true,
         //extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: Text('Essence',style: TextStyle(color: themeData.textColor),),
-          leading: Padding(
-              padding: EdgeInsets.all(7),
-              child: Components(context).BlurBackgroundCircularButton(
-                icon: Icons.close,
-                onTap: (){Navigator.pop(context);},
-              )
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight + 20),
+          child: AppBar(
+            toolbarHeight: kToolbarHeight + 20,
+            elevation: 0.0,
+            scrolledUnderElevation: 0.0,
+            backgroundColor: Colors.transparent,
+            centerTitle: true,
+            title: Text('Essence',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 30),),
+            leading: Padding(
+                padding: EdgeInsets.all(7),
+                child: Components(context).BlurBackgroundCircularButton(
+                  icon: Icons.chevron_left,
+                  onTap: (){Navigator.pop(context);},
+                )
+            ),
 
+          ),
         ),
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -116,7 +121,6 @@ class _ThemePickerState extends State<ThemePicker> {
                         ],
                       ),
                       SizedBox(height: 8,),
-
                       Text(themeData.themesList[index]['title'],style: TextStyle(color: themeData.textColor,fontWeight: FontWeight.w700),)
                     ],
                   ),

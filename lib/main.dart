@@ -1,4 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +9,23 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/splash.dart';
 import 'package:provider/provider.dart';
 
-import 'helper/color.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+
 
   runApp(const MyApp());
 }
@@ -29,6 +39,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) =>ThemeProvider(),),
         ChangeNotifierProvider(create: (context) =>User(),),
+        ChangeNotifierProvider(create: (context)=>MusicPlayerProvider()),
       ],
 
       child: Consumer<ThemeProvider>(

@@ -60,6 +60,9 @@ dependencies:
   circular_bottom_navigation: ^2.3.0
   image_picker: ^1.0.1
   image_cropper: ^5.0.0
+  just_audio: ^0.9.34
+  just_audio_background: ^0.0.1-beta.10
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:
@@ -88,11 +91,8 @@ flutter:
     - assets/login/
     - assets/logo/
     - assets/home/
-    - assets/home/bell.svg
     - assets/home/aqi_indicator/
-    - assets/home/videos/
     - assets/splash/
-    - assets/json/login.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

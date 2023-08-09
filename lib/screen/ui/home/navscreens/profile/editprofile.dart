@@ -226,7 +226,7 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               SizedBox(
                 width: double.infinity,
-                  child: Text('Edit Profile',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 30),textAlign: TextAlign.start,)),
+                  child: Text('Edit Profile',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32,fontWeight: FontWeight.bold),textAlign: TextAlign.start,)),
               SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
@@ -258,6 +258,7 @@ class _EditProfileState extends State<EditProfile> {
               ),
               SizedBox(height: 20,),
               Expanded(
+                flex: 2,
                 child: SingleChildScrollView(
                   child: Column(
                   //  physics: NeverScrollableScrollPhysics(),
