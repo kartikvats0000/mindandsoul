@@ -1,22 +1,17 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mindandsoul/provider/playerProvider.dart';
+import 'package:mindandsoul/constants/iconconstants.dart';
+import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
-import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/Home.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/notifications.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/profile.dart';
-import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../helper/circle_transition_clipper.dart';
-import '../../../helper/components.dart';
+
 import '../../../helper/miniplayer.dart';
-import '../../../provider/userProvider.dart';
+
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({Key? key}) : super(key: key);
@@ -29,8 +24,7 @@ late TabController homeScreenTabController;
 
 class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderStateMixin {
   ScrollController scrollBottomBarController = ScrollController();
-  late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
+
 
   @override
   void initState() {
@@ -67,8 +61,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
     super.dispose();
   }
 
-  int _selectedIndex = 0;
-  
+
   List<Widget> screens = const [
     Home(),
     Notifications(),
@@ -111,29 +104,31 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
                     child: (theme.isScrolling == false)
                         ?TabBar(
                       labelColor: Colors.white,
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(5),
                       indicatorColor: Colors.white,
                       unselectedLabelColor: Colors.white38,
                       dividerColor: Colors.transparent,
                      // indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
                       controller: homeScreenTabController,
                       isScrollable: false,
+
                       indicatorSize: TabBarIndicatorSize.label,
-                      tabs: const <Widget>[
+                      tabs:  <Widget>[
                         Tab(
-                            icon: Icon(Icons.home_outlined),
+                          child: Components(context).myIconWidget(icon: MyIcons.home,color: Colors.white.withOpacity(0.8)),
                           //text: 'Home',
                         ),
                         Tab(
-                          icon: Icon(Icons.list),
+                          child: Components(context).myIconWidget(icon: MyIcons.menu,color: Colors.white.withOpacity(0.8)),
                           //text: 'Home',
                         ),
                         Tab(
-                          icon: Icon(Icons.notifications_none_outlined),
+                          child: Components(context).myIconWidget(icon: MyIcons.notification,color: Colors.white.withOpacity(0.8)),
                           //text: 'Home',
                         ),
                         Tab(
-                          icon: Icon(Icons.person_outline),
+                          child: Components(context).myIconWidget(icon: MyIcons.profile,color: Colors.white.withOpacity(0.8)),
+                          //text: 'Home',
                         ),
 
                       ],
@@ -145,9 +140,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
                             child: GestureDetector(
                               onTap: () => theme.changeScrollStatus(false),
                               child: const CircleAvatar(
-                                radius: 35,
+                                radius: 28,
                                 backgroundColor: Colors.black54,
-                                child: Icon(Icons.open_in_full_rounded,color: Colors.white70,size: 25,),
+                                child: Icon(Icons.open_in_full_rounded,color: Colors.white70,size: 20,),
                               ),
                             ),
                           ),

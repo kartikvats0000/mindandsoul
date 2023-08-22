@@ -23,7 +23,7 @@ class MiniPlayer extends StatelessWidget {
           Components(context).showPlayerSheet();
         },
         child: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(25),
             child: BackdropFilter(
@@ -51,14 +51,8 @@ class MiniPlayer extends StatelessWidget {
                           flex: 5,
                           child: Text(
                             musicPlayerProvider.currentTrack?.title ?? 'No Track',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.bookmark_border_rounded,color: Colors.white70,),
-                          onPressed: () {
-                            musicPlayerProvider.stop();
-                          },
                         ),
                         Components(context).BlurBackgroundCircularButton(
                           buttonRadius: 20,
@@ -67,7 +61,7 @@ class MiniPlayer extends StatelessWidget {
                               ? Icons.pause
                               : Icons.play_arrow,
                           onTap: () {
-                            print(musicPlayerProvider.audioPlayer.playerState);
+                            //print(musicPlayerProvider.audioPlayer.playerState);
                             if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
                               musicPlayerProvider.audioPlayer.pause();
                             } else {
@@ -87,9 +81,9 @@ class MiniPlayer extends StatelessWidget {
 
                       ],
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: LinearProgressIndicator(
                         color: Theme.of(context).colorScheme.primary,
                         value: musicPlayerProvider.position.inSeconds/musicPlayerProvider.duration.inSeconds,

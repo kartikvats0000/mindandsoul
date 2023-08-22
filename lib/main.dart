@@ -47,9 +47,10 @@ class MyApp extends StatelessWidget {
           return  MaterialApp(
               theme: ThemeData(
                   useMaterial3: true,
+
                   colorScheme: ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
                   inputDecorationTheme: InputDecorationTheme(
-                    hintStyle: TextStyle(color: Colors.white60),
+                    hintStyle: const TextStyle(color: Colors.white60),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(

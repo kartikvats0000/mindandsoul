@@ -3,17 +3,21 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
+import 'package:mindandsoul/screen/ui/content/content_list_screen/gridB.dart';
+import 'package:mindandsoul/screen/ui/content/content_list_screen/listA.dart';
+import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
-import 'package:mindandsoul/screen/ui/home/wellness.dart';
+import 'package:mindandsoul/screen/ui/content/wellness.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +26,7 @@ import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
 import '../../../../services/services.dart';
 import '../../../../services/weatherservices.dart';
+import '../../content/content_list_screen/gridA.dart';
 
 
 class Home extends StatefulWidget {
@@ -35,7 +40,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
 
   late VideoPlayerController videoPlayerController;
   DraggableScrollableController draggableScrollableController = DraggableScrollableController();
@@ -156,6 +160,25 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   }
 
+  contentPageRoute(String view, List data,String title){
+    var destination;
+    if(view == 'a'){
+      destination = ListviewA(data: data, title: title,);
+    }
+    if(view == 'b'){
+      destination =  GridviewA(title: title, data: data);
+    }
+    if(view == 'c'){
+      destination =  ListviewB(data: data, title: title,);
+    }
+    if(view == 'd'){
+      destination =  GridviewB(title: title, data: data);
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => destination)).then((value) => videoPlayerController.play());
+  }
+
+
+
   @override
   void initState() {
     fetchCategories();
@@ -176,11 +199,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   List categoryList = [];
 
-  bool showAccountIcon = true;
-
   bool showVolumeSlider = false;
-
-  bool showWeatherDetailsDialog = false;
 
   List aqiLabels = [
     'Good',
@@ -218,7 +237,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
               Column(
                 children: [
                   Container(
-                    height: h*0.6,
+                    height: h*0.5,
                     alignment: Alignment.topCenter,
                     width: double.infinity,
                     child: Stack(
@@ -244,7 +263,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Components(context).BlurBackgroundCircularButton(
-                                    icon: Icons.cloud,
+                                    svg: MyIcons.weather,
                                     onTap: (){
                                       var numberDialog = Padding(
                                         padding: const EdgeInsets.only(left: 15,top: 65,right: 15),
@@ -295,7 +314,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                   SizedBox(
                                                                       width : MediaQuery.of(context).size.width * 0.40,
                                                                       //child: WeatherDetailCard('Weather', "${weatherData['weather']}")
-                                                                      child: WeatherDetailCard('Weather', "${weatherData['weather']}")
+                                                                      child: Components(context).WeatherDetailCard('Weather', "${weatherData['weather']}")
                                                                   ),
                                                                   const SizedBox(width: 10,),
                                                                   Expanded(
@@ -303,11 +322,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                       children: [
-                                                                        WeatherDetailCard2('Humidity : ', "${weatherData['humidity']}%"),
+                                                                        Components(context).WeatherDetailCard2('Humidity : ', "${weatherData['humidity']}%"),
                                                                         const SizedBox(width: 5,),
-                                                                        WeatherDetailCard2('Wind Speed : ', "${weatherData['wind_speed']} kph"),
+                                                                        Components(context).WeatherDetailCard2('Wind Speed : ', "${weatherData['wind_speed']} kph"),
                                                                         const SizedBox(width: 5,),
-                                                                        WeatherDetailCard2('Cloud : ', "${weatherData['cloud']}%"),
+                                                                        Components(context).WeatherDetailCard2('Cloud : ', "${weatherData['cloud']}%"),
                                                                       ],
                                                                     ),
                                                                   )
@@ -352,7 +371,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   Row(
                                     children: [
                                       Components(context).BlurBackgroundCircularButton(
-                                        icon: Icons.image,
+                                        svg: MyIcons.theme,
                                         onTap: ()async{
                                           await videoPlayerController.pause();
                                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ThemePicker())).then((value) => initVideo());
@@ -360,7 +379,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       ),
                                       const SizedBox(width: 10,),
                                       Components(context).BlurBackgroundCircularButton(
-                                        icon: (videoPlayerController.value.volume  == 0)?Icons.volume_off:Icons.volume_up,
+                                        svg: (videoPlayerController.value.volume  == 0)?MyIcons.low_volume:MyIcons.high_volume,
                                         onTap: (){
                                           setState(() {
                                             showVolumeSlider = !showVolumeSlider;
@@ -418,8 +437,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
               ),
               DraggableScrollableSheet(
                 //controller: draggableScrollableController,
-                  initialChildSize: 0.47,
-                  minChildSize: 0.47,
+                  initialChildSize: 0.5,
+                  minChildSize: 0.5,
                   builder: (context,sc) {
                     sc.addListener(() {
                       if(sc.position.pixels == 0){
@@ -510,40 +529,50 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     mainAxisExtent: w * 0.3
                                   ),
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      // margin: EdgeInsets.all(6),
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                          color: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.35),
-                                          /*border: Border.all(
-                                           color: Colors.grey.shade200,
-                                           width: 0.4
-                                         ),*/
-                                          borderRadius: BorderRadius.circular(
-                                              45)
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          const SizedBox(height: 7,),
-                                          Expanded(child: SvgPicture.network(
-                                            categoryList[index]['image'],
-                                            color: themeData.textColor,
-                                            height: 25,
-                                            width: 25,)),
-                                          //SizedBox(height: ,),
-                                          Text(categoryList[index]['title'],
-                                            style: TextStyle(
-                                                color: themeData.textColor,
-                                                fontSize: 12),),
-                                          const SizedBox(height: 7,),
-                                        ],
+                                    return GestureDetector(
+                                      onTap: (){
+                                        if(categoryList[index]['title'] == 'Wellness'){
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness(title: 'Wellness', data: categoryList[index]['content'])));
+                                        }
+                                        else{
+                                          contentPageRoute((index % 2 == 0)?'b':'a',categoryList[index]['content'],categoryList[index]['title']);
+                                        }
+                                      },
+                                      child: Container(
+                                        // margin: EdgeInsets.all(6),
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                            color: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.35),
+                                            /*border: Border.all(
+                                             color: Colors.grey.shade200,
+                                             width: 0.4
+                                           ),*/
+                                            borderRadius: BorderRadius.circular(
+                                                45)
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .center,
+                                          children: [
+                                            const SizedBox(height: 7,),
+                                            Expanded(child: SvgPicture.network(
+                                              categoryList[index]['image'],
+                                              color: themeData.textColor,
+                                              height: 25,
+                                              width: 25,)),
+                                            //SizedBox(height: ,),
+                                            Text(categoryList[index]['title'],
+                                              style: TextStyle(
+                                                  color: themeData.textColor,
+                                                  fontSize: 12),),
+                                            const SizedBox(height: 7,),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   }
@@ -556,6 +585,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   .of(context)
                                   .colorScheme
                                   .primary,),)
+
+                            /* Category List View */
+
                                 : ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
@@ -578,8 +610,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                   fontSize: 14,
                                                   fontWeight: FontWeight
                                                       .w800),),
-                                            InkWell(
-                                              onTap: () {},
+                                            GestureDetector(
+                                              onTap: () {
+                                                if(categoryList[index]['title'] == 'Wellness'){
+                                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness(title: 'Wellness', data: categoryList[index]['content'])));
+                                                }
+                                                else{
+                                                  contentPageRoute((index % 2 == 0)?'d':'c',categoryList[index]['content'],categoryList[index]['title']);
+                                                }
+                                              },
                                               child: Padding(
                                                 padding: const EdgeInsets
                                                     .fromLTRB(10, 2, 0, 2),
@@ -601,75 +640,140 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         height: h * 0.4,
                                         child: ListView.builder(
                                           // shrinkWrap: true,
-                                            itemCount: listingData.length,
+                                            itemCount: listingData.length ,
                                             scrollDirection: Axis.horizontal,
                                             padding: const EdgeInsets.only(
                                                 right: 15),
                                             itemBuilder: (context, i) {
-                                              return Container(
-                                                width: w * 0.35,
-                                                padding: const EdgeInsets.only(
-                                                    left: 15),
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius
-                                                      .circular(20),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 6,
-                                                        child: Container(
-                                                            color: Colors.black54,
-                                                            margin: const EdgeInsets
-                                                                .only(bottom: 10),
-
+                                              if(categoryList[index]['title'] == 'Wellness'){
+                                                return Consumer<MusicPlayerProvider>(
+                                                  builder: (context,player,child) =>
+                                                   GestureDetector(
+                                                    onTap: (){
+                                                      /*player.play(Track(title: categoryList[index]['content'][i]['title'], thumbnail: categoryList[index]['content'][i]['image'], audioUrl: categoryList[index]['content'][i]['audio']));
+                                                      Timer(const Duration(milliseconds: 1000),(){
+                                                        Components(context).showPlayerSheet();
+                                                      });*/
+                                                    },
+                                                    child: Container(
+                                                      width: w * 0.33,
+                                                      padding: const EdgeInsets.only(
+                                                          left: 10
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius
+                                                                .circular(55),
                                                             child: CachedNetworkImage(
                                                               imageUrl: listingData[i]['image'],
                                                               fit: BoxFit.cover,
-                                                              placeholder: (
-                                                                  context, str) =>
+                                                              height: h * 0.23,
+                                                              //width: w * 0.3,
+                                                              placeholder: (context, str) =>
                                                               const Center(
                                                                 child: CircularProgressIndicator(),),
-                                                            )
-                                                        ),
-                                                      ),
-                                                      Flexible(
-                                                        flex: 1,
-                                                        child: Text(
-                                                          listingData[i]['title'],
-                                                          style: Theme
-                                                              .of(context)
-                                                              .textTheme
-                                                              .bodyLarge
-                                                              ?.copyWith(
-                                                              fontWeight: FontWeight
-                                                                  .w700,
-                                                            fontSize: 14
+                                                            ),
                                                           ),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
+                                                           const SizedBox(height: 10,),
+                                                          Flexible(
+                                                            child: Text(
+                                                              listingData[i]['title'],
+                                                              style: Theme
+                                                                  .of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge
+                                                                  ?.copyWith(
+                                                                fontSize: 15,
+                                                                  fontWeight: FontWeight
+                                                                      .w700
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow: TextOverflow
+                                                                  .ellipsis,
+                                                            ),
+                                                          ),
+                                                          //   const SizedBox(height: 4,),
+                                                        ],
                                                       ),
-                                                      const SizedBox(
-                                                        height: 10,),
-                                                      Flexible(
-                                                        flex: 2,
-                                                          fit: FlexFit.loose,
-                                                          child: Text(
-                                                        listingData[i]['desc'],
-                                                        style: Theme
-                                                            .of(context)
-                                                            .textTheme
-                                                            .bodySmall,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,))
-                                                    ],
+                                                    ),
                                                   ),
-                                                ),
-                                              );
+                                                );
+                                              }
+                                              else{
+                                                return GestureDetector(
+                                                  onTap: ()async{
+                                                    debugPrint(listingData[i]['type']);
+                                                    await contentViewRoute(type: listingData[i]['type'], data: listingData[i], context: context, title:  categoryList[index]['title']);
+                                                    videoPlayerController.play();
+                                                  },
+                                                  child: Container(
+                                                    width: w * 0.35,
+                                                    padding: const EdgeInsets.only(
+                                                        left: 15),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius
+                                                          .circular(20),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 6,
+                                                            child: Container(
+                                                                color: Colors.black54,
+                                                                margin: const EdgeInsets
+                                                                    .only(bottom: 10),
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl: listingData[i]['image'],
+                                                                  fit: BoxFit.cover,
+                                                                  placeholder: (
+                                                                      context, str) =>
+                                                                  const Center(
+                                                                    child: CircularProgressIndicator(),),
+                                                                )
+                                                            ),
+                                                          ),
+                                                          Flexible(
+                                                            flex: 1,
+                                                            child: Text(
+                                                              listingData[i]['title'],
+                                                              style: Theme
+                                                                  .of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge
+                                                                  ?.copyWith(
+                                                                  fontWeight: FontWeight
+                                                                      .w700,
+                                                                  fontSize: 14
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow
+                                                                  .ellipsis,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,),
+                                                          Flexible(
+                                                              flex: 2,
+                                                              fit: FlexFit.loose,
+                                                              child: Text(
+                                                                listingData[i]['desc'],
+                                                                style: Theme
+                                                                    .of(context)
+                                                                    .textTheme
+                                                                    .bodySmall,
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow
+                                                                    .ellipsis,))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                             }
                                         ),
                                       ),
@@ -679,108 +783,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 }
                             ),
                             const SizedBox(height: 5,),
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center,
-                                    children: [
-                                      Text('Wellness', style: TextStyle(
-                                          color: themeData.textColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w800),),
-                                      InkWell(
-                                        onTap: () async {
-                                          //await videoPlayerController.pause();
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Wellness(
-                                                        data: listingData,)));
-                                          /* .then((value) {
-                                        if(player.playerState != PlayerState.stopped){
-                                          videoPlayerController.play();
-                                        }
-                                      });*/
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 2, 0, 2),
-                                          child: Text("Explore →", style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .labelSmall
-                                              ?.copyWith(
-                                              color: themeData.textColor
-                                          ),),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                //const SizedBox(height: 15,),
-                                SizedBox(
-                                  height: h * 0.38,
-                                  child: ListView.builder(
-                                      itemCount: listingData.length,
-                                      scrollDirection: Axis.horizontal,
-                                      padding: const EdgeInsets.only(right: 15),
-                                      itemBuilder: (context, i) {
-                                        return Container(
-                                          //color: Colors.redAccent,
-                                          width: w * 0.33,
-                                          padding: const EdgeInsets.only(
-                                              left: 10
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceEvenly,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius
-                                                    .circular(55),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: listingData[i]['image'],
-                                                  fit: BoxFit.cover,
-                                                  height: h * 0.23,
-                                                  //width: w * 0.3,
-                                                  placeholder: (context, str) =>
-                                                  const Center(
-                                                    child: CircularProgressIndicator(),),
-                                                ),
-                                              ),
-                                              // const SizedBox(height: 7,),
-                                              Flexible(
-                                                child: Text(
-                                                  listingData[i]['title'],
-                                                  style: Theme
-                                                      .of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                      fontWeight: FontWeight
-                                                          .w700
-                                                  ),
-                                                  maxLines: 2,
-                                                  overflow: TextOverflow
-                                                      .ellipsis,
-                                                ),
-                                              ),
-                                              //   const SizedBox(height: 4,),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                  ),
-                                ),
-                                //const SizedBox(height: 25,),
-                              ],
-                            ),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 120, horizontal: 20),
@@ -820,36 +822,4 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
       ),
     );
   }
-
-  Widget WeatherDetailCard(String title, String value){
-    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
-    return Container(
-      //  height: 20,
-      padding: const EdgeInsets.all(7),
-      margin: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.825),
-          borderRadius: BorderRadius.circular(15)
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,style: const TextStyle(color: Colors.white70,fontSize: 12),),
-          const SizedBox(height: 5,),
-          Text(value,style: TextStyle(color: themeProvider.textColor,fontSize: 14,fontWeight: FontWeight.w600),),
-        ],
-      ),
-    );
-  }
-
-  Widget WeatherDetailCard2(String title, String value){
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: Text(title,style: TextStyle(color: Colors.grey.shade700,fontSize: 12,fontWeight: FontWeight.w600),)),
-        Text(value,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w700),),
-      ],
-    );
-  }
 }
-

@@ -2,15 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mindandsoul/helper/circle_transition_clipper.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
-import '../navscreens/Home.dart';
 import '../bottomNavigationbarScreen.dart';
 
 class ThemePreview extends StatefulWidget {
@@ -90,7 +89,7 @@ class _ThemePreviewState extends State<ThemePreview> {
               ),
               actions: [
                 Components(context).BlurBackgroundCircularButton(
-                    icon: (previewVideoPlayer.value.volume >0)?Icons.volume_up:Icons.volume_off,
+                    svg: (previewVideoPlayer.value.volume >0)?MyIcons.high_volume:MyIcons.low_volume,
                    onTap: (){
                     setState(() {
                     if(previewVideoPlayer.value.volume > 0){
@@ -105,22 +104,11 @@ class _ThemePreviewState extends State<ThemePreview> {
               ],
             ),
             body: (isLoading)?
-            Center(
-                child:
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),
-                    SizedBox(height: 15,),
-                    Text('Patience Breeds\nPeace',style: TextStyle(
-                      color: Color(int.parse('0xff' + widget.themeDetails['textColor']))
-                    ),textAlign: TextAlign.center,)
-                  ],
-                ))
+            Components(context).Loader(textColor: Color(int.parse('0xff' + widget.themeDetails['textColor'])))
                 :Column(
                   children: [
                     Expanded(
-                      flex: 7,
+                      flex: 5,
                       child: VideoPlayer(
                         previewVideoPlayer
                       ),
@@ -144,8 +132,8 @@ class _ThemePreviewState extends State<ThemePreview> {
                           boxShadow: [
                             BoxShadow(
                                 color: Color(int.parse('0xff' + widget.themeDetails['baseColor1'])),
-                                blurRadius: 70,
-                                spreadRadius: 85,
+                                blurRadius: 50,
+                                spreadRadius: 80,
                                 blurStyle: BlurStyle.normal
                             )
                           ],
@@ -160,11 +148,14 @@ class _ThemePreviewState extends State<ThemePreview> {
                                   flex: 2,
                                   child: Column(
                                     children: [
-                                      Text(widget.themeDetails['title'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                        fontSize: 39,
-                                        color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.8),
-                                      ),
-                                        textAlign: TextAlign.center,
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 38.0),
+                                        child: Text(widget.themeDetails['title'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                          fontSize: 39,
+                                          color: Color(int.parse('0xff' + widget.themeDetails['textColor'])).withOpacity(0.8),
+                                        ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                       Expanded(
                                         child: Padding(

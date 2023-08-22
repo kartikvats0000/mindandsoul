@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:audio_service/audio_service.dart';
 
 class MusicPlayerProvider extends ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -52,12 +51,12 @@ class MusicPlayerProvider extends ChangeNotifier {
 
      _playlist = ConcatenatingAudioSource(children: [
         AudioSource.uri(
-            Uri.parse(track!.audioUrl.toString()),
+            Uri.parse(track.audioUrl.toString()),
             tag: MediaItem(
                 id: '1',
-                title: track!.title,
+                title: track.title,
                 artist: 'Mind n Soul',
-                artUri: Uri.parse(track!.thumbnail)
+                artUri: Uri.parse(track.thumbnail)
             )
         ),
       ]);
@@ -94,7 +93,7 @@ class MusicPlayerProvider extends ChangeNotifier {
     ]);*/
    // await _audioPlayer.setAudioSource(_playlist);
     _audioPlayer.play();
-    print(audioPlayer.currentIndex);
+    debugPrint(audioPlayer.currentIndex.toString());
     _playerState = PlayerState.playing;
     _audioPlayer.positionStream.listen((position) {
       _position = position;

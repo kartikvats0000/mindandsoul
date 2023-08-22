@@ -15,7 +15,6 @@ class ThemeProvider extends ChangeNotifier {
   }
 
 
-
   List<dynamic> themesList = [];
   String baseurl = '';
   String id = '';
@@ -24,13 +23,17 @@ class ThemeProvider extends ChangeNotifier {
   Color themeColorA = Color(0xfffffff);
   Color themeColorB = Color(0xfffffff);
 //  String themeColorC = '';
-  Color textColor = Color(0xfffffff);
+  Color textColor = Color(0x000000);
 
   addThemes(List<dynamic> list){
     themesList = list;
     notifyListeners();
   }
 
+  clearThemes(){
+    themesList.clear();
+    notifyListeners();
+  }
 
   Map<String, dynamic> toJson() => {
     "_id": id,
@@ -52,9 +55,8 @@ class ThemeProvider extends ChangeNotifier {
     "textColor": textColor,
   });
 
-
-  updateBaseURL(String _url){
-    baseurl = _url;
+  updateBaseURL(String newurl){
+    baseurl = newurl;
     notifyListeners();
   }
 

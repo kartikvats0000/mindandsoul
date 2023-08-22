@@ -8,6 +8,7 @@ import 'package:mindandsoul/helper/components.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/themeProvider.dart';
+import '../../../../services/services.dart';
 import 'Themepreview.dart';
 
 class ThemePicker extends StatefulWidget {
@@ -18,6 +19,19 @@ class ThemePicker extends StatefulWidget {
 }
 
 class _ThemePickerState extends State<ThemePicker> {
+
+  bool loading = false;
+  updateThemes()async {
+    setState(() {
+      loading = true;
+    });
+    var data =  await Services().getThemes();
+    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+    await theme.clearThemes();
+    await theme.addThemes(data);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -60,8 +74,15 @@ class _ThemePickerState extends State<ThemePicker> {
               )
           ),
           child: RefreshIndicator(
-            onRefresh: ()async{},
-            child: GridView.builder(
+            onRefresh: ()async{
+             await updateThemes();
+              setState(() {
+                loading = false;
+              });
+            },
+            child: (loading)
+                ?Components(context).Loader(textColor: themeData.textColor)
+                :GridView.builder(
             physics: const BouncingScrollPhysics(
               // parent: AlwaysScrollableScrollPhysics()
             ),
@@ -120,7 +141,7 @@ class _ThemePickerState extends State<ThemePicker> {
                           )
                         ],
                       ),
-                      SizedBox(height: 8,),
+                      const SizedBox(height: 8,),
                       Text(themeData.themesList[index]['title'],style: TextStyle(color: themeData.textColor,fontWeight: FontWeight.w700),)
                     ],
                   ),

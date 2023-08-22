@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mindandsoul/constants/iconconstants.dart';
+import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
@@ -49,8 +50,6 @@ class _ProfileState extends State<Profile> {
     return Consumer2<ThemeProvider,User>(
       builder: (context,theme,user,child) =>
         Scaffold(
-          //extendBody: true,
-          //extendBodyBehindAppBar: true,
           body: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -116,8 +115,8 @@ class _ProfileState extends State<Profile> {
                                   flex: 2,
                                   child: ListTile(
                                     iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                    textColor: Colors.white70,
-                                    leading: Icon(Icons.settings),
+                                    textColor: theme.textColor.withOpacity(0.75),
+                                    leading: Components(context).myIconWidget(icon:MyIcons.settings,color: Theme.of(context).colorScheme.inversePrimary),
                                     title: Text('Account Settings'),
                                     onTap: (){},
                                   ),
@@ -126,7 +125,7 @@ class _ProfileState extends State<Profile> {
                                   flex: 2,
                                   child: ListTile(
                                     iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                    textColor: Colors.white70,
+                                    textColor: theme.textColor.withOpacity(0.75),
                                     leading: Icon(Icons.download_outlined),
                                     title: Text('Downloads'),
                                   ),
@@ -135,27 +134,30 @@ class _ProfileState extends State<Profile> {
                                   flex: 2,
                                   child: ListTile(
                                     iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                    textColor: Colors.white70,
-                                    leading: Icon(Icons.read_more),
-                                    title: Text('Terms & Conditions'),
+                                    textColor: theme.textColor.withOpacity(0.75),
+                                    leading: Components(context).myIconWidget(icon:MyIcons.terms,color: Theme.of(context).colorScheme.inversePrimary),
+                                    title: Text('Terms and Conditions'),
+                                    onTap: (){},
                                   ),
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: ListTile(
                                     iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                    textColor: Colors.white70,
-                                    leading: Icon(Icons.favorite_border),
-                                    title: Text('Favourites'),
+                                    textColor: theme.textColor.withOpacity(0.75),
+                                    leading: Components(context).myIconWidget(icon:MyIcons.favorite,color: Theme.of(context).colorScheme.inversePrimary),
+                                    title: Text('Favorites'),
+                                    onTap: (){},
                                   ),
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: ListTile(
                                     iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                    textColor: Colors.white70,
-                                    leading: Icon(Icons.share),
+                                    textColor: theme.textColor.withOpacity(0.75),
+                                    leading: Components(context).myIconWidget(icon:MyIcons.share,color: Theme.of(context).colorScheme.inversePrimary),
                                     title: Text('Share App'),
+                                    onTap: (){},
                                   ),
                                 ),
 
@@ -171,7 +173,7 @@ class _ProfileState extends State<Profile> {
                                      await sharedPreference.remove('loginData');
                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
                                    },
-                                    textColor: Colors.white70,
+                                    textColor: theme.textColor.withOpacity(0.75),
                                     //tileColor: Theme.of(context).colorScheme.primary,
                                     leading: Icon(Icons.logout,color: Colors.red,),
                                     title: Text('Logout'),),
@@ -187,7 +189,6 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-
         )
     );
   }

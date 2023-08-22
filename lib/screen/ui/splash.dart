@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/bottomNavigationbarScreen.dart';
@@ -17,7 +15,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../provider/themeProvider.dart';
 import '../../services/services.dart';
-import 'home/navscreens/Home.dart';
 
 
 
@@ -184,8 +181,17 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
        Scaffold(
          backgroundColor: theme.themeColorA.withOpacity(0.3),
         extendBody: true,
-        body: VideoPlayer(
-          videoPlayerController
+        body: SizedBox.expand(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: videoPlayerController.value.size.width,
+              height: videoPlayerController.value.size.height,
+              child: VideoPlayer(
+                videoPlayerController
+              ),
+            ),
+          ),
         )
       ),
     );

@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
@@ -13,8 +12,9 @@ import 'package:provider/provider.dart';
 import '../../../helper/miniplayer.dart';
 
 class Wellness extends StatefulWidget {
+  final String title;
   final List data;
-   Wellness({required this.data});
+   Wellness({required this.title,required this.data});
 
   @override
   State<Wellness> createState() => _WellnessState();
@@ -59,7 +59,7 @@ class _WellnessState extends State<Wellness> {
                 padding: EdgeInsets.all(7),
                 child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
               ),
-              title: Text('Wellness',style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
+              title: Text(widget.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
             ),
           ),
           body: Container(
@@ -91,10 +91,10 @@ class _WellnessState extends State<Wellness> {
                             filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
                             child: Consumer<MusicPlayerProvider>(
                               builder: (context,player,child) =>
-                              InkWell(
+                              GestureDetector(
                                 onTap: (){
-                                   player.play(Track(title: widget.data[index]['title'], thumbnail: widget.data[index]['image'], audioUrl: 'https://eeasy.s3.ap-south-1.amazonaws.com/balaji/story/1690630201180.mp3'));
-                                   Timer(const Duration(milliseconds: 500),(){
+                                   player.play(Track(title: widget.data[index]['title'], thumbnail: widget.data[index]['image'], audioUrl: widget.data[index]['audio']));
+                                   Timer(const Duration(milliseconds: 1000),(){
                                      Components(context).showPlayerSheet();
                                    });
                                 },
@@ -118,7 +118,8 @@ class _WellnessState extends State<Wellness> {
                                                     aspectRatio: 1,
                                                     child: ClipRRect(
                                                       borderRadius: BorderRadius.circular(20),
-                                                        child: CachedNetworkImage(imageUrl: widget.data[index]['image'],fit: BoxFit.cover,)),
+                                                        child: CachedNetworkImage(imageUrl: widget.data[index]['image'],fit: BoxFit.cover,)
+                                                    ),
                                                   ),
                                                   Visibility(
                                                     visible: (player.currentTrack != null && widget.data[index]['image'] == player.currentTrack?.thumbnail),
@@ -195,27 +196,4 @@ class _WellnessState extends State<Wellness> {
   }
 }
 
-Widget tags(String title,BuildContext context) {
-   ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
-  return Container(
-    //height: 25,
-    padding: const EdgeInsets.all(5),
-    margin: const EdgeInsets.all(1.5),
-    decoration: BoxDecoration(
-        border: Border.all(
-          width: 0.65,
-          color: theme.textColor
-        ),
-        borderRadius: BorderRadius.circular(10),
 
-    ),
-    child: Text(title, style: Theme
-        .of(context)
-        .textTheme
-        .bodySmall
-        ?.copyWith(
-        fontWeight: FontWeight.w500,
-        fontSize: 11
-    ),),
-  );
-}
