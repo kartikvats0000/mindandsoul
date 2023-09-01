@@ -47,8 +47,14 @@ class MyApp extends StatelessWidget {
           return  MaterialApp(
               theme: ThemeData(
                   useMaterial3: true,
-
                   colorScheme: ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
+                  sliderTheme: SliderThemeData(
+                   // activeTrackColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                    //inactiveTrackColor: Theme.of(context).colorScheme.inversePrimary,
+                    trackHeight: 1.0,
+                   // thumbColor: Theme.of(context).colorScheme.inversePrimary,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.5),
+                  ),
                   inputDecorationTheme: InputDecorationTheme(
                     hintStyle: const TextStyle(color: Colors.white60),
                     border: OutlineInputBorder(

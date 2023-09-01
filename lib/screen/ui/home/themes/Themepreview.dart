@@ -89,7 +89,7 @@ class _ThemePreviewState extends State<ThemePreview> {
               ),
               actions: [
                 Components(context).BlurBackgroundCircularButton(
-                    svg: (previewVideoPlayer.value.volume >0)?MyIcons.high_volume:MyIcons.low_volume,
+                    svg: (previewVideoPlayer.value.volume >0)?MyIcons.volume_high:MyIcons.mute,
                    onTap: (){
                     setState(() {
                     if(previewVideoPlayer.value.volume > 0){

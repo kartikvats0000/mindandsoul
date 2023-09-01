@@ -9,6 +9,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../../constants/iconconstants.dart';
 import '../../../../../helper/components.dart';
 import '../../../../../provider/userProvider.dart';
 import '../../../../../services/services.dart';
@@ -130,9 +131,9 @@ class _EditProfileState extends State<EditProfile> {
           return Wrap(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                   /*  gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -141,25 +142,25 @@ class _EditProfileState extends State<EditProfile> {
                           theme.themeColorB,
                         ]
                     ),*/
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25))
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(25))
                 ),
                 child: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
                       height: 5,
                       width: 65,
                       decoration: BoxDecoration(
-                        color: Colors.white38,
+                        color: Colors.black45,
                         borderRadius: BorderRadius.circular(10)
                       ),
                     ),
                     ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        child: Icon(Icons.image_outlined,color: Theme.of(context).colorScheme.primary,),
+                        child: Components(context).myIconWidget(icon: MyIcons.gallery,color: Theme.of(context).colorScheme.primary)
                       ),
-                      title: Text('Pick Image From Gallery'),
+                      title: Text('Pick Image From Gallery',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),),
                       onTap: ()async{
                         await getImageGallery().whenComplete(() => cropImage(image!));
                         await uploadimageforurl();
@@ -169,9 +170,9 @@ class _EditProfileState extends State<EditProfile> {
                     ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        child: Icon(Icons.camera_alt_outlined,color: Theme.of(context).colorScheme.primary,),
+                        child: Components(context).myIconWidget(icon: MyIcons.camera,color: Theme.of(context).colorScheme.primary)
                       ),
-                      title: Text('Take Image from Camera'),
+                      title: Text('Take Image From Camera',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),),
                       onTap: ()async{
                         await getImageCamera().then((value) => cropImage(image!));
                         await uploadimageforurl();
@@ -197,7 +198,7 @@ class _EditProfileState extends State<EditProfile> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           leading: Padding(
-              padding: EdgeInsets.all(7),
+              padding: const EdgeInsets.all(7),
               child: Components(context).BlurBackgroundCircularButton(
                 icon: Icons.chevron_left,
                 onTap: (){Navigator.pop(context);},
@@ -208,9 +209,9 @@ class _EditProfileState extends State<EditProfile> {
        //   margin: EdgeInsets.only(top: kToolbarHeight + 10),
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.only(left: 10,right: 10,top: kToolbarHeight+30),
+          padding: const EdgeInsets.only(left: 10,right: 10,top: kToolbarHeight+30),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
               color: theme.themeColorA,
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -227,7 +228,7 @@ class _EditProfileState extends State<EditProfile> {
               SizedBox(
                 width: double.infinity,
                   child: Text('Edit Profile',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32,fontWeight: FontWeight.bold),textAlign: TextAlign.start,)),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
                   showActionSheet();
@@ -249,14 +250,14 @@ class _EditProfileState extends State<EditProfile> {
                             child: CircleAvatar(
                               backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.4),
                               radius: 20,
-                              child: Icon(Icons.edit,color: Colors.white70,),
+                              child: Components(context).myIconWidget(icon: MyIcons.edit,color: Colors.white)
                             ),
                           ),
                         ) )
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Expanded(
                 flex: 2,
                 child: SingleChildScrollView(
@@ -264,17 +265,17 @@ class _EditProfileState extends State<EditProfile> {
                   //  physics: NeverScrollableScrollPhysics(),
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Name'),
-                      SizedBox(height: 10,),
+                      const Text('Name'),
+                      const SizedBox(height: 10,),
                       TextFormField(
                         controller: nameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Name',
                         ),
                       ),
-                      SizedBox(height: 25,),
-                      Text('Email'),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 25,),
+                      const Text('Email'),
+                      const SizedBox(height: 10,),
                       TextFormField(
                         controller: emailController,
                         enabled: false,
@@ -283,7 +284,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: FilledButton(
@@ -305,7 +306,7 @@ class _EditProfileState extends State<EditProfile> {
                     await user.fromJson(data['data']);
                     Navigator.pop(context);
                     },
-                    child: Text('Affirm Changes')),
+                    child: const Text('Affirm Changes')),
               )
             ],
           ),

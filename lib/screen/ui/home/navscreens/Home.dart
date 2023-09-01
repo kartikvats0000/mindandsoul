@@ -18,6 +18,7 @@ import 'package:mindandsoul/screen/ui/content/content_list_screen/listA.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
 import 'package:mindandsoul/screen/ui/content/wellness.dart';
+import 'package:mindandsoul/screen/ui/sleepsounds/newsounds.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -55,8 +56,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
         .then((_) {
       setState(() {
         loader = false;
-        //videoPlayerController.setVolume(0.0);
-        //_musicPlayerProvider = Provider.of<MusicPlayerProvider>(context, listen: false);
+
         player.addListener(_onAudioPlayerStateChanged);
         _onAudioPlayerStateChanged();
       });
@@ -178,7 +178,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   }
 
 
-
   @override
   void initState() {
     fetchCategories();
@@ -277,6 +276,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                 color: Colors.transparent,
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                                                 child: Container(
+
                                                   padding: const EdgeInsets.all(15),
                                                   decoration: BoxDecoration(
                                                     color: Colors.black38,
@@ -379,7 +379,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       ),
                                       const SizedBox(width: 10,),
                                       Components(context).BlurBackgroundCircularButton(
-                                        svg: (videoPlayerController.value.volume  == 0)?MyIcons.low_volume:MyIcons.high_volume,
+                                        svg: (videoPlayerController.value.volume  == 0)?MyIcons.mute:MyIcons.volume_high,
                                         onTap: (){
                                           setState(() {
                                             showVolumeSlider = !showVolumeSlider;
@@ -576,6 +576,41 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       ),
                                     );
                                   }
+                              ),
+                            ),
+                            const SizedBox(height: 20,),
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) =>SleepSoundPageView()));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                padding: EdgeInsets.all(25),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(image: const NetworkImage('https://cdn.pixabay.com/photo/2016/02/17/19/08/lotus-1205631_640.jpg'),fit: BoxFit.cover,colorFilter: ColorFilter.mode(themeData.themeColorB.withOpacity(0.6), BlendMode.multiply)),
+                                  color: Colors.white54,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                      color: Colors.white54
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Harmonies',style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),),
+                                          const SizedBox(height: 5,),
+                                          Text('Sleep better with soothing harmonies',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10,),
+                                    const Icon(Icons.chevron_right,size: 35,color: Colors.white,)
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 20,),
@@ -783,6 +818,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 }
                             ),
                             const SizedBox(height: 5,),
+
                             Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 120, horizontal: 20),
@@ -815,7 +851,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                       ),
                     );
                   }
-              )
+              ),
+
             ],
           ),
         ),

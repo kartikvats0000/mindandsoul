@@ -13,10 +13,11 @@ contentViewRoute(
 
   }
   if(type == 'Info'){
-    Navigator.of(context).push(
+    /*Navigator.of(context).push(
         CupertinoPageRoute(
             fullscreenDialog: true,
-            builder: (context) => InfoGraphic(data: data,title: title,)));
+            builder: (context) => InfoGraphic(data: data,title: title,)));*/
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InfoGraphic(data: data,title: title,)));
   }
   if(type == 'Video'){
     Navigator.of(context).push(
@@ -28,3 +29,4 @@ contentViewRoute(
     Navigator.push(context, MaterialPageRoute(builder: (context) => AudioContent(data: data,title: title,)));
   }
 }
+

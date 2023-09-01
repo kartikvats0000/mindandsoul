@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -14,29 +17,57 @@ import '../provider/playerProvider.dart';
 export 'contentviewroute.dart';
 
 
-String _getDurationString(Duration duration) {
-  String minutes = duration.inMinutes.toString().padLeft(2,'0');
-  String seconds = (duration.inSeconds % 60).toString().padLeft(2,'0');
-
-  if (minutes == 0) {
-    return '00:$seconds';
-  } else {
-    return '$minutes:$seconds';
-  }
-}
 
 class Components{
   BuildContext context;
 
   Components(this.context);
 
+  Widget customAppBar({
+    required List<Widget> actions ,
+    Color topColor = Colors.transparent,
+    Color scrolledColor = Colors.white54,
+    required Widget title,
+    required bool isScrolling,
+    Duration duration = const Duration(milliseconds: 450)
+  }){
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: (isScrolling)?ImageFilter.blur(sigmaY: 10,sigmaX: 10):ImageFilter.dilate(),
+        child: AnimatedContainer(
+          duration: duration,
+          color: (isScrolling)?scrolledColor:topColor,
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top+10,bottom: 13,left: 7,right: 7),
+          child: Row(
+          children: [
+            Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){
+              Navigator.pop(context);
+            }),
+            const SizedBox(width: 10,),
+            Expanded(
+                child: AnimatedOpacity(
+                  duration: duration,
+                    opacity: (isScrolling)?1:0,
+                    child: title)
+            ),
+            const SizedBox(width: 7,),
+            Row(
+              children: actions,
+            )
+          ],
+        ),
+        //  height: kToolbarHeight+25,
+        ),
+      ),
+    );
+  }
+
   Widget myIconWidget({required String icon, Color color = Colors.white70, double size = 23}){
     return SvgPicture.asset(icon,color: color,height: size,width: size,);
   }
 
-  Widget tags(
-      {required String title, required BuildContext context, Color textcolor = Colors.white}) {
-    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+  Widget tags({required String title, required BuildContext context, Color textcolor = Colors.white})
+  {ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
 
@@ -115,13 +146,13 @@ class Components{
   }
 
   Widget BlurBackgroundCircularButton({
+    Color iconColor =  Colors.white,
     IconData? icon,
     String? svg,
     VoidCallback? onTap,
     double buttonRadius = 20,
     double iconSize = 22,
-  })
-  {
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
@@ -133,8 +164,8 @@ class Components{
             //Colors.black54.withOpacity(0.75),
             radius: buttonRadius,
             child: (svg == null)
-                ?Icon(icon,color: Colors.white.withOpacity(0.9),size: iconSize,)
-                :Components(context).myIconWidget(icon: svg,color: Colors.white.withOpacity(0.9))
+                ?Icon(icon,color: iconColor,size: iconSize,)
+                :Components(context).myIconWidget(icon: svg,color: Colors.white)
           ),
         ),
       ),
@@ -143,15 +174,15 @@ class Components{
 
   showSuccessSnackBar(String content){
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(content),
+        content: Text(content,style: Theme.of(context).textTheme.labelLarge,),
       elevation: 0.0,
-      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
-      duration: const Duration(seconds: 6),
+      duration: const Duration(seconds: 4),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Theme.of(context).colorScheme.inversePrimary, width: 0.75),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(7),
       ),
     )
     );
@@ -159,16 +190,17 @@ class Components{
 
   showErrorSnackBar(String content){
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(content),
+      padding: const EdgeInsets.all(15),
+      content: Text(content,style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
       elevation: 0.0,
-      backgroundColor: Theme.of(context).colorScheme.error.withOpacity(0.65),
+      backgroundColor: Theme.of(context).colorScheme.error.withOpacity(0.9),
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
-      duration: const Duration(seconds: 6),
+      duration: const Duration(seconds: 4),
       onVisible: (){},
       shape:RoundedRectangleBorder(
         side: const BorderSide(color: Colors.redAccent, width: 0.75),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(7),
       ),
     )
     );
@@ -316,4 +348,16 @@ class Components{
   }
 
 }
+
+String _getDurationString(Duration duration) {
+  String minutes = duration.inMinutes.toString().padLeft(2,'0');
+  String seconds = (duration.inSeconds % 60).toString().padLeft(2,'0');
+
+  if (minutes == 0) {
+    return '00:$seconds';
+  } else {
+    return '$minutes:$seconds';
+  }
+}
+
 

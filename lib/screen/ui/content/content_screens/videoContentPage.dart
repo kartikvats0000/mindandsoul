@@ -125,113 +125,110 @@ class _VideoContentState extends State<VideoContent> {
                     ]
                 )
             ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Components(context).tags(
-                        title:widget.title,
-                        context: context,
-                        textcolor: theme.textColor.withOpacity(0.7)
-                      ),
-                      const SizedBox(height: 10,),
-                      Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 19),),
-                      const SizedBox(height: 20,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.headphones_outlined,color: theme.textColor.withOpacity(0.7),size: 13,),
-                              SizedBox(width: 5,),
-                              Text('34.8k listens • ❤️ 12.2k likes',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 11,
-                                    //letterSpacing: 1.3,
-                                    color: theme.textColor.withOpacity(0.7)
-                                ),),
-                            ],
-                          ),
-                          const SizedBox(width: 35,),
-                          Row(
-                            children: [
-                              Icon(Icons.watch_later_outlined,color: theme.textColor.withOpacity(0.7),size: 13,),
-                              SizedBox(width: 5,),
-                              Text('August 18, 2023',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 11,
-                                    //letterSpacing: 1.3,
-                                    color: theme.textColor.withOpacity(0.7)
-                                ),),
-                            ],
-                          )
-
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                AspectRatio(
-                  aspectRatio: videoPlayerController.value.aspectRatio,
-                  child: Chewie(
-                      controller: chewieController
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
-                  child: Row(
-                    mainAxisAlignment:MainAxisAlignment.start,
-                    children: [
-                      _buildBox(
-                        context: context,
-                        label: '  12.1k',
-                          icon: Components(context).myIconWidget(icon: (like)?MyIcons.like:MyIcons.like_filled),
-                              onTap: (){
-                        HapticFeedback.selectionClick();
-                        setState(() {
-                        like = !like;
-                      });}),
-                      const SizedBox(width: 15,),
-                      _buildBox(context: context,icon:  Icon(Icons.share_outlined,color: theme.textColor.withOpacity(0.7),size: 20,),label: '  Share'),
-                      const SizedBox(width: 15,),
-                      _buildBox(context: context,icon:  Icon(Icons.favorite_outline,color: theme.textColor.withOpacity(0.7),size: 20,),label: '  Add to favourites'),
-
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
                     padding: const EdgeInsets.all(15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
-                      //  Text('Tags:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                        Wrap(
-                            spacing: 5,
-                            children:
-                            taglist.map((e) => Components(context).tags(
-                                title:e,
-                                context: context,
-                                textcolor: theme.textColor.withOpacity(0.7)
-
-                            )).toList()
-
+                        Components(context).tags(
+                          title:widget.title,
+                          context: context,
+                          textcolor: theme.textColor.withOpacity(0.7)
                         ),
-                        SizedBox(height: 15,),
-                      //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                        Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor.withOpacity(0.7)),),
+                        const SizedBox(height: 10,),
+                        Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 19),),
+                        const SizedBox(height: 20,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.headphones_outlined,color: theme.textColor.withOpacity(0.7),size: 13,),
+                                SizedBox(width: 5,),
+                                Text('34.8k listens • ❤️ 12.2k likes',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11,
+                                      //letterSpacing: 1.3,
+                                      color: theme.textColor.withOpacity(0.7)
+                                  ),),
+                              ],
+                            ),
+                            const SizedBox(width: 35,),
+                            Row(
+                              children: [
+                                Icon(Icons.watch_later_outlined,color: theme.textColor.withOpacity(0.7),size: 13,),
+                                SizedBox(width: 5,),
+                                Text('August 18, 2023',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11,
+                                      //letterSpacing: 1.3,
+                                      color: theme.textColor.withOpacity(0.7)
+                                  ),),
+                              ],
+                            )
+
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  AspectRatio(
+                    aspectRatio: videoPlayerController.value.aspectRatio,
+                    child: Chewie(
+                        controller: chewieController
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+                    child: Row(
+                      mainAxisAlignment:MainAxisAlignment.start,
+                      children: [
+                        _buildBox(
+                          context: context,
+                          label: '  12.1k',
+                            icon: Components(context).myIconWidget(icon: (like)?MyIcons.like:MyIcons.like_filled),
+                                onTap: (){
+                          HapticFeedback.selectionClick();
+                          setState(() {
+                          like = !like;
+                        });}),
+                        const SizedBox(width: 15,),
+                        _buildBox(context: context,icon:  Icon(Icons.share_outlined,color: theme.textColor.withOpacity(0.7),size: 20,),label: '  Share'),
+                        const SizedBox(width: 15,),
+                        _buildBox(context: context,icon:  Icon(Icons.favorite_outline,color: theme.textColor.withOpacity(0.7),size: 20,),label: '  Add to favourites'),
 
                       ],
                     ),
                   ),
-                )
-              ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                    //  Text('Tags:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
+                      Wrap(
+                          spacing: 5,
+                          children:
+                          taglist.map((e) => Components(context).tags(
+                              title:e,
+                              context: context,
+                              textcolor: theme.textColor.withOpacity(0.7)
+
+                          )).toList()
+
+                      ),
+                      SizedBox(height: 15,),
+                    //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
+                      Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor.withOpacity(0.7)),),
+
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
