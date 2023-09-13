@@ -2,25 +2,32 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
+import 'package:mindandsoul/services/notificationServices.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/splash.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await JustAudioBackground.init(
+  tz.initializeTimeZones();
+  //LocalNotifyManager.init();
+  //NotificationServices().initializeNotification();
+  // NotificationService().initialize();
+
+ /* await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
-  );
+  );*/
 
-
+  Paint.enableDithering = true;
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -48,12 +55,13 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                   useMaterial3: true,
                   colorScheme: ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
-                  sliderTheme: SliderThemeData(
+
+                  sliderTheme: const SliderThemeData(
                    // activeTrackColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
                     //inactiveTrackColor: Theme.of(context).colorScheme.inversePrimary,
                     trackHeight: 1.0,
                    // thumbColor: Theme.of(context).colorScheme.inversePrimary,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.5),
+                    thumbShape:  RoundSliderThumbShape(enabledThumbRadius: 8.5),
                   ),
                   inputDecorationTheme: InputDecorationTheme(
                     hintStyle: const TextStyle(color: Colors.white60),
@@ -141,7 +149,6 @@ class MyApp extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                             color: themeProvider.textColor
-
                         ),
                       ),
                       titleSmall: GoogleFonts.raleway(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
+import 'package:mindandsoul/services/notificationServices.dart';
 import 'package:provider/provider.dart';
 
 class Notifications extends StatefulWidget {
@@ -46,6 +47,14 @@ class _NotificationsState extends State<Notifications> {
                color: Theme.of(context).colorScheme.inversePrimary,),
                SizedBox(height: 10,),
                Text('No Notifications'),
+               ElevatedButton(onPressed: ()async{
+                 // Future.delayed(Duration(seconds: 2),(){
+                 //   NotificationService().show(id: 1, channelKey: 'channelKey', title: 'Hi', body: 'hello');
+                 // });
+               }, child: Text('Now')),
+               /*ElevatedButton(onPressed: ()async{
+                 NotificationServices().scheduleNotification(time: , title: title, body: body)
+               }, child: Text('Now')),*/
              ],
            ),
          ),

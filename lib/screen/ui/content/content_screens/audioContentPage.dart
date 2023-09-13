@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,7 +60,7 @@ class _AudioContentState extends State<AudioContent> {
        }
      });
    });
-   audioPlayer.play();
+   //audioPlayer.play();
   }
 
   @override
@@ -78,6 +77,8 @@ class _AudioContentState extends State<AudioContent> {
     super.dispose();
   }
 
+  int likes= 56;
+
 
   bool like = false;
   @override
@@ -89,19 +90,20 @@ class _AudioContentState extends State<AudioContent> {
         extendBodyBehindAppBar: false,
         extendBody: false,
         body: Container(
-          decoration: BoxDecoration(
-              gradient:  LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    theme.themeColorB,
-
-                    //Colors.transparent,
-                    //Theme.of(context).colorScheme.primary,
-                    theme.themeColorA,
-                  ]
-              )
-          ),
+          color: Theme.of(context).colorScheme.surface,
+          // decoration: BoxDecoration(
+          //     gradient:  LinearGradient(
+          //         begin: Alignment.topCenter,
+          //         end: Alignment.bottomCenter,
+          //         colors: [
+          //           theme.themeColorB,
+          //
+          //           //Colors.transparent,
+          //           //Theme.of(context).colorScheme.primary,
+          //           theme.themeColorA,
+          //         ]
+          //     )
+          // ),
           child: Column(
             children: [
               Expanded(
@@ -110,15 +112,21 @@ class _AudioContentState extends State<AudioContent> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.4,
+                        height: MediaQuery.of(context).size.height * 0.45,
+                        //width: double.infinity,
                         child: Stack(
                           children: [
-                            Positioned.fill(child: Hero(
-                              tag: widget.data['_id'],
-                              child: ClipRRect(
+                            Positioned.fill(
+                              child: Hero(
+                                tag: widget.data['_id'],
+                                child: ClipRRect(
                                   borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-                                  child: CachedNetworkImage(imageUrl: widget.data['image'],fit: BoxFit.cover,)),
-                            )
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Image.network(widget.data['image'],fit: BoxFit.cover,),
+                                  ),
+                                ),
+                              ),
                             ),
                             Positioned.fill(
                                 child: Container(
@@ -130,7 +138,7 @@ class _AudioContentState extends State<AudioContent> {
                                           end: Alignment.bottomCenter,
                                           colors: [
                                             Colors.transparent,
-                                            Colors.black12,
+                                            Colors.black26,
                                             //Colors.transparent,
                                             Colors.black.withOpacity(0.92)
                                           ]
@@ -140,19 +148,37 @@ class _AudioContentState extends State<AudioContent> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Components(context).tags(
-                                        title:widget.title,
-                                        context: context,
-
-
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Components(context).tags(
+                                            title:widget.title,
+                                            context: context,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.watch_later_outlined,color: Theme.of(context).colorScheme.surface.withOpacity(0.7),size: 13,),
+                                              SizedBox(width: 5,),
+                                              Text('August 18, 2023',
+                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 11,
+                                                    //letterSpacing: 1.3,
+                                                    color: Colors.white.withOpacity(0.7)
+                                                ),),
+                                            ],
+                                          )
+                                        ],
                                       ),
                                       const SizedBox(height: 10,),
                                       Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 19),),
                                       const SizedBox(height: 10,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Icon(Icons.headphones_outlined,color: Colors.grey.withOpacity(0.7),size: 13,),
                                               SizedBox(width: 5,),
@@ -165,21 +191,23 @@ class _AudioContentState extends State<AudioContent> {
                                                 ),),
                                             ],
                                           ),
-                                          const SizedBox(width: 35,),
                                           Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.watch_later_outlined,color: Colors.grey.withOpacity(0.7),size: 13,),
-                                              SizedBox(width: 5,),
-                                              Text('August 18, 2023',
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                    //letterSpacing: 1.3,
-                                                    color: Colors.white.withOpacity(0.7)
-                                                ),),
+                                              Components(context).BlurBackgroundCircularButton(svg: (!like)?MyIcons.like:MyIcons.like_filled,onTap: (){
+                                                HapticFeedback.lightImpact();
+                                                setState(() {
+                                                  like = !like;
+                                                  if(like == false){
+                                                    likes--;
+                                                  }
+                                                  else{
+                                                    likes++;
+                                                  }
+    });
+                                              }),
                                             ],
                                           )
-
                                         ],
                                       )
                                     ],
@@ -194,8 +222,15 @@ class _AudioContentState extends State<AudioContent> {
                             Positioned(
                                 top: 30,
                                 right: 5,
-                                child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){})
+                                child: Row(
+                                  children: [
+                                    Components(context).BlurBackgroundCircularButton(svg: MyIcons.share,onTap: (){}),
+                                    const SizedBox(width: 5,),
+                                    Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){}),
+                                  ],
+                                )
                             ),
+
                           ],
                         ),
                       ),
@@ -212,12 +247,12 @@ class _AudioContentState extends State<AudioContent> {
                                   taglist.map((e) => Components(context).tags(
                                       title:e,
                                       context: context,
-                                      textcolor: theme.textColor.withOpacity(0.7)
+                                     textcolor: Theme.of(context).colorScheme.onSurface,
                                   )).toList()
                               ),
                               const SizedBox(height: 25,),
                             //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                              Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor.withOpacity(0.7)),),
+                              Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
                             ],
                           )
                       )
@@ -228,16 +263,10 @@ class _AudioContentState extends State<AudioContent> {
               Expanded(
                 flex:2,
                   child:Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       boxShadow: [
-                        BoxShadow(
-                            color: theme.themeColorA,
-                            blurRadius: 25,
-                            spreadRadius: 25,
-                            blurStyle: BlurStyle.normal
-                        )
-                      ],
-                      color: theme.themeColorA,
+                        BoxShadow(color: Colors.white,blurRadius: 10,spreadRadius: 10),
+                      ]
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -248,7 +277,7 @@ class _AudioContentState extends State<AudioContent> {
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Row(
                               children: [
-                                Text(_getDurationString(audioPlayer.position),style: Theme.of(context).textTheme.labelLarge,),
+                                Text(_getDurationString(audioPlayer.position),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
                                  Expanded(
                                      child: Slider(
                                        min: 0.0,
@@ -259,7 +288,7 @@ class _AudioContentState extends State<AudioContent> {
                                          }
                                      )
                                  ),
-                                Text(_getDurationString(_duration),style: Theme.of(context).textTheme.labelLarge,),
+                                Text(_getDurationString(_duration),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
                               ],
                             ),
                           ),
@@ -269,32 +298,33 @@ class _AudioContentState extends State<AudioContent> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                TextButton(onPressed: (){}, child: Components(context).myIconWidget(icon: MyIcons.share,color: theme.textColor),),
-                                SizedBox(width: 25,),
+                                //SizedBox(width: 25,),
                                 InkWell(
                                   onTap: (){
                                     if(_position.inSeconds/_duration.inSeconds > 0){
                                       audioPlayer.seek(Duration(seconds:(audioPlayer.position.inSeconds - 10).toInt()));
                                     }
-                                    if(_position.inSeconds/_duration.inSeconds < 0.1){
+                                    if(_position.inSeconds/_duration.inSeconds < 0.08){
                                       audioPlayer.seek(const Duration(seconds:0));
                                     }
 
                                   },
-                                  child: SvgPicture.asset('assets/home/backward_skip.svg',color: theme.textColor,height: 46.5,width: 46.5,),
+                                  child: SvgPicture.asset('assets/home/backward_skip.svg',color: Theme.of(context).colorScheme.onSurface,height: 46.5,width: 46.5,),
                                 ),
-                                SizedBox(width: 25,),
-                                Components(context).BlurBackgroundCircularButton(
-                                    icon: (audioPlayer.playerState.playing)?Icons.pause:Icons.play_arrow_rounded,
-                                  buttonRadius: 38,
-                                  iconSize: 38,
-                                  onTap: (){
-                                    (audioPlayer.playerState.playing)?
+                                const SizedBox(width: 25,),
+                                InkWell(
+                                    onTap: (){
+                                      (audioPlayer.playerState.playing)?
                                       audioPlayer.pause()
-                                        :audioPlayer.play();
-                                  }
+                                          :audioPlayer.play();
+                                    },
+                                  child: CircleAvatar(
+                                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
+                                    radius: 38,
+                                    child: Icon((audioPlayer.playerState.playing)?Icons.pause_rounded:Icons.play_arrow_rounded,size: 45,),
+                                  ),
                                 ),
-                                SizedBox(width: 25,),
+                                const SizedBox(width: 25,),
                                 InkWell(
                                   onTap: (){
                                     if(_position.inSeconds/_duration.inSeconds < 1){
@@ -304,15 +334,9 @@ class _AudioContentState extends State<AudioContent> {
                                       audioPlayer.seek(Duration(seconds:(audioPlayer.duration!.inSeconds).toInt()));
                                     }
                                   },
-                                  child: SvgPicture.asset('assets/home/forward_skip.svg',color: theme.textColor,height: 46.5,width: 46.5,),
+                                  child: SvgPicture.asset('assets/home/forward_skip.svg',color: Theme.of(context).colorScheme.onSurface,height: 46.5,width: 46.5,),
                                 ),
-                                SizedBox(width: 25,),
-                                TextButton(onPressed: (){
-                                  HapticFeedback.selectionClick();
-                                  setState(() {
-                                    like = !like;
-                                  });
-                                }, child: Components(context).myIconWidget(icon: (like)?MyIcons.like:MyIcons.like_filled,color: theme.textColor))
+                               // SizedBox(width: 25,),
                               ],
                             )
                         )

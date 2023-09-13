@@ -53,7 +53,7 @@ class _TextContentState extends State<TextContent> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-        backgroundColor:Colors.grey.shade100,
+        backgroundColor:Theme.of(context).colorScheme.surface,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight+10),

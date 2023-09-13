@@ -9,14 +9,16 @@ class User extends ChangeNotifier{
   String name = '';
   String email = '';
   String profilePicture = '';
+  String country = '';
   String token = '';
   String deviceId='';
   String fcmToken = '';
 
-  updateUserData(String _id,String _name, String _email, String _profilePicture, String _token){
+  updateUserData(String _id,String _name, String _email,String _country,String _profilePicture, String _token){
     id = _id;
     name = _name;
     email = _email;
+    country = _country;
     profilePicture = _profilePicture;
     token = _token;
   }
@@ -31,6 +33,7 @@ class User extends ChangeNotifier{
     id = json["_id"];
     name =  json["name"];
     email =  json["email"];
+    country =  json["country"];
     token =  json["token"];
     profilePicture =  json["profile_picture"];
     notifyListeners();
@@ -40,6 +43,7 @@ class User extends ChangeNotifier{
       "_id": id,
       "name": name,
       "email": email,
+      "country" : country,
       "token": token,
       "profile_picture": profilePicture,
       }
@@ -55,6 +59,7 @@ class User extends ChangeNotifier{
     id = '';
     name = '';
     email = '';
+    country = '';
     profilePicture = '';
     token = '';
     notifyListeners();

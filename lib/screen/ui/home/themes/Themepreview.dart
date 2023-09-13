@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -203,12 +204,12 @@ class _ThemePreviewState extends State<ThemePreview> {
                                                         .colorScheme
                                                         .primary
                                                         .withOpacity(0.5);
-                                                if (states.contains(MaterialState.pressed))
+                                                if (states.contains(MaterialState.pressed)) {
                                                   colorr = Theme.of(context)
                                                       .colorScheme
                                                       .primary
                                                       .withOpacity(0.5);
-                                                else if (states.contains(MaterialState.disabled))
+                                                } else if (states.contains(MaterialState.disabled))
                                                   colorr = Color(int.parse('0xff' + widget.themeDetails['baseColor1'])).withOpacity(0.5);
                                                 return colorr;// Use the component's default.
                                               },
@@ -234,11 +235,15 @@ class _ThemePreviewState extends State<ThemePreview> {
                                                     (Route<dynamic> route) => true
                                             );*/
 
-                                            Navigator.of(context).pushAndRemoveUntil(
-                                                MaterialPageRoute(builder: (context) => BottomNavScreen()),
-                                                //_createRoute(),
-                                                    (Route<dynamic> route) => true
-                                            );
+                                           /* Navigator.of(context).pushAndRemoveUntil(
+                                                MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+                                                    (Route<dynamic> route) => false
+                                            );*/
+
+                                            Timer(const Duration(milliseconds: 600), () {
+                                              Navigator.pop(context);
+                                              //Navigator.pop(context);
+                                            });
 
                                             Components(context).showSuccessSnackBar('Essence Aligned Harmoniously');
                                     },

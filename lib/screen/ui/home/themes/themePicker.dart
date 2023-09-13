@@ -1,6 +1,4 @@
-
 import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,17 +105,25 @@ class _ThemePickerState extends State<ThemePicker> {
                         clipBehavior: Clip.none,
                         children: [
                           SizedBox(
-                            height: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: CachedNetworkImage(
-                                placeholder: (context,string)=> Container(
-                                    padding: const EdgeInsets.all(30),
-                                    alignment: Alignment.center,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    )),
-                                imageUrl: themeData.themesList[index]['image'],fit: BoxFit.cover,),
+                          //  height: 180,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                border: themeData.videoUrl == themeData.themesList[index]['video']?Border.all(
+                                  color: themeData.textColor
+                                ):const Border()
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: CachedNetworkImage(
+                                  placeholder: (context,string)=> Container(
+                                      padding: const EdgeInsets.all(30),
+                                      alignment: Alignment.center,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                      )),
+                                  imageUrl: themeData.themesList[index]['image'],fit: BoxFit.cover,),
+                              ),
                             ),
 
                           ),

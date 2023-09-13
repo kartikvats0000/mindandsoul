@@ -76,18 +76,18 @@ class _InfoGraphicState extends State<InfoGraphic> {
                isScrolling: isScrolling
            )
          ),
-         backgroundColor: theme.themeColorB,
+         //backgroundColor: theme.themeColorB,
         body: Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    theme.themeColorB,
-                    theme.themeColorA,
-                  ]
-              )
+              color: Theme.of(context).colorScheme.surface,
+              // gradient: LinearGradient(
+              //     begin: Alignment.topCenter,
+              //     end: Alignment.bottomCenter,
+              //     colors: [
+              //       theme.themeColorB,
+              //       theme.themeColorA,
+              //     ]
+              // )
           ),
           child: Stack(
             children: [
@@ -141,7 +141,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                         ),
                                         Row(
                                           children: [
-                                            Icon(Icons.watch_later_outlined,color: theme.textColor.withOpacity(0.7),size: 13,),
+                                            Icon(Icons.watch_later_outlined,color: Theme.of(context).colorScheme.surface.withOpacity(0.7),size: 13,),
                                             SizedBox(width: 5,),
                                             Text('August 18, 2023',
                                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -178,7 +178,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Components(context).BlurBackgroundCircularButton(svg: (like)?MyIcons.like:MyIcons.like_filled,onTap: (){
+                                            Components(context).BlurBackgroundCircularButton(svg: (!like)?MyIcons.like:MyIcons.like_filled,onTap: (){
                                               HapticFeedback.lightImpact();
                                               setState(() {
                                                 like = !like;
@@ -210,7 +210,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                           // Text('Tags:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
+                           // Text('Tags:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 15.5),),
                             Wrap(
                                 spacing: 5,
                                 runSpacing: 5,
@@ -218,13 +218,13 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                 taglist.map((e) => Components(context).tags(
                                     title:e,
                                     context: context,
-                                    textcolor: theme.textColor.withOpacity(0.7)
+                                    textcolor: Theme.of(context).colorScheme.onSurface,
                                 )).toList()
                             ),
                             const SizedBox(height: 15,),
-                           // Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                            Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor.withOpacity(0.7),fontSize: 13.5),),
-                          //  Text('Instructions:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
+                           // Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 15.5),),
+                            Text('${widget.data['desc']}\n',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontSize: 13.5),),
+                          //  Text('Instructions:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 15.5),),
 
                           ],
                         ),
@@ -250,9 +250,9 @@ class _InfoGraphicState extends State<InfoGraphic> {
                               child: Column(
                                 crossAxisAlignment : CrossAxisAlignment.start,
                                 children: [
-                                  Text('Step ${index+1}:',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 13.5),),
+                                  Text('Step ${index+1}:',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 13.5),),
                                   const SizedBox(height: 5,),
-                                  Text('${infographics[index]['desc']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.8),fontSize: 13),
+                                  Text('${infographics[index]['desc']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontSize: 13),
                                   ),
                                 ],
                               )

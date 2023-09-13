@@ -42,7 +42,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
   setTheme()async{
     //Get all themes from JSON
     var data =  await Services().getThemes();
-    print(data);
+
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     await theme.addThemes(data);
    //await theme.updateBaseURL(data['base_url']);
@@ -50,8 +50,8 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var _theme = sharedPreferences.getString('defaultTheme');
     if(_theme == null){
-      print(theme.themesList[0]);
-      await theme.updateTheme(theme.themesList[1]);
+
+      await theme.updateTheme(theme.themesList[0]);
     }
     else{
       await theme.updateTheme(json.decode(_theme));
@@ -77,6 +77,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     videoPlayerController = VideoPlayerController.asset('assets/splash/splash.mp4')..initialize()
         .then((_) {
       videoPlayerController.play();
+      videoPlayerController.addListener(() {
+        if(videoPlayerController.value.position == videoPlayerController.value.duration) {
+          print('video Ended');
+        }
+      });
     });
    // videoPlayerController.setVolume(0.60);
 
@@ -94,16 +99,14 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
       deviceType = 'android';
       try {
         androidId = await androidIdPlugin.getId() ?? 'Unknown ID';
-        print('android id $androidId');
+
       } on PlatformException {
         androidId = 'Failed to get Android ID.';
       }
       if (!mounted) return;
 
-      setState(() {
-        deviceId = androidId;
-        deviceType = "android";
-      });
+      deviceId = androidId;
+      deviceType = "android";
     }
     else if (Platform.isIOS) {
       deviceType = "ios";
@@ -130,19 +133,19 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     if (settings.authorizationStatus == AuthorizationStatus.authorized){
       await firebaseMessaging.getToken().then((value) {
         fcmToken = value!;
-        debugPrint('my token value is $value');
+
       }
       );
     }
     if (settings.authorizationStatus == AuthorizationStatus.provisional){
       await firebaseMessaging.getToken().then((value) {
         fcmToken = value!;
-        debugPrint('my token value is $value');
+
       }
       );
     }
     else{
-      print('user Denied');
+      debugPrint('user Denied');
     }
 
     //hitting api
@@ -156,7 +159,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
 
 
     await user.updateSplashData(deviceId, fcmToken);
-    print(user.deviceId);
+    print('fcm');
+    print(user.fcmToken);
+
   }
 
   getData() async {
@@ -168,8 +173,10 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
       Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>Login()))));
     }
     else{
+
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);
+
       Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>BottomNavScreen()))));
     }
   }

@@ -131,10 +131,12 @@ class Track {
   final String title;
   final String thumbnail;
   final String audioUrl;
+  final String gif;
 
   Track({
     required this.title,
     required this.thumbnail,
     required this.audioUrl,
+    required this.gif
   });
 }

@@ -164,7 +164,33 @@ class _ProfileState extends State<Profile> {
                                 Expanded(
                                   flex: 2,
                                   child: ListTile(
-                                   onTap: ()async{
+                                    onTap: (){
+                                      showDialog(context: context, builder: (context) => Components(context).confirmationDialog(context,
+                                          title: 'Are you sure you want to log out?',
+                                          message: "Take a moment to cherish your journey and return whenever you seek tranquility.",
+                                          actions: [
+                                            FilledButton.tonal(
+                                                onPressed: ()async{
+                                                  await GoogleSignInAPI.logout();
+                                                  await user.clear();
+                                                  await user.updateLoginStatus(false);
+                                                  SharedPreferences sharedPreference = await SharedPreferences.getInstance();
+                                                  await sharedPreference.remove('loginData');
+                                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
+                                                },
+                                                child: const Text('Log Out')
+                                            ),
+                                            FilledButton.tonal(
+                                                onPressed: (){
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Stay')
+                                            ),
+                                          ]
+                                      )
+                                      );
+                                    },
+                                   /*onTap: ()async{
                                     /// showLogoutDialog();
                                      await GoogleSignInAPI.logout();
                                      await user.clear();
@@ -172,7 +198,7 @@ class _ProfileState extends State<Profile> {
                                      SharedPreferences sharedPreference = await SharedPreferences.getInstance();
                                      await sharedPreference.remove('loginData');
                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
-                                   },
+                                   },*/
                                     textColor: theme.textColor.withOpacity(0.75),
                                     //tileColor: Theme.of(context).colorScheme.primary,
                                     leading: Icon(Icons.logout,color: Colors.red,),

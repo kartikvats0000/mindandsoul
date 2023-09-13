@@ -26,12 +26,40 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
+  var countries = [];
+
+  var countryVal = '';
+
+  List<DropdownMenuEntry<String>> dropdownValues = [];
+
+
+  getCountries()async{
+    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+    User user = Provider.of<User>(context,listen: false);
+    String data = await DefaultAssetBundle.of(context).loadString("assets/countries.json");
+    setState(() {
+      countries = jsonDecode(data);
+      for(int i = 0;i<countries.length;i++){
+        dropdownValues.add(DropdownMenuEntry(value: countries[i]['name'], label: countries[i]['name'],style: ButtonStyle(textStyle: MaterialStatePropertyAll(TextStyle(color: theme.textColor)))));
+      }
+      if(user.country == ''){
+        countryVal = countries[235]['name'];
+      }
+      else{
+        var value = countries.firstWhere((element) => element['name'] == user.country);
+        countryVal = value['name'];
+      }
+    });
+
+  }
+
   @override
   void initState() {
     User user = Provider.of<User>(context,listen: false);
     imageurl = user.profilePicture;
     nameController.text = user.name;
     emailController.text = user.email;
+    getCountries();
     // TODO: implement initState
     super.initState();
   }
@@ -125,68 +153,78 @@ class _EditProfileState extends State<EditProfile> {
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     showModalBottomSheet(
         context: context,
-        backgroundColor: theme.themeColorA,
+        backgroundColor: Theme.of(context).colorScheme.surfaceTint,
        // showDragHandle: true,
         builder: (BuildContext ctx) {
-          return Wrap(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  /*  gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          theme.themeColorA,
-                          theme.themeColorB,
-                        ]
-                    ),*/
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(25))
-                ),
-                child: Column(
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+            child: Wrap(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Select Image',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimary),),
+                        Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
+                      ],
+                    ),
+                    const SizedBox(height: 15,),
                     Container(
-                      margin: const EdgeInsets.all(10),
-                      height: 5,
-                      width: 65,
                       decoration: BoxDecoration(
-                        color: Colors.black45,
-                        borderRadius: BorderRadius.circular(10)
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(15)
                       ),
-                    ),
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        child: Components(context).myIconWidget(icon: MyIcons.gallery,color: Theme.of(context).colorScheme.primary)
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: ListTile(
+                              style: ListTileStyle.list,
+                              leading: CircleAvatar(
+                                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                                  child: Components(context).myIconWidget(icon: MyIcons.gallery,color: Theme.of(context).colorScheme.primary)
+                              ),
+                              title: Text('Pick Image From Gallery',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),),
+                              onTap: ()async{
+                                await getImageGallery().whenComplete(() => cropImage(image!));
+                                await uploadimageforurl();
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+
+                          Divider(indent: 20,endIndent: 20,thickness: 0.3,color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                                  child: Components(context).myIconWidget(icon: MyIcons.camera,color: Theme.of(context).colorScheme.primary)
+                              ),
+                              title: Text('Take Image From Camera',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14)),
+                              onTap: ()async{
+                                await getImageCamera().then((value) => cropImage(image!));
+                                await uploadimageforurl();
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      title: Text('Pick Image From Gallery',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),),
-                      onTap: ()async{
-                        await getImageGallery().whenComplete(() => cropImage(image!));
-                        await uploadimageforurl();
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        child: Components(context).myIconWidget(icon: MyIcons.camera,color: Theme.of(context).colorScheme.primary)
-                      ),
-                      title: Text('Take Image From Camera',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),),
-                      onTap: ()async{
-                        await getImageCamera().then((value) => cropImage(image!));
-                        await uploadimageforurl();
-                        Navigator.pop(context);
-                      },
-                    ),
+                    )
                   ],
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           );
         }
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -195,18 +233,20 @@ class _EditProfileState extends State<EditProfile> {
       Scaffold(
         backgroundColor: theme.themeColorA,
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: Padding(
-              padding: const EdgeInsets.all(7),
-              child: Components(context).BlurBackgroundCircularButton(
-                icon: Icons.chevron_left,
-                onTap: (){Navigator.pop(context);},
-              )
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight+25),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            leading: Padding(
+                padding: const EdgeInsets.all(7),
+                child: Components(context).BlurBackgroundCircularButton(
+                  icon: Icons.chevron_left,
+                  onTap: (){Navigator.pop(context);},
+                )
+            ),
           ),
         ),
         body: Container(
-       //   margin: EdgeInsets.only(top: kToolbarHeight + 10),
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.only(left: 10,right: 10,top: kToolbarHeight+30),
@@ -280,11 +320,39 @@ class _EditProfileState extends State<EditProfile> {
                         controller: emailController,
                         enabled: false,
                       ),
+                      const SizedBox(height: 25,),
+                      const Text('Country'),
+                      const SizedBox(height: 10,),
+                      Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: DropdownMenu<String>(
+                        hintText: 'Select Country',
+
+                      trailingIcon:  RotatedBox(
+                        quarterTurns: 1,
+                          child: Icon(Icons.chevron_right,color: theme.textColor,)),
+                      menuHeight: MediaQuery.of(context).size.height * 0.5,
+                      menuStyle:  MenuStyle(
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                        backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.primaryContainer)
+                      ),
+                      width: MediaQuery.of(context).size.width - 20,
+                      initialSelection: countryVal,
+                      onSelected: (String? value) {
+                        // This is called when the user selects an item.
+                        setState(() {
+                          countryVal = value!;
+                        });
+                      },
+                      dropdownMenuEntries:dropdownValues
+                    ),
+                  )
+
                     ],
                   ),
                 ),
               ),
-              const Spacer(),
+
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: FilledButton(
@@ -297,7 +365,7 @@ class _EditProfileState extends State<EditProfile> {
                       'userId' : user.id,
                       'name' : nameController.text,
                       'profile_picture' : imageurl,
-                      'city' : ''
+                      'country' : countryVal
                     };
                     var data = await Services().editProfile(body, user.token);
                     SharedPreferences sharedpreference = await SharedPreferences.getInstance();

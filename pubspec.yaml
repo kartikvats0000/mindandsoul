@@ -46,31 +46,30 @@ dependencies:
   provider: ^6.0.5
   flutter_spinkit: ^5.2.0
   shared_preferences: ^2.2.0
-  network_info_plus: ^4.0.1
-  geolocator: ^9.0.2
-
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  geolocator: ^10.0.1
   cupertino_icons: ^1.0.2
-  flutter_zoom_drawer: ^3.1.1
   google_sign_in: ^6.1.4
-  animated_notch_bottom_bar: ^1.0.0
-  circular_bottom_navigation: ^2.3.0
   image_picker: ^1.0.1
   image_cropper: ^5.0.0
   just_audio: ^0.9.34
   just_audio_background: ^0.0.1-beta.10
-  rxdart: ^0.27.7
   go_router: ^10.0.0
   flutter_staggered_grid_view: ^0.7.0
-  flutter_html: ^3.0.0-beta.2
   flutter_widget_from_html: ^0.10.3
   chewie: ^1.7.0
   intl: ^0.18.1
   smooth_page_indicator: ^1.1.0
   audioplayers: ^5.1.0
+  path_provider: ^2.1.1
+  dio: ^5.3.2
+  animated_text_kit: ^4.2.2
+  share_plus: ^7.1.0
+  screenshot: ^2.1.0
+  image_gallery_saver: ^2.0.3
+  flutter_local_notifications: ^15.1.1
+  timezone: ^0.9.2
+  animations: ^2.0.8
+  flutter_avif: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +101,7 @@ flutter:
     - assets/home/aqi_indicator/
     - assets/splash/
     - assets/icons/
+    - assets/countries.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,11 +1,10 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +21,8 @@ class Components{
   BuildContext context;
 
   Components(this.context);
+
+  bool showVolumeSlider = false;
 
   Widget customAppBar({
     required List<Widget> actions ,
@@ -152,20 +153,21 @@ class Components{
     VoidCallback? onTap,
     double buttonRadius = 20,
     double iconSize = 22,
+    Color backgroundColor = Colors.black38
   }) {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(45),
+        borderRadius: BorderRadius.circular(100),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
           child: CircleAvatar(
-            backgroundColor:Colors.black38,
+            backgroundColor:backgroundColor,
             //Colors.black54.withOpacity(0.75),
             radius: buttonRadius,
             child: (svg == null)
                 ?Icon(icon,color: iconColor,size: iconSize,)
-                :Components(context).myIconWidget(icon: svg,color: Colors.white)
+                :Components(context).myIconWidget(icon: svg,color: iconColor)
           ),
         ),
       ),
@@ -174,15 +176,28 @@ class Components{
 
   showSuccessSnackBar(String content){
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(content,style: Theme.of(context).textTheme.labelLarge,),
+        content: Container(
+          padding: const EdgeInsets.all(18.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            gradient:  LinearGradient(
+              colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary.withOpacity(0.9)], // Define your gradient colors
+              begin: Alignment.centerLeft, // Adjust the gradient's starting position
+              end: Alignment.centerRight, // Adjust the gradient's ending position
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Text(content,style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.white),),
+        ),
+      padding: const EdgeInsets.all(0),
       elevation: 0.0,
       backgroundColor: Theme.of(context).colorScheme.primary,
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       duration: const Duration(seconds: 4),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Theme.of(context).colorScheme.inversePrimary, width: 0.75),
-        borderRadius: BorderRadius.circular(7),
+       // side: BorderSide(color: Theme.of(context).colorScheme.inversePrimary, width: 0.75),
+        borderRadius: BorderRadius.circular(13),
       ),
     )
     );
@@ -190,166 +205,249 @@ class Components{
 
   showErrorSnackBar(String content){
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      padding: const EdgeInsets.all(15),
-      content: Text(content,style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
+      padding: const EdgeInsets.all(0),
+      content: Container(
+        padding: const EdgeInsets.all(18.0),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xffD32121), Color(0xff800000)], // Define your gradient colors
+            begin: Alignment.centerLeft, // Adjust the gradient's starting position
+            end: Alignment.centerRight, // Adjust the gradient's ending position
+          ),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Text(content,style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.white),),
+      ),
       elevation: 0.0,
-      backgroundColor: Theme.of(context).colorScheme.error.withOpacity(0.9),
+      backgroundColor: Theme.of(context).colorScheme.error,
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       duration: const Duration(seconds: 4),
       onVisible: (){},
       shape:RoundedRectangleBorder(
-        side: const BorderSide(color: Colors.redAccent, width: 0.75),
-        borderRadius: BorderRadius.circular(7),
+       //side: const BorderSide(color: Colors.redAccent, width: 0.75),
+        borderRadius: BorderRadius.circular(13),
       ),
     )
     );
   }
-
   showPlayerSheet(){
     final ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     showModalBottomSheet(
       isScrollControlled : true,
       context: context,
-      builder: (context) =>Consumer<MusicPlayerProvider>(
-        builder: (context,musicPlayerProvider,child) =>
-            Scaffold(
-              backgroundColor: theme.themeColorA,
-              extendBodyBehindAppBar: true,
-              extendBody: true,
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight+40),
-                child: AppBar(
-                  toolbarHeight: kToolbarHeight+40,
-                  backgroundColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  title: RotatedBox(quarterTurns: -1,child: Components(context).BlurBackgroundCircularButton(
-                    icon: Icons.chevron_left ,
-                    onTap: (){Navigator.pop(context);},
-                  ),),
-                  actions: [
-                    Padding(padding: const EdgeInsets.all(5),child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite),)
-                  ],
-                ),
-              ),
-              body: Column(
-                children: [
-                  Expanded(
-                      flex: 7,
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Image.network(musicPlayerProvider.currentTrack!.thumbnail,fit: BoxFit.cover,))
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: theme.themeColorA,
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                theme.themeColorA,
-                                theme.themeColorB
-                              ]
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: theme.themeColorA,
-                                blurRadius: 50,
-                                spreadRadius: 85,
-                                blurStyle: BlurStyle.normal
-                            )
-                          ],
+      builder: (context) =>StatefulBuilder(
+        builder: (context,_setState) =>
+            Consumer<MusicPlayerProvider>(
+                builder: (context,musicPlayerProvider,child) {
+                  return Scaffold(
+                    backgroundColor: theme.themeColorA,
+                    extendBodyBehindAppBar: true,
+                    extendBody: true,
+                    appBar: PreferredSize(
+                      preferredSize: const Size.fromHeight(kToolbarHeight+40),
+                      child: AppBar(
+                        toolbarHeight: kToolbarHeight+40,
+                        backgroundColor: Colors.transparent,
+                        automaticallyImplyLeading: false,
+                        title: RotatedBox(quarterTurns: -1,child: BlurBackgroundCircularButton(
+                          icon: Icons.chevron_left ,
+                          onTap: (){Navigator.pop(context);},
+                        ),),
+                        actions: [
+                          Padding(padding: const EdgeInsets.all(5),child:BlurBackgroundCircularButton(svg: MyIcons.favorite),),
+                        ],
+                      ),
+                    ),
+                    body: Stack(
+                      children: [
+                        Positioned.fill(child: CachedNetworkImage(imageUrl: musicPlayerProvider.currentTrack!.gif,fit: BoxFit.cover,
+                          placeholder: (context,url) => Image.network(musicPlayerProvider.currentTrack!.thumbnail,fit: BoxFit.cover,),
+                        )
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: Text(musicPlayerProvider.currentTrack!.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                  fontSize: 27,
-                                  color: theme.textColor,
-                                  fontWeight: FontWeight.w900
-                              ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Expanded(
-                                child: Column(
-                                  children: [
-                                    Row(
+                        Positioned.fill(child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.black26
+                          ),
+                        ),),
+                        Positioned.fill(
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    //color: Colors.red,
+                                    padding: const EdgeInsets.only(top: 125),
+                                    child: Column(
                                       children: [
-                                        Expanded(
-                                          flex: 8,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Slider(
-                                                  value: musicPlayerProvider.position.inSeconds/musicPlayerProvider.duration.inSeconds,
-                                                  onChanged: (value){
-                                                    musicPlayerProvider.seek(Duration(milliseconds:(musicPlayerProvider.duration.inSeconds * value * 1000).toInt()));
-                                                  }
-                                              ),
-                                              Text("    ${_getDurationString(musicPlayerProvider.position)} / ${_getDurationString(musicPlayerProvider.duration)} ",style: Theme.of(context).textTheme.labelLarge,),
-                                            ],
-                                          ),),
-                                        Expanded(
-                                          flex:2,
-                                          child: Components(context).BlurBackgroundCircularButton(
-                                              buttonRadius: 35,
-                                              onTap: (){
-                                                if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
-                                                  musicPlayerProvider.pause();
-                                                } else {
-                                                  musicPlayerProvider.audioPlayer.play();
-                                                }
-                                              },
-                                              icon: (musicPlayerProvider.audioPlayer.playerState.playing == true)?Icons.pause:Icons.play_arrow,
-                                              iconSize: 30
-                                          ),),
+                                        Text(musicPlayerProvider.currentTrack!.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                            fontSize: 27,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900
+                                        ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(height: 15,),
+                                        Text('${musicPlayerProvider.duration.inMinutes} Minutes ${musicPlayerProvider.duration.inSeconds%60} Seconds Healing',style: Theme.of(context).textTheme.labelLarge?.copyWith(
 
+                                            color: Colors.white.withOpacity(0.7),
+                                            fontWeight: FontWeight.w900
+                                        ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ],
                                     ),
-                                    const Spacer(),
-                                    SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.6,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(Icons.volume_mute_outlined,color: theme.textColor,),
-                                            Expanded(child: Slider(
-                                                activeColor: Theme.of(context).colorScheme.inversePrimary,
-                                                value: musicPlayerProvider.audioPlayer.volume,
-                                                onChanged: (value){
-                                                  //musicPlayerProvider.seek(Duration(milliseconds:(musicPlayerProvider.duration.inSeconds * value * 1000).toInt()));
-                                                  musicPlayerProvider.audioPlayer.setVolume(value);
-                                                }
-                                            ),),
-                                            Icon(Icons.volume_up_outlined,color: theme.textColor,),
-                                          ],
-                                        )),
-                                  ],
-                                ))
-                          ],
-                        )
+                                  ),
 
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10,vertical:10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black38,
+                                        borderRadius: BorderRadius.circular(25)
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            //SizedBox(width: 25,),
+                                            BlurBackgroundCircularButton(
+                                                buttonRadius: 28,
+                                                onTap: (){
+                                                  if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
+                                                    musicPlayerProvider.pause();
+                                                  } else {
+                                                    musicPlayerProvider.audioPlayer.play();
+                                                  }
+                                                },
+                                                icon: (musicPlayerProvider.audioPlayer.playerState.playing == false)?Icons.play_arrow_rounded:Icons.pause,
+                                                iconSize: 28
+                                            ),
+                                            BlurBackgroundCircularButton(
+                                                backgroundColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.white38:Colors.black38,
+                                                buttonRadius: 28,
+                                                onTap: (){
+                                                  _setState((){
+                                                    (musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.all):musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.off);
+                                                   // showSuccessSnackBar('Loop Mode ${(musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?'off':'on'}');
+                                                  });
+                                                },
+                                                svg: MyIcons.loop,
+                                                iconColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.black:Colors.white,
+                                                iconSize: 28
+                                            ),
+                                            BlurBackgroundCircularButton(
+                                                onTap: (){
+                                                  _setState((){
+                                                    showVolumeSlider = !showVolumeSlider;
+                                                  });
+                                                },
+                                              iconSize: 28,
+                                              buttonRadius: 28,
+                                                svg: (musicPlayerProvider.audioPlayer.volume>0)?MyIcons.volume_high:MyIcons.volume_low),
+
+                                            // SizedBox(width: 25,),
+                                          ],
+                                        ),
+                                        /*  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(getDurationString(musicPlayerProvider.position),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
+                                        Expanded(
+                                          child: Slider(
+                                              min: 0.0,
+                                              value: musicPlayerProvider.duration.inSeconds.isNaN==true ? 0 :musicPlayerProvider.position.inSeconds/musicPlayerProvider.duration.inSeconds,
+                                              onChanged: (value){
+                                                musicPlayerProvider.seek(Duration(milliseconds:(musicPlayerProvider.duration.inSeconds * value * 1000).toInt()));
+                                              }
+                                          ),
+                                        ),
+                                        Text(getDurationString(musicPlayerProvider.duration),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
+                                      ],
+                                    ),
+                                  ),*/
+                                      ],
+                                    ),
+                                  ),
+                                  //const SizedBox(height: 20,)
+                                ],
+                              )
+
+                          ),
+                        ),
+                        AnimatedPositioned(
+                            bottom: 120,
+                            right: (showVolumeSlider)?5:-50, duration: const Duration(milliseconds: 300),
+                            child: Container(
+                              width: 50,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.black38,
+                                  borderRadius: BorderRadius.circular(25)
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Components(context).myIconWidget(icon: MyIcons.volume_high),
+                                  RotatedBox(
+                                    quarterTurns: -1,
+                                    child:  Slider(
+                                        activeColor: Theme.of(context).colorScheme.inversePrimary,
+                                        value: musicPlayerProvider.audioPlayer.volume,
+                                        onChanged: (value){
+                                          _setState((){
+                                            musicPlayerProvider.audioPlayer.setVolume(value);
+                                          });
+                                          //musicPlayerProvider.seek(Duration(milliseconds:(musicPlayerProvider.duration.inSeconds * value * 1000).toInt()));
+
+                                        }
+                                    ),
+                                  ),
+                                  Components(context).myIconWidget(icon: MyIcons.volume_low),
+
+                                ],
+                              ),
+                            ))
+                      ],
                     ),
-                  )
-                ],
-              ),
+                  );
+                }
+
             ),
       ),
     );
   }
 
+  confirmationDialog(BuildContext context,{
+    required String title,
+    required String message,
+    required List<Widget> actions,
+  }) => ClipRRect(
+    borderRadius: BorderRadius.circular(15),
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
+      child: AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.65),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        title: Text(title),
+        content: Text(message),
+        titleTextStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 19,fontWeight: FontWeight.w700),
+        actions: actions
+      ),
+    ),
+  );
+
 }
 
-String _getDurationString(Duration duration) {
+String getDurationString(Duration duration) {
   String minutes = duration.inMinutes.toString().padLeft(2,'0');
   String seconds = (duration.inSeconds % 60).toString().padLeft(2,'0');
 

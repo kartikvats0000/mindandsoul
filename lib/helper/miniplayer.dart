@@ -58,8 +58,8 @@ class MiniPlayer extends StatelessWidget {
                           buttonRadius: 20,
                           icon:
                           musicPlayerProvider.audioPlayer.playerState.playing == true
-                              ? Icons.pause
-                              : Icons.play_arrow,
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
                           onTap: () {
                             //print(musicPlayerProvider.audioPlayer.playerState);
                             if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
