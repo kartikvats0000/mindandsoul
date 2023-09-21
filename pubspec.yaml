@@ -69,7 +69,12 @@ dependencies:
   flutter_local_notifications: ^15.1.1
   timezone: ^0.9.2
   animations: ^2.0.8
-  flutter_avif: ^1.0.1
+  flutter_speed_dial: ^7.0.0
+  flutter_wallpaper_manager: ^0.0.3
+  internet_connection_checker: ^1.0.0+1
+  connectivity_plus: ^4.0.2
+  csc_picker: ^0.2.7
+  firebase_crashlytics: ^3.3.5
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +107,8 @@ flutter:
     - assets/splash/
     - assets/icons/
     - assets/countries.json
+    - assets/animations/
+    - assets/meditation/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

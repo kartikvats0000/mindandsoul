@@ -1,5 +1,7 @@
 
 class MyIcons{
+  static const both = 'assets/icons/both.svg';
+  static const breathe = 'assets/icons/breathe.svg';
   static const camera = 'assets/icons/camera.svg';
   static const candle = 'assets/icons/candle.svg';
   static const delete = 'assets/icons/delete.svg';
@@ -13,11 +15,13 @@ class MyIcons{
   static const knowYourself = 'assets/icons/knowYourself.svg';
   static const like = 'assets/icons/like.svg';
   static const like_filled = 'assets/icons/like_filled.svg';
+  static const lock = 'assets/icons/lock.svg';
   static const loop = 'assets/icons/loop.svg';
   static const meditation = 'assets/icons/meditation.svg';
   static const mute = 'assets/icons/mute.svg';
   static const menu = 'assets/icons/menu.svg';
   static const notification = 'assets/icons/notification.svg';
+  static const premium = 'assets/icons/premium.svg';
   static const profile = 'assets/icons/profile.svg';
   static const quotes = 'assets/icons/quotes.svg';
   static const restart = 'assets/icons/restart.svg';

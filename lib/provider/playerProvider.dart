@@ -15,6 +15,7 @@ class MusicPlayerProvider extends ChangeNotifier {
   AudioPlayer get audioPlayer => _audioPlayer;
   PlayerState get playerState => _playerState;
   Track? get currentTrack => _currentTrack;
+  Track setTrack({title, thumbnail, audioUrl, gif}) => Track(title: title, thumbnail: thumbnail, audioUrl: audioUrl, gif: gif);
   Duration get position => _position;
   Duration get duration => _duration;
 
@@ -92,7 +93,7 @@ class MusicPlayerProvider extends ChangeNotifier {
       )
     ]);*/
    // await _audioPlayer.setAudioSource(_playlist);
-    _audioPlayer.play();
+    _audioPlayer.pause();
     debugPrint(audioPlayer.currentIndex.toString());
     _playerState = PlayerState.playing;
     _audioPlayer.positionStream.listen((position) {

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:just_audio/just_audio.dart';
 
 import 'package:mindandsoul/provider/themeProvider.dart';
@@ -167,21 +168,21 @@ class Components{
             radius: buttonRadius,
             child: (svg == null)
                 ?Icon(icon,color: iconColor,size: iconSize,)
-                :Components(context).myIconWidget(icon: svg,color: iconColor)
+                :Components(context).myIconWidget(icon: svg,color: iconColor,size: iconSize)
           ),
         ),
       ),
     );
   }
 
-  showSuccessSnackBar(String content){
+  showSuccessSnackBar(String content, {EdgeInsetsGeometry margin = const EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 10.0)}){
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Container(
           padding: const EdgeInsets.all(18.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             gradient:  LinearGradient(
-              colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary.withOpacity(0.9)], // Define your gradient colors
+              colors: [Theme.of(context).colorScheme.secondary.withOpacity(0.9),Theme.of(context).colorScheme.primary,], // Define your gradient colors
               begin: Alignment.centerLeft, // Adjust the gradient's starting position
               end: Alignment.centerRight, // Adjust the gradient's ending position
             ),
@@ -189,6 +190,7 @@ class Components{
           ),
           child: Text(content,style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.white),),
         ),
+      margin: margin,
       padding: const EdgeInsets.all(0),
       elevation: 0.0,
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -210,7 +212,7 @@ class Components{
         padding: const EdgeInsets.all(18.0),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xffD32121), Color(0xff800000)], // Define your gradient colors
+            colors: [ Color(0xff800000),Color(0xffD32121)], // Define your gradient colors
             begin: Alignment.centerLeft, // Adjust the gradient's starting position
             end: Alignment.centerRight, // Adjust the gradient's ending position
           ),
@@ -250,10 +252,13 @@ class Components{
                         toolbarHeight: kToolbarHeight+40,
                         backgroundColor: Colors.transparent,
                         automaticallyImplyLeading: false,
-                        title: RotatedBox(quarterTurns: -1,child: BlurBackgroundCircularButton(
-                          icon: Icons.chevron_left ,
-                          onTap: (){Navigator.pop(context);},
-                        ),),
+                        leading:  Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: RotatedBox(quarterTurns: -1,child: BlurBackgroundCircularButton(
+                            icon: Icons.chevron_left ,
+                            onTap: (){Navigator.pop(context);},
+                          ),),
+                        ),
                         actions: [
                           Padding(padding: const EdgeInsets.all(5),child:BlurBackgroundCircularButton(svg: MyIcons.favorite),),
                         ],
@@ -317,6 +322,67 @@ class Components{
                                           children: [
                                             //SizedBox(width: 25,),
                                             BlurBackgroundCircularButton(
+                                                backgroundColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.white38:Colors.black38,
+                                                buttonRadius: 28,
+                                                onTap: (){
+                                                  _setState((){
+                                                    (musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.all):musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.off);
+                                                    // showSuccessSnackBar('Loop Mode ${(musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?'off':'on'}');
+                                                  });
+                                                },
+                                                svg: MyIcons.loop,
+                                                iconColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.black:Colors.white,
+                                                iconSize: 28
+                                            ),
+                                            StreamBuilder<just_audio.PlayerState>(
+                                                stream: musicPlayerProvider.audioPlayer.playerStateStream,
+                                              builder: (context, snapshot) {
+                                                final playerState = snapshot.data;
+                                                final processingState =
+                                                    playerState?.processingState;
+                                                final playing = playerState?.playing;
+                                                if (processingState == ProcessingState.loading ||
+                                                    processingState ==
+                                                        ProcessingState.buffering) {
+                                                  return SizedBox(
+                                                    height: 50,
+                                                    width: 50,
+                                                    child: const CircularProgressIndicator(),
+                                                  );
+                                                } else if (playing != true) {
+                                                  return  BlurBackgroundCircularButton(
+                                                      buttonRadius: 28,
+                                                      onTap: (){
+
+                                                          musicPlayerProvider.audioPlayer.play();
+
+                                                      },
+                                                      icon:Icons.play_arrow_rounded,
+                                                      iconSize: 28
+                                                  );
+                                                } else if (processingState !=
+                                                    ProcessingState.completed) {
+                                                  return  BlurBackgroundCircularButton(
+                                                      buttonRadius: 28,
+                                                      onTap: (){
+                                                          musicPlayerProvider.pause();
+                                                      },
+                                                      icon:Icons.pause,
+                                                      iconSize: 28
+                                                  );
+                                                } else {
+                                                  return  BlurBackgroundCircularButton(
+                                                      buttonRadius: 28,
+                                                      onTap: (){
+
+                                                      },
+                                                      icon: (musicPlayerProvider.audioPlayer.playerState.playing == false)?Icons.play_arrow_rounded:Icons.pause,
+                                                      iconSize: 28
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                            /*BlurBackgroundCircularButton(
                                                 buttonRadius: 28,
                                                 onTap: (){
                                                   if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
@@ -327,20 +393,7 @@ class Components{
                                                 },
                                                 icon: (musicPlayerProvider.audioPlayer.playerState.playing == false)?Icons.play_arrow_rounded:Icons.pause,
                                                 iconSize: 28
-                                            ),
-                                            BlurBackgroundCircularButton(
-                                                backgroundColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.white38:Colors.black38,
-                                                buttonRadius: 28,
-                                                onTap: (){
-                                                  _setState((){
-                                                    (musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.all):musicPlayerProvider.audioPlayer.setLoopMode(LoopMode.off);
-                                                   // showSuccessSnackBar('Loop Mode ${(musicPlayerProvider.audioPlayer.loopMode == LoopMode.off)?'off':'on'}');
-                                                  });
-                                                },
-                                                svg: MyIcons.loop,
-                                                iconColor: (musicPlayerProvider.audioPlayer.loopMode == LoopMode.all)?Colors.black:Colors.white,
-                                                iconSize: 28
-                                            ),
+                                            ),*/
                                             BlurBackgroundCircularButton(
                                                 onTap: (){
                                                   _setState((){

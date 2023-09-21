@@ -17,6 +17,7 @@ import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/gridB.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listA.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
+import 'package:mindandsoul/screen/ui/home/breathe/breatheList.dart';
 import 'package:mindandsoul/screen/ui/home/guided_meditation/meditationList.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
@@ -48,24 +49,22 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   late VideoPlayerController videoPlayerController;
 
   bool loader = true;
+  bool onThisPage = true;
 
   void initVideo(){
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
     MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(themeProvider.baseurl+themeProvider.videoUrl),videoPlayerOptions: VideoPlayerOptions(
-      allowBackgroundPlayback: true
-    ))..initialize()
+    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(themeProvider.baseurl+themeProvider.videoUrl))..initialize()
         .then((_) {
       setState(() {
         loader = false;
         player.addListener(_onAudioPlayerStateChanged);
         _onAudioPlayerStateChanged();
+
       });
     });
 
-
-
-
+  
     videoPlayerController.setVolume(0.60);
     videoPlayerController.play();
     videoPlayerController.setLooping(true);
@@ -76,11 +75,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   void _onAudioPlayerStateChanged() {
     MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
    if(mounted){
-     if (player.audioPlayer.playerState.playing == true) {
-       videoPlayerController.pause();
-     } else {
-       videoPlayerController.play();
+     if(onThisPage){
+       if (player.audioPlayer.playerState.playing == true) {
+         videoPlayerController.pause();
+       } else {
+         videoPlayerController.play();
+       }
      }
+
    }
   }
 
@@ -102,6 +104,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     getdata();
   }
 
+  bool weatherPermission = true;
+
   Future fetchWeather() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -110,18 +114,27 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     permission = await Geolocator.checkPermission();
 
     if (!serviceEnabled) {
-
+      setState(() {
+        weatherPermission = false;
+      });
     }
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-
+        setState(() {
+          weatherPermission = false;
+        });
       }
     }
     if (permission == LocationPermission.deniedForever) {
-
+      setState(() {
+        weatherPermission = false;
+      });
     }
     if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
+      setState(() {
+        weatherPermission = true;
+      });
       var curr = await Geolocator.getCurrentPosition();
       print(curr.longitude);
       print(curr.latitude);
@@ -138,9 +151,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
             'humidity' : map['current']['humidity'],
             'cloud' : map['current']['cloud'],
             'air_quality' : map['current']['air_quality']['us-epa-index'],
-            //'air_quality' : 3,
           };
-
         });
 
       }
@@ -199,8 +210,19 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   }
 
 
+  bool connected = true;
+
+  checkForInternet()async {
+    setState(() async{
+      connected = await Internet().checkInternet();
+      print('$connected internet');
+    });
+
+
+  }
   @override
   void initState() {
+    checkForInternet();
     fetchCategories();
     fetchWeather();
     getQuotes();
@@ -265,15 +287,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                     width: double.infinity,
                     child: Stack(
                       children: [
-                        (loader)?  Center(
+                        (loader)
+                            ?Center(
                           child: SpinKitSpinningLines(
                             size: 100,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         )
-                            :VideoPlayer(
-                            videoPlayerController
-                        ),
+                            :VideoPlayer(videoPlayerController),
                         Positioned(
                           top: 40,
                           right: 10,
@@ -288,99 +309,123 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   Components(context).BlurBackgroundCircularButton(
                                     svg: MyIcons.weather,
                                     onTap: (){
+                                      var dialog = StatefulBuilder(
+                                          builder:(context,_setState){
+                                            Timer(const Duration(seconds: 2),(){
+                                              _setState((){});
+                                            });
+                                            return Padding(
+                                              padding: const EdgeInsets.only(left: 15,top: 65,right: 15),
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(25),
+                                                  child: BackdropFilter(
+                                                    filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                                      child: Container(
+                                                        padding: const EdgeInsets.all(15),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.black38,
+                                                          borderRadius: BorderRadius.circular(25),
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            const SizedBox(height: 5,),
+                                                            Container(
+                                                              //  height: 150,
+                                                                width: double.infinity,
+                                                                padding: const EdgeInsets.all(12),
+                                                                margin: const EdgeInsets.all(3),
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  borderRadius: BorderRadius.circular(20),
+                                                                ),
+                                                                child:(!weatherPermission)?
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    const  Text("Sorry, we need your location to show you the weather",style: TextStyle(
+                                                                        color: Colors.black,
+                                                                        //color: themeData.textColor,
+                                                                        // color: Theme.of(context).colorScheme.primary,
+                                                                        fontWeight: FontWeight.w700
+                                                                    ),),
+                                                                    ElevatedButton(onPressed: ()async{
 
-                                      var numberDialog = Padding(
-                                        padding: const EdgeInsets.only(left: 15,top: 65,right: 15),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(25),
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-                                              child: Material(
-                                                color: Colors.transparent,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                                child: Container(
-
-                                                  padding: const EdgeInsets.all(15),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black38,
-                                                    borderRadius: BorderRadius.circular(25),
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    //  crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-
-                                                      const SizedBox(height: 5,),
-                                                      Container(
-                                                        //  height: 150,
-                                                          width: double.infinity,
-                                                          padding: const EdgeInsets.all(12),
-                                                          margin: const EdgeInsets.all(3),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius: BorderRadius.circular(20),
-                                                          ),
-                                                          child:(weatherData['weather'] == null)
-                                                              ?Center(child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,),)
-                                                              : Column(
-                                                            children: [
-                                                              const Text("Nature's Aura Nearby",style: TextStyle(
-                                                                  color: Colors.black,
-                                                                  //color: themeData.textColor,
-                                                                  // color: Theme.of(context).colorScheme.primary,
-                                                                  fontWeight: FontWeight.w700
-                                                              ),),
-                                                              const SizedBox(height: 10,),
-                                                              Row(
-                                                                children: [
-                                                                  SizedBox(
-                                                                      width : MediaQuery.of(context).size.width * 0.40,
-                                                                      //child: WeatherDetailCard('Weather', "${weatherData['weather']}")
-                                                                      child: Components(context).WeatherDetailCard('Weather', "${weatherData['weather']}")
-                                                                  ),
-                                                                  const SizedBox(width: 10,),
-                                                                  Expanded(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                      Geolocator.openLocationSettings().then((value)async{
+                                                                        LocationPermission permission = await Geolocator.checkPermission();
+                                                                        print('hi $permission');
+                                                                        Navigator.pop(context);
+                                                                        fetchWeather();
+                                                                      });
+                                                                    }, child: Text('Enable Location'))
+                                                                  ],
+                                                                )
+                                                                    :(weatherData['weather'] == null)
+                                                                    ?Center(child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,),)
+                                                                    :Column(
+                                                                  children: [
+                                                                    const Text("Nature's Aura Nearby",style: TextStyle(
+                                                                        color: Colors.black,
+                                                                        //color: themeData.textColor,
+                                                                        // color: Theme.of(context).colorScheme.primary,
+                                                                        fontWeight: FontWeight.w700
+                                                                    ),),
+                                                                    const SizedBox(height: 10,),
+                                                                    Row(
                                                                       children: [
-                                                                        Components(context).WeatherDetailCard2('Humidity : ', "${weatherData['humidity']}%"),
-                                                                        const SizedBox(width: 5,),
-                                                                        Components(context).WeatherDetailCard2('Wind Speed : ', "${weatherData['wind_speed']} kph"),
-                                                                        const SizedBox(width: 5,),
-                                                                        Components(context).WeatherDetailCard2('Cloud : ', "${weatherData['cloud']}%"),
+                                                                        SizedBox(
+                                                                            width : MediaQuery.of(context).size.width * 0.40,
+                                                                            //child: WeatherDetailCard('Weather', "${weatherData['weather']}")
+                                                                            child: Components(context).WeatherDetailCard('Weather', "${weatherData['weather']}")
+                                                                        ),
+                                                                        const SizedBox(width: 10,),
+                                                                        Expanded(
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              Components(context).WeatherDetailCard2('Humidity : ', "${weatherData['humidity']}%"),
+                                                                              const SizedBox(width: 5,),
+                                                                              Components(context).WeatherDetailCard2('Wind Speed : ', "${weatherData['wind_speed']} kph"),
+                                                                              const SizedBox(width: 5,),
+                                                                              Components(context).WeatherDetailCard2('Cloud : ', "${weatherData['cloud']}%"),
+                                                                            ],
+                                                                          ),
+                                                                        )
                                                                       ],
                                                                     ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              const SizedBox(height: 10,),
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                children: [
-                                                                  Text('Air Quality : ',style: TextStyle(color: Colors.grey.shade700,fontSize: 12,fontWeight: FontWeight.w600),),
-                                                                  Text(aqiLabels[weatherData['air_quality'] - 1] ,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),)
-                                                                ],
-                                                              ),
-                                                              const SizedBox(height: 10,),
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                                                                child: Image.asset('assets/home/aqi_indicator/${weatherData['air_quality']}.png'),
-                                                                //child: Image.asset('assets/home/aqi_indicator/${weatherData['air_quality']}.png'),
-                                                              )
-                                                            ],
-                                                          )
+                                                                    const SizedBox(height: 10,),
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Text('Air Quality : ',style: TextStyle(color: Colors.grey.shade700,fontSize: 12,fontWeight: FontWeight.w600),),
+                                                                        Text(aqiLabels[weatherData['air_quality'] - 1] ,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),)
+                                                                      ],
+                                                                    ),
+                                                                    const SizedBox(height: 10,),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                                                                      child: Image.asset('assets/home/aqi_indicator/${weatherData['air_quality']}.png'),
+                                                                      //child: Image.asset('assets/home/aqi_indicator/${weatherData['air_quality']}.png'),
+                                                                    )
+                                                                  ],
+                                                                )
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
+                                            );
+                                          }
                                       );
                                       showModal(
                                         configuration: const FadeScaleTransitionConfiguration(
@@ -388,8 +433,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                           reverseTransitionDuration: Duration(milliseconds: 350)
                                         ),
                                           context: context,
-                                          builder: (context) => StatefulBuilder(
-                                          builder: (BuildContext context,StateSetter setState) => numberDialog)
+                                          builder: (context) => dialog
                                       );
                                     },
                                   ),
@@ -419,7 +463,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   top: 50,
                                   right: 0,
                                   left: 0,
-                                  child: Image.asset('assets/logo/mindnsoul_white.png',height: 100,width: 100,))
+                                  child: Image.asset('assets/logo/brainnsoul_white.png',height: 100,width: 100,))
                             ],
                           ),
                         ),
@@ -481,8 +525,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                           end: Alignment.bottomCenter,
                           colors: [
                             themeData.themeColorA.withOpacity(0.2),
-                            themeData.themeColorA,
                             themeData.themeColorB,
+                           // themeData.themeColorB,
                             themeData.themeColorB,
                           ],
                         ),
@@ -555,8 +599,20 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       return GestureDetector(
                                         onTap: (){
                                           if(categoryList[index]['title'] == 'Wellness'){
+                                            MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
                                             videoPlayerController.pause();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness()));
+                                            setState(() {
+                                              onThisPage = false;
+                                            });
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
+                                              setState(() {
+                                                onThisPage = true;
+                                              });
+                                              if(!player.audioPlayer.playing){
+                                                videoPlayerController.play();
+                                              }
+                                            });
+
                                           }
                                           else{
                                             contentPageRoute((index % 2 == 0)?'b':'a',categoryList[index]['content'],categoryList[index]['title']);
@@ -618,9 +674,19 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       children: [
                                         GestureDetector(
                                           onTap: (){
+                                            MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
                                             videoPlayerController.pause();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness()));
-
+                                            setState(() {
+                                              onThisPage = false;
+                                            });
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
+                                              setState(() {
+                                                onThisPage = true;
+                                              });
+                                              if(!player.audioPlayer.playing){
+                                                videoPlayerController.play();
+                                              }
+                                            });
                                           },
                                           child: CircleAvatar(
                                             backgroundColor: Theme
@@ -640,7 +706,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       children: [
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SoundsList()));
+                                            videoPlayerController.pause();
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SoundsList())).then((value) => videoPlayerController.play());
                                           },
                                           child: CircleAvatar(
                                             backgroundColor: Theme
@@ -656,18 +723,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                          Text('Harmonies',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
                                       ],
                                     )),
-                                    Expanded(child: Column(
+                                    Expanded(
+                                        child: Column(
                                       children: [
                                         GestureDetector(
-                                          onTap: (){
-
-                                          },
+                                          onTap: (){},
                                           child: CircleAvatar(
-                                            backgroundColor: Theme
-                                                .of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.35),
+                                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.35),
                                             radius: 33,
                                             child: Components(context).myIconWidget(icon: MyIcons.knowYourself,color: themeData.textColor.withOpacity(0.9),size: 30),
                                           ),
@@ -680,8 +742,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       children: [
                                         GestureDetector(
                                           onTap: (){
-                                            videoPlayerController.pause();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MeditationList()));
+                                           // videoPlayerController.pause();
+                                            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MeditationList()));
                                           },
                                           child: CircleAvatar(
                                             backgroundColor: Theme
@@ -695,6 +757,27 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         ),
                                         const SizedBox(height: 10,),
                                         Text('Meditation',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
+                                      ],
+                                    )),
+                                    Expanded(child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: (){
+                                            videoPlayerController.pause();
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) =>videoPlayerController.play());
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.35),
+                                            radius: 33,
+                                            child: Components(context).myIconWidget(icon: MyIcons.breathe,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10,),
+                                        Text('Breathe',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
                                       ],
                                     )),
                                   ],
@@ -760,6 +843,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   ),
                                 ),
                               ),
+
                               const SizedBox(height: 20,),
                               (listingData.isEmpty)
                                   ? Center(
@@ -768,7 +852,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     .colorScheme
                                     .primary,),)
 
-                              /* Category List View */
+                               ///Category List View
 
                                   : ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
@@ -795,8 +879,20 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                               GestureDetector(
                                                 onTap: () {
                                                   if(categoryList[index]['title'] == 'Wellness'){
+                                                    MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
                                                     videoPlayerController.pause();
-                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness()));
+                                                    setState(() {
+                                                      onThisPage = false;
+                                                    });
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
+                                                      setState(() {
+                                                        onThisPage = true;
+                                                      });
+                                                      if(!player.audioPlayer.playing){
+                                                        videoPlayerController.play();
+                                                      }
+                                                    });
+
                                                   }
                                                   else{
                                                     contentPageRoute((index % 2 == 0)?'c':'d',categoryList[index]['content'],categoryList[index]['title']);

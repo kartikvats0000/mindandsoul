@@ -225,7 +225,7 @@ class _ThemePreviewState extends State<ThemePreview> {
                                             if(setDefault == true){
                                               await setDefaultTheme(json.encode(widget.themeDetails));
                                             }
-                                          /*  Navigator.of(context).pushAndRemoveUntil(
+                                            /*  Navigator.of(context).pushAndRemoveUntil(
                                               PageRouteBuilder(
                                                 maintainState: true,
                                                 opaque: false,
@@ -235,17 +235,17 @@ class _ThemePreviewState extends State<ThemePreview> {
                                                     (Route<dynamic> route) => true
                                             );*/
 
-                                           /* Navigator.of(context).pushAndRemoveUntil(
+                                            /* Navigator.of(context).pushAndRemoveUntil(
                                                 MaterialPageRoute(builder: (context) => const BottomNavScreen()),
                                                     (Route<dynamic> route) => false
                                             );*/
 
                                             Timer(const Duration(milliseconds: 600), () {
-                                              Navigator.pop(context);
+                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>  BottomNavScreen()), (route) => true);
                                               //Navigator.pop(context);
                                             });
 
-                                            Components(context).showSuccessSnackBar('Essence Aligned Harmoniously');
+                                            Components(context).showSuccessSnackBar('Essence Aligned Harmoniously',margin: const EdgeInsets.only(bottom: kToolbarHeight+15,right: 15,left: 15));
                                     },
                                     child:
                                     Text(

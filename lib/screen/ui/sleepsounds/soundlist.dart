@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/sleepsounds/sound_player.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constants/iconconstants.dart';
 import '../../../helper/components.dart';
 import 'soundmaker.dart';
 
@@ -142,9 +144,18 @@ class _SoundsListState extends State<SoundsList> {
   
 
   List<AudioPlayerModel> audioplayers = [];
+
+ /* bool connected = true;
+  checkForInternet()async {
+    connected = await Internet().checkInternet();
+    setState(() {
+      print(connected);
+    });
+  }*/
   
   @override
   void initState() {
+  // checkForInternet();
     // TODO: implement initState
     getMoods();
     super.initState();
@@ -186,95 +197,42 @@ class _SoundsListState extends State<SoundsList> {
                     ]
                 )
             ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ///favourites
-               /* Visibility(
-                  visible: playlist.isNotEmpty,
-                    child: Text('Your Mixes',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,)),
-                SizedBox(height: (playlist.isNotEmpty)?10:0,),
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: playlist.length,
-                    gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount:3,
-                  mainAxisExtent: 150,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 0,
-                ),
-                    itemBuilder: (context,index) {
-                    return GestureDetector(
-                      onTap: (){
-                        HapticFeedback.selectionClick();
-                        Navigator.of(context).push(
-                            CupertinoPageRoute(
-                                fullscreenDialog: true,
-                                builder: (context) => SoundPlayer(data: playlist[index],)));
-                      },
-                      child: Column(
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: CachedNetworkImage(
-                                placeholder: (context,string)=> Container(
-                                    padding: const EdgeInsets.all(30),
-                                    alignment: Alignment.center,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    )),
-                                imageUrl: playlist[index]['image'],fit: BoxFit.cover,),
-                            ),
-                          ),
-                          const SizedBox(height: 8,),
-                          Expanded(child: Text(playlist[index]['title'],style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),))
-                        ],
-                      ),
-                    );
-                  }
-                ),
-                SizedBox(height: (playlist.isNotEmpty)?15:0,),*/
-
-                ///new audio
-                Text('Select Mood',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,),
-                const SizedBox(height: 10,),
-                (moodList.isEmpty)
-                    ? Components(context).Loader(textColor: theme.textColor)
-                    :GridView.builder(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1/1.25,
+          child: RefreshIndicator(
+            onRefresh: ()async{
+              await getMoods();
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ///favourites
+                 /* Visibility(
+                    visible: playlist.isNotEmpty,
+                      child: Text('Your Mixes',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,)),
+                  SizedBox(height: (playlist.isNotEmpty)?10:0,),
+                  GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: playlist.length,
+                      gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount:3,
+                    mainAxisExtent: 150,
                     crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
+                    mainAxisSpacing: 0,
                   ),
-                  itemCount: moodList.length,
-                  itemBuilder: (context,index) {
-                    return GestureDetector(
-                      onTap: (){
-                        HapticFeedback.selectionClick();
-                        var data = moodList[index];
-
-                        data['colorA'] = data['colorA'].toString().replaceAll('#', '');
-                        data['colorB'] =  data['colorB'].toString().replaceAll('#', '');
-                        data['textColor'] = data['textColor'] .toString().replaceAll('#', '');
-
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: data,)));
-                      },
-                      child: Container(
-                        decoration:  BoxDecoration(
-                            borderRadius: BorderRadius.circular(25)
-                        ),
-                        child: Stack(
-                          clipBehavior: Clip.none,
+                      itemBuilder: (context,index) {
+                      return GestureDetector(
+                        onTap: (){
+                          HapticFeedback.selectionClick();
+                          Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => SoundPlayer(data: playlist[index],)));
+                        },
+                        child: Column(
                           children: [
-                            Positioned.fill(
+                            AspectRatio(
+                              aspectRatio: 1,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(25),
                                 child: CachedNetworkImage(
@@ -284,39 +242,107 @@ class _SoundsListState extends State<SoundsList> {
                                       child: const CircularProgressIndicator(
                                         strokeWidth: 1,
                                       )),
-                                  imageUrl: moodList[index]['image'],fit: BoxFit.cover,),
+                                  imageUrl: playlist[index]['image'],fit: BoxFit.cover,),
                               ),
-
                             ),
-                            Positioned(
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 3,sigmaY: 3),
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration:  const BoxDecoration(
-                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-                                          color: Colors.black54
-
-                                      ),
-                                      child: Text(moodList[index]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
-                                    ),
-                                  ),
-                                )
-                            ),
+                            const SizedBox(height: 8,),
+                            Expanded(child: Text(playlist[index]['title'],style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),))
                           ],
                         ),
-                      ),
-                    );
-                  }
+                      );
+                    }
+                  ),
+                  SizedBox(height: (playlist.isNotEmpty)?15:0,),*/
 
-                ),
-              ],
+                  ///new audio
+                  Text('Select Mood',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,),
+                  const SizedBox(height: 10,),
+                  (moodList.isEmpty)
+                      ? Components(context).Loader(textColor: theme.textColor)
+                      :GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1/1.25,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemCount: moodList.length,
+                    itemBuilder: (context,index) {
+                      return GestureDetector(
+                        onTap: (){
+                          HapticFeedback.selectionClick();
+                          var data = moodList[index];
+
+                          data['colorA'] = data['colorA'].toString().replaceAll('#', '');
+                          data['colorB'] =  data['colorB'].toString().replaceAll('#', '');
+                          data['textColor'] = data['textColor'] .toString().replaceAll('#', '');
+
+                          Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: data,)));
+                        },
+                        child: Container(
+                          decoration:  BoxDecoration(
+                              borderRadius: BorderRadius.circular(25)
+                          ),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: CachedNetworkImage(
+                                    placeholder: (context,string)=> Container(
+                                        padding: const EdgeInsets.all(30),
+                                        alignment: Alignment.center,
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 1,
+                                        )),
+                                    imageUrl: moodList[index]['image'],fit: BoxFit.cover,),
+                                ),
+
+                              ),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  left: 0,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 3,sigmaY: 3),
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration:  const BoxDecoration(
+                                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                            color: Colors.black54
+
+                                        ),
+                                        child: Text(moodList[index]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
+                                      ),
+                                    ),
+                                  )
+                              ),
+                              Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: Components(context).BlurBackgroundCircularButton(
+                                    svg: MyIcons.premium,
+                                    iconSize: 18,
+                                    buttonRadius: 17,
+                                    iconColor: Colors.white
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                  ),
+                ],
+              ),
             ),
           ),
         ),

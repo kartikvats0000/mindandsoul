@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../constants/iconconstants.dart';
@@ -27,10 +30,26 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController emailController = TextEditingController();
 
   var countries = [];
+  var countrieslist = [];
 
-  var countryVal = '';
+  String countryVal = '';
 
-  List<DropdownMenuEntry<String>> dropdownValues = [];
+  late String userCountry;
+
+  TextEditingController searchController = TextEditingController();
+
+  void filterSearchResults(String query) {
+    setState(() {
+      countrieslist = countries
+          .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+
+
+
+  //List<DropdownMenuEntry<String>> dropdownValues = [];
 
 
   getCountries()async{
@@ -39,18 +58,29 @@ class _EditProfileState extends State<EditProfile> {
     String data = await DefaultAssetBundle.of(context).loadString("assets/countries.json");
     setState(() {
       countries = jsonDecode(data);
-      for(int i = 0;i<countries.length;i++){
-        dropdownValues.add(DropdownMenuEntry(value: countries[i]['name'], label: countries[i]['name'],style: ButtonStyle(textStyle: MaterialStatePropertyAll(TextStyle(color: theme.textColor)))));
-      }
-      if(user.country == ''){
-        countryVal = countries[235]['name'];
-      }
-      else{
-        var value = countries.firstWhere((element) => element['name'] == user.country);
-        countryVal = value['name'];
-      }
-    });
+      countrieslist = countries;
+      /*for(int i = 0;i<countries.length;i++){
+      //  dropdownValues.add(DropdownMenuEntry(value: countries[i]['name'], label: countries[i]['name'],style: ButtonStyle(textStyle: MaterialStatePropertyAll(TextStyle(color: theme.textColor)))));
+        //print('${countries[i]['name']} --> $i');
+      }*/
+      /*print('my ${user.country}');
+      var value = countries.firstWhere((element) => element['name'] == user.country);
+      print('first $value');
+      countryVal = value['name'];*/
+      /*print('not empty $countryVal');
 
+      print("user=======${user.country}");
+*/
+      /*if(user.country.isEmpty){
+        setState(() {
+          userCountry = "Select Country";
+        });
+      }else{
+        setState(() {
+          userCountry = user.country;
+        });
+      }*/
+    });
   }
 
   @override
@@ -59,6 +89,14 @@ class _EditProfileState extends State<EditProfile> {
     imageurl = user.profilePicture;
     nameController.text = user.name;
     emailController.text = user.email;
+
+    print('user country ${user.country}');
+    setState(() {
+      countryVal = (user.country != '')
+          ? user.country
+          :'Select Country';
+    });
+    print(countryVal);
     getCountries();
     // TODO: implement initState
     super.initState();
@@ -153,7 +191,7 @@ class _EditProfileState extends State<EditProfile> {
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     showModalBottomSheet(
         context: context,
-        backgroundColor: Theme.of(context).colorScheme.surfaceTint,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
        // showDragHandle: true,
         builder: (BuildContext ctx) {
           return Container(
@@ -167,14 +205,14 @@ class _EditProfileState extends State<EditProfile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Select Image',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimary),),
-                        Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
+                        Text('Select Image',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                        Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear,onTap: () =>Navigator.pop(context))
                       ],
                     ),
                     const SizedBox(height: 15,),
                     Container(
                       decoration: BoxDecoration(
-                          color: Colors.white24,
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child: Column(
@@ -187,7 +225,7 @@ class _EditProfileState extends State<EditProfile> {
                                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                                   child: Components(context).myIconWidget(icon: MyIcons.gallery,color: Theme.of(context).colorScheme.primary)
                               ),
-                              title: Text('Pick Image From Gallery',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),),
+                              title: Text('Pick Image From Gallery',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8)),),
                               onTap: ()async{
                                 await getImageGallery().whenComplete(() => cropImage(image!));
                                 await uploadimageforurl();
@@ -204,7 +242,7 @@ class _EditProfileState extends State<EditProfile> {
                                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                                   child: Components(context).myIconWidget(icon: MyIcons.camera,color: Theme.of(context).colorScheme.primary)
                               ),
-                              title: Text('Take Image From Camera',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14)),
+                              title: Text('Take Image From Camera',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8))),
                               onTap: ()async{
                                 await getImageCamera().then((value) => cropImage(image!));
                                 await uploadimageforurl();
@@ -224,7 +262,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-
+  ScrollController listController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +274,8 @@ class _EditProfileState extends State<EditProfile> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight+25),
           child: AppBar(
+            elevation: 0.0,
+            scrolledUnderElevation: 0.0,
             backgroundColor: Colors.transparent,
             leading: Padding(
                 padding: const EdgeInsets.all(7),
@@ -258,7 +298,7 @@ class _EditProfileState extends State<EditProfile> {
                   end: Alignment.bottomCenter,
                   colors: [
                     theme.themeColorA,
-                    theme.themeColorB.withOpacity(0.55),
+                    theme.themeColorB.withOpacity(0.75),
                   ]
               ),
           ),
@@ -318,36 +358,167 @@ class _EditProfileState extends State<EditProfile> {
                       const SizedBox(height: 10,),
                       TextFormField(
                         controller: emailController,
-                        enabled: false,
+                        readOnly: true,
                       ),
                       const SizedBox(height: 25,),
                       const Text('Country'),
                       const SizedBox(height: 10,),
-                      Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: DropdownMenu<String>(
-                        hintText: 'Select Country',
+                      GestureDetector(
+                        onTap: (){
+                          Future.delayed(const Duration(milliseconds: 200),(){
+                            listController.animateTo((kToolbarHeight + 3) * (countries.indexWhere((element) => element['name'] == countryVal )),duration: const Duration(milliseconds: 500),curve: Curves.easeOut);
+                          });
+                          showModalBottomSheet(
+                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                            useSafeArea: true,
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                  builder: (context, _setState) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Theme.of(context).colorScheme.primaryContainer,
+                                              theme.themeColorB.withOpacity(0.8)
+                                            ]
+                                        )
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.height * 0.85,
+                                      child: Column(
+                                        children: [
 
-                      trailingIcon:  RotatedBox(
-                        quarterTurns: 1,
-                          child: Icon(Icons.chevron_right,color: theme.textColor,)),
-                      menuHeight: MediaQuery.of(context).size.height * 0.5,
-                      menuStyle:  MenuStyle(
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                        backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.primaryContainer)
-                      ),
-                      width: MediaQuery.of(context).size.width - 20,
-                      initialSelection: countryVal,
-                      onSelected: (String? value) {
-                        // This is called when the user selects an item.
-                        setState(() {
-                          countryVal = value!;
-                        });
-                      },
-                      dropdownMenuEntries:dropdownValues
-                    ),
-                  )
-
+                                           Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 15),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text('Select Country',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                                                Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear,onTap: () =>Navigator.pop(context))
+                                              ],
+                                            ),
+                                          ),
+                                           Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 12),
+                                            child: TextField(
+                                              controller: searchController,
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer
+                                              ),
+                                              textAlign: TextAlign.start,
+                                              textAlignVertical: TextAlignVertical.center,
+                                              textCapitalization: TextCapitalization.sentences,
+                                              textInputAction: TextInputAction.search,
+                                              decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      borderSide:  BorderSide(
+                                                          width: 1,
+                                                          color: Theme.of(context).colorScheme.onPrimaryContainer
+                                                      )
+                                                  ),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      borderSide: BorderSide(
+                                                          width: 0.85,
+                                                          color: Theme.of(context).colorScheme.onPrimaryContainer
+                                                      )
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      borderSide: BorderSide(
+                                                          width: 1.75,
+                                                          color: Theme.of(context).colorScheme.onPrimaryContainer
+                                                      )
+                                                  ),
+                                                labelText: 'Search Your Country',
+                                               labelStyle: TextStyle(
+                                                 fontSize: 14,
+                                                 fontWeight: FontWeight.normal,
+                                                 color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5)
+                                               ),
+                                                  contentPadding : const EdgeInsets.all(12),
+                                                //prefix: Icon(Icons.search_rounded),
+                                                  prefixIcon: Icon(Icons.search),
+                                               // prefixIconColor: theme.textColor.withOpacity(0.8),
+                                                isCollapsed: true
+                                              ),
+                                              onChanged: (value) {
+                                                print(value);
+                                                _setState(() {
+                                                  countrieslist = countries
+                                                      .where((item) => item['name'].toLowerCase().contains(value.toLowerCase()))
+                                                      .toList();
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                         // SizedBox(height: 10,),
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: theme.themeColorB.withOpacity(0.4),
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(25))
+                                              ),
+                                              margin: EdgeInsets.fromLTRB(5,5,5,0),
+                                              padding: const EdgeInsets.all(7),
+                                              child: CupertinoScrollbar(
+                                                controller: listController,
+                                                child: ListView.builder(
+                                                  controller: listController,
+                                                 // physics: const NeverScrollableScrollPhysics(),
+                                                  itemCount: countrieslist.length,
+                                                    itemBuilder: (context,index){
+                                                      return  GestureDetector(
+                                                          onTap: countrieslist[index]['name'] == countryVal ? null : (){
+                                                            setState(() {
+                                                              countryVal = countrieslist[index]['name'];
+                                                            });
+                                                            Navigator.pop(context);
+                                                            searchController.clear();
+                                                            countrieslist = countries;
+                                                          },
+                                                        child: Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          padding: const EdgeInsets.only(left: 10),
+                                                          margin: const EdgeInsets.only(bottom: 3),
+                                                          height: kToolbarHeight,
+                                                           decoration: BoxDecoration(
+                                                             color: countrieslist[index]['name'] == countryVal ? Colors.black12:Colors.transparent,
+                                                             borderRadius: BorderRadius.circular(18)
+                                                           ),
+                                                            child: Text(countrieslist[index]['name'],style: TextStyle(color: theme.textColor),textAlign: TextAlign.start,)),
+                                                      );
+                                                    }),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 14),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                width: 0.85,
+                                color: theme.textColor
+                            )
+                          ),
+                          child: Text((countryVal == '')?'Select Country':countryVal),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -370,7 +541,7 @@ class _EditProfileState extends State<EditProfile> {
                     var data = await Services().editProfile(body, user.token);
                     SharedPreferences sharedpreference = await SharedPreferences.getInstance();
                     await sharedpreference.setString('loginData', json.encode(data['data']));
-                    Components(context).showSuccessSnackBar('Profile Serenely Updated');
+                    Components(context).showSuccessSnackBar('Profile Serenely Updated',margin: const EdgeInsets.only(bottom: kToolbarHeight+15,right: 15,left: 15));
                     await user.fromJson(data['data']);
                     Navigator.pop(context);
                     },

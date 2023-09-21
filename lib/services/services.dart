@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 export 'weatherservices.dart';
+export 'internet_utilities.dart';
 
 
 

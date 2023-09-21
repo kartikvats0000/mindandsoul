@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCNm4_JvNr6NSbxO6Q0Nm5gn2i8iixSIWA',
-    appId: '1:1072346488267:ios:01d08ff67a6aefe43a2a4e',
+    appId: '1:1072346488267:ios:c34cc4dee7d83e3e3a2a4e',
     messagingSenderId: '1072346488267',
     projectId: 'mind-and-soul-fe45b',
     storageBucket: 'mind-and-soul-fe45b.appspot.com',
+    androidClientId: '1072346488267-epr9ghkrs4pn85d0uedeaadj81gjcom9.apps.googleusercontent.com',
     iosClientId: '1072346488267-7nch4gm1t27s7578kp0lcoh3vua17lu9.apps.googleusercontent.com',
     iosBundleId: 'com.mindandsoul.mindandsoul',
   );

@@ -14,43 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "1072346488267-5ovi17vlmv319jvelf25kg4fnu088rft.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
+          "client_id": "1072346488267-epr9ghkrs4pn85d0uedeaadj81gjcom9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindandsoul",
+            "certificate_hash": "c5744eab7e507ca8e822b61df31008b67ce62976"
+          }
+        },
         {
-          "current_key": "AIzaSyC95qzfqhGV8Ij2rD6E_hB_dOq4l36iWeI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1072346488267-5ovi17vlmv319jvelf25kg4fnu088rft.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1072346488267-7nch4gm1t27s7578kp0lcoh3vua17lu9.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.mindandsoul"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1072346488267:android:bca4df734d49c0ff3a2a4e",
-        "android_client_info": {
-          "package_name": "com.mindandsoul"
-        }
-      },
-      "oauth_client": [
+          "client_id": "1072346488267-nevkuu4fnsosj3821ius7k9c2me8irlt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindandsoul",
+            "certificate_hash": "44cab401251e80bf409e56edaaad620134cee595"
+          }
+        },
         {
-          "client_id": "1072346488267-5ovi17vlmv319jvelf25kg4fnu088rft.apps.googleusercontent.com",
+          "client_id": "1072346488267-6c89mg9aa1d1663vch8071c6iqg7fjem.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

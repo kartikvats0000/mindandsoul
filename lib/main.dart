@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
@@ -31,6 +34,15 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
 
 
@@ -56,39 +68,41 @@ class MyApp extends StatelessWidget {
                   useMaterial3: true,
                   colorScheme: ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
 
-                  sliderTheme: const SliderThemeData(
-                   // activeTrackColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                  sliderTheme:  const SliderThemeData(
+                    // overlayShape: SliderComponentShape.noOverlay,
+                    // activeTrackColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
                     //inactiveTrackColor: Theme.of(context).colorScheme.inversePrimary,
                     trackHeight: 1.0,
                    // thumbColor: Theme.of(context).colorScheme.inversePrimary,
                     thumbShape:  RoundSliderThumbShape(enabledThumbRadius: 8.5),
                   ),
                   inputDecorationTheme: InputDecorationTheme(
-                    hintStyle: const TextStyle(color: Colors.white60),
+                    hintStyle:  TextStyle(color: themeProvider.textColor.withOpacity(0.4),fontWeight: FontWeight.normal,fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 14),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide:  BorderSide(
                             width: 1,
-                            color: Color(0xff0077EB)
+                            color: themeProvider.textColor.withOpacity(0.8)
                         )
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
                             width: 0.85,
-                           color: themeProvider.textColor
+                           color: themeProvider.textColor.withOpacity(0.8)
                            // color: CustomColors.primaryColor
                         )
                     ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
                             width: 1.75,
-                            color: themeProvider.textColor
+                            color: themeProvider.textColor.withOpacity(0.85)
                         )
                     ),
                     disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
                         width: 1,
                         color: themeProvider.textColor.withOpacity(0.2)

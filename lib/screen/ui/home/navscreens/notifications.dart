@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/services/notificationServices.dart';
@@ -43,15 +44,12 @@ class _NotificationsState extends State<Notifications> {
            child: Column(
              mainAxisAlignment: MainAxisAlignment.center,
              children: [
-               Icon(Icons.notifications_none_outlined,size: 70,
-               color: Theme.of(context).colorScheme.inversePrimary,),
+               LottieBuilder.asset('assets/animations/noNotification.json'),
                SizedBox(height: 10,),
-               Text('No Notifications'),
-               ElevatedButton(onPressed: ()async{
-                 // Future.delayed(Duration(seconds: 2),(){
-                 //   NotificationService().show(id: 1, channelKey: 'channelKey', title: 'Hi', body: 'hello');
-                 // });
-               }, child: Text('Now')),
+               Text('Your notifications are serene and clear.\nNo updates at the moment',style: Theme.of(context).textTheme.titleMedium?.copyWith(
+               color: theme.textColor.withOpacity(0.8)
+                ),
+               textAlign: TextAlign.center,)
                /*ElevatedButton(onPressed: ()async{
                  NotificationServices().scheduleNotification(time: , title: title, body: body)
                }, child: Text('Now')),*/

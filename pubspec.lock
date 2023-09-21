@@ -209,6 +209,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.2"
+  connectivity_plus:
+    dependency: "direct main"
+    description:
+      name: connectivity_plus
+      sha256: "77a180d6938f78ca7d2382d2240eb626c0f6a735d0bfdce227d8ffb80f95c48b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
+  connectivity_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_plus_platform_interface
+      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.4"
   convert:
     dependency: "direct main"
     description:
@@ -233,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  csc_picker:
+    dependency: "direct main"
+    description:
+      name: csc_picker
+      sha256: "7e5d6023a81f53b89a7fb0369953fd4dc676f7ea20e9a0c0707973a5f0aedf14"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.7"
   csslib:
     dependency: transitive
     description:
@@ -409,6 +433,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
+  firebase_crashlytics:
+    dependency: "direct main"
+    description:
+      name: firebase_crashlytics
+      sha256: fd9e1a1cb7cce3f9dd2358d8363d235f25f056981e23a333db1e57eca693913f
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.5"
+  firebase_crashlytics_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_crashlytics_platform_interface
+      sha256: "0d19ef23cf7a917a357d2eb1807338ec536ec3232e729ebd769f5bb2aba9e085"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.5"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -438,62 +478,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_avif:
-    dependency: "direct main"
-    description:
-      name: flutter_avif
-      sha256: "61832f24bc41f2a5cb55f0ff35fbd001261e18b6529f49f55761d50e1102aebd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_android:
-    dependency: transitive
-    description:
-      name: flutter_avif_android
-      sha256: "89e7b9f9e3f2a1872491c97fca01cbec20a193fae8a6a0c1a866b392cfcd132e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_ios:
-    dependency: transitive
-    description:
-      name: flutter_avif_ios
-      sha256: "7e083d5b880aca40d954f3344413220a2d473126d07ea8ac0051e1c3f19c69ed"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_linux:
-    dependency: transitive
-    description:
-      name: flutter_avif_linux
-      sha256: ac511d62dee19484fb8822c80a2bbc92ce96893b7d53b831ac67af23df107aed
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_macos:
-    dependency: transitive
-    description:
-      name: flutter_avif_macos
-      sha256: eee0d16ec8e427e0f51c2e8cbba33f29661e474a11ff1997df8cf85b535c49b9
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_avif_platform_interface
-      sha256: "4762d0dbbc5474110d362a26447c579a863af47b4cec465271c5ed31057a1dbf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  flutter_avif_windows:
-    dependency: transitive
-    description:
-      name: flutter_avif_windows
-      sha256: "927681fa9b13e0e782f57bc21ca014537308df64ecd15f68682c65ac619b2cd0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -550,14 +534,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.16"
-  flutter_rust_bridge:
-    dependency: transitive
+  flutter_speed_dial:
+    dependency: "direct main"
     description:
-      name: flutter_rust_bridge
-      sha256: "2b2979113501a5ec84e7379f78432307ae587d6a180bdfb3b8de136a309d94a0"
+      name: flutter_speed_dial
+      sha256: "698a037274a66dbae8697c265440e6acb6ab6cae9ac5f95c749e7944d8f28d41"
       url: "https://pub.dev"
     source: hosted
-    version: "1.44.0"
+    version: "7.0.0"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -587,6 +571,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_wallpaper_manager:
+    dependency: "direct main"
+    description:
+      name: flutter_wallpaper_manager
+      sha256: "369f63c6fdb4515477ced545e39581fb3d56afcdde8bcb9ba8a58d42c2dd1c9c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -888,6 +880,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1+1"
+  internet_connection_checker:
+    dependency: "direct main"
+    description:
+      name: internet_connection_checker
+      sha256: "1c683e63e89c9ac66a40748b1b20889fd9804980da732bf2b58d6d5456c8e876"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+1"
   intl:
     dependency: "direct main"
     description:
@@ -1000,6 +1000,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   octo_image:
     dependency: transitive
     description:

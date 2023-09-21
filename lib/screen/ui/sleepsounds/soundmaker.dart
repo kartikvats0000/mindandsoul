@@ -143,7 +143,26 @@ class _SoundMixerState extends State<SoundMixer> {
                               padding: const EdgeInsets.all(7),
                               child: Components(context).BlurBackgroundCircularButton(
                                 icon: Icons.chevron_left,
-                                onTap: (){Navigator.pop(context);},
+                                onTap: (){
+                                  if(audioplayers.isNotEmpty){
+                                    showDialog(context: context, builder: (context) => Components(context).confirmationDialog(context,
+                                        title: 'Are you sure you want to leave this page?',
+                                        message: 'This will stop the sound and discard this Mix',
+                                        actions: [
+                                          FilledButton.tonal(onPressed: (){
+                                            Navigator.pop(context);
+                                          }, child: const Text('Stay here')),
+                                          FilledButton.tonal(onPressed: (){
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          }, child: const Text('Leave')),
+                                        ]
+                                    )
+                                    );}
+                                  else{
+                                    Navigator.pop(context);
+                                  }
+                                  },
                               )
                           ),
 
@@ -153,13 +172,27 @@ class _SoundMixerState extends State<SoundMixer> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              flex:4,
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: CachedNetworkImage(imageUrl: widget.themeImage['image'],fit: BoxFit.cover,),
-                                ),
+                              flex:5,
+                              child: Stack(
+                                children: [
+                                  SizedBox.expand(
+                                    //width: double.infinity,
+                                    child: AspectRatio(
+                                      aspectRatio: 0.8,
+                                      child: CachedNetworkImage(imageUrl: widget.themeImage['image'],fit: BoxFit.cover,),
+                                    ),
+                                  ),
+                                  SizedBox.expand(
+                                    //width: double.infinity,
+                                    child: Container(color: Color(int.parse('0xff${widget.themeImage['colorA']}')).withOpacity(0.35),)
+                                  ),
+                                  Center(
+                                    child: Text(widget.themeImage['title'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                      fontSize: 31,
+                                      color: Color(int.parse('0xff${widget.themeImage['textColor']}'))
+                                    ),),
+                                  )
+                                ],
                               )
                             ),
                             Expanded(
@@ -258,7 +291,7 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                 print('adding');
                                                                 audioplayer1.play(UrlSource(contentList[index]['sounds'][pos]['audio']));
                                                                 audioplayer1.setReleaseMode(ReleaseMode.loop);
-                                                                audioplayer1.setVolume(0.7);
+                                                                audioplayer1.setVolume(0.4);
                                                                 audioplayers.add(AudioPlayerModel(
                                                                   id: contentList[index]['sounds'][pos]['_id'],
                                                                   name: contentList[index]['sounds'][pos]['title'],
@@ -274,6 +307,7 @@ class _SoundMixerState extends State<SoundMixer> {
                                                         child: Column(
                                                           children: [
                                                             Text( '${contentList[index]['sounds'][pos]['title']}',
+                                                              maxLines: 1,
                                                               style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Color(int.parse('0xff' + widget.themeImage['textColor'])),
                                                                   fontSize: 12),),
                                                             const SizedBox(height: 10,),
@@ -328,10 +362,10 @@ class _SoundMixerState extends State<SoundMixer> {
 
                                     ),
                                   ),
-                                  Positioned(
+                           /*       Positioned(
                                     left: 10,
                                     top: -40,
-                                    child: Text('Pick Sounds',style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Color(int.parse('0xff${widget.themeImage['textColor']}'))),textAlign: TextAlign.start,),),
+                                    child: Text('Pick Sounds',style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Color(int.parse('0xff${widget.themeImage['textColor']}'))),textAlign: TextAlign.start,),),*/
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Align(
@@ -375,6 +409,7 @@ class _SoundMixerState extends State<SoundMixer> {
                                                     IconButton(
                                                         onPressed: (){
                                                           showModalBottomSheet(
+                                                            elevation: 0.0,
                                                             backgroundColor: Colors.transparent,
                                                             isScrollControlled: true,
                                                             enableDrag: true,
@@ -419,7 +454,33 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                                     scrollDirection: Axis.vertical,
                                                                                     itemCount: audioplayers.length,
                                                                                       itemBuilder: (context,position){
-                                                                                      return ListTile(
+                                                                                      return _buildListTile(
+                                                                                          Padding(
+                                                                                        padding: const EdgeInsets.all(2),
+                                                                                        child: SvgPicture.network(audioplayers[position].image,color: Colors.white,height: 35,width: 35,),
+                                                                                      ),
+                                                                                          Text('\t\t\t\t  ${audioplayers[position].name}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white,fontSize: 12),),
+                                                                                          Slider(
+
+                                                                                            thumbColor: Theme.of(context).colorScheme.inversePrimary,
+                                                                                            activeColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                                                                                            //inactiveColor: Colors.grey.shade200.withOpacity(0.35),
+                                                                                            value: audioplayers[position].player.volume, onChanged: (double value) {setState((){
+                                                                                            audioplayers[position].player.setVolume(value);
+                                                                                          }) ;},),
+                                                                                          Components(context).BlurBackgroundCircularButton(svg: MyIcons.delete,onTap: (){
+                                                                                            setState(()  {
+                                                                                              audioplayers[position].player.stop();
+                                                                                              audioplayers[position].player.release();
+                                                                                              audioplayers[position].player.dispose();
+                                                                                              audioplayers.removeAt(position);
+                                                                                            });
+                                                                                            if(audioplayers.isEmpty) {
+                                                                                              Navigator.pop(context);
+                                                                                            }
+                                                                                          })
+                                                                                      );
+                                                                                       /* ListTile(
                                                                                        // minLeadingWidth: MediaQuery.of(context).size.width * 0.25,
                                                                                         horizontalTitleGap: 0,
                                                                                         contentPadding: EdgeInsets.all(10),
@@ -428,20 +489,18 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                                           child: Column(
                                                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                                                             children: [
-                                                                                              Expanded(
-                                                                                                child: Padding(
-                                                                                                  padding: const EdgeInsets.all(2),
-                                                                                                  child: AspectRatio(
-                                                                                                    aspectRatio: 1,
-                                                                                                      child: SvgPicture.network(audioplayers[position].image,color: Colors.white,)),
-                                                                                                ),
+                                                                                              Padding(
+                                                                                                padding: const EdgeInsets.all(2),
+                                                                                                child: SvgPicture.network(audioplayers[position].image,color: Colors.white,height: 27,width: 27,),
                                                                                               ),
-                                                                                              const SizedBox(height: 5,),
-                                                                                              Text(audioplayers[position].name,style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white,fontSize: 11.5),),
+                                                                                              //const SizedBox(height: 5,),
+                                                                                              // Flexible(
+                                                                                              //     child: Text(audioplayers[position].name,style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white,fontSize: 11.5),)),
                                                                                             ],
                                                                                           ),
                                                                                         ),
-                                                                                        title: Slider(
+                                                                                        title : Text(audioplayers[position].name,style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white,fontSize: 11.5),),
+                                                                                        subtitle: Slider(
                                                                                           thumbColor: Theme.of(context).colorScheme.inversePrimary,
                                                                                           activeColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
                                                                                           //inactiveColor: Colors.grey.shade200.withOpacity(0.35),
@@ -459,14 +518,14 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                                             Navigator.pop(context);
                                                                                           }
                                                                                         })
-                                                                                      );
+                                                                                      );*/
                                                                                       }),
                                                                                 ),
                                                                                 const SizedBox(height: 10,),
                                                                                 FilledButton.tonal(
                                                                                     onPressed: (){
                                                                                       if(nameController.text.isEmpty){
-                                                                                        Components(context).showErrorSnackBar('The mix must be named');
+                                                                                        Components(context).showSuccessSnackBar('The mix must be named');
                                                                                       }
                                                                                     },
                                                                                   style: ElevatedButton.styleFrom(
@@ -510,6 +569,37 @@ class _SoundMixerState extends State<SoundMixer> {
     );
   }
 }
+
+_buildListTile(Widget leading, Widget title, Widget subtitle,Widget trailing){
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical:11.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          flex: 1,
+            child: leading
+        ),
+        Expanded(
+          flex: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title,
+                subtitle
+              ],
+            )
+        ),
+        Expanded(
+          flex: 1,
+            child: trailing
+        ),
+      ],
+    ),
+  );
+}
+
+/*
 List<Map> content =   [
   {
     'category' : 'Water',
@@ -593,7 +683,8 @@ List<Map> content =   [
     ]
   },
 
-  /* {
+  */
+/* {
       'category' : 'Rain',
       'items' : [
         {
@@ -644,5 +735,6 @@ List<Map> content =   [
           ]
         },
       ]
-    },*/
-];
+    },*//*
+
+];*/

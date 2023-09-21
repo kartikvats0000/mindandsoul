@@ -312,18 +312,52 @@ class _AudioContentState extends State<AudioContent> {
                                   child: SvgPicture.asset('assets/home/backward_skip.svg',color: Theme.of(context).colorScheme.onSurface,height: 46.5,width: 46.5,),
                                 ),
                                 const SizedBox(width: 25,),
-                                InkWell(
-                                    onTap: (){
-                                      (audioPlayer.playerState.playing)?
-                                      audioPlayer.pause()
-                                          :audioPlayer.play();
-                                    },
-                                  child: CircleAvatar(
-                                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
-                                    radius: 38,
-                                    child: Icon((audioPlayer.playerState.playing)?Icons.pause_rounded:Icons.play_arrow_rounded,size: 45,),
-                                  ),
+                                StreamBuilder<PlayerState>(
+                                    stream: audioPlayer.playerStateStream,
+                                    builder: (context, snapshot) {
+                                    final playerState = snapshot.data;
+                                    final processingState =
+                                        playerState?.processingState;
+                                    final playing = playerState?.playing;
+                                    if (processingState == ProcessingState.loading ||
+                                        processingState ==
+                                            ProcessingState.buffering) {
+                                      return CircleAvatar(
+                                        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
+                                        radius: 38,
+                                        child: CircularProgressIndicator()
+                                      );
+                                    } else if (playing != true) {
+                                      return InkWell(
+                                        onTap: (){audioPlayer.play();},
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
+                                          radius: 38,
+                                          child: Icon(Icons.play_arrow_rounded,size: 45,),
+                                        ),
+                                      );
+                                    } else if (processingState !=
+                                        ProcessingState.completed) {
+                                      return InkWell(
+                                        onTap: (){audioPlayer.pause();},
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
+                                          radius: 38,
+                                          child: Icon(Icons.pause_rounded,size: 45,),
+                                        ),
+                                      );
+                                    } else {
+                                      return InkWell(
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
+                                          radius: 38,
+                                          child: Icon((audioPlayer.playerState.playing)?Icons.pause_rounded:Icons.play_arrow_rounded,size: 45,),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
+
                                 const SizedBox(width: 25,),
                                 InkWell(
                                   onTap: (){
