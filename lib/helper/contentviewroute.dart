@@ -7,26 +7,24 @@ import '../screen/ui/content/content_screens/textContentPage.dart';
 import '../screen/ui/content/content_screens/videoContentPage.dart';
 
 contentViewRoute(
-    {required String type, required dynamic data, required BuildContext context, required String title}){
-  if( type == 'Text'){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => TextContent(data: data,title: title,)));
+    {required String type, required String id, required BuildContext context}){
 
+
+  if( type == 'Text'){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => TextContent(id: id)));
   }
   if(type == 'Info'){
-    /*Navigator.of(context).push(
-        CupertinoPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => InfoGraphic(data: data,title: title,)));*/
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InfoGraphic(data: data,title: title,)));
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InfoGraphic(id: id)));
   }
   if(type == 'Video'){
     Navigator.of(context).push(
         CupertinoPageRoute(
             fullscreenDialog: true,
-            builder: (context) => VideoContent(data: data,title: title,)));
+            builder: (context) => VideoContent(id: id,)));
   }
   if(type == 'Audio'){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AudioContent(data: data,title: title,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AudioContent(id:id)));
   }
 }
 

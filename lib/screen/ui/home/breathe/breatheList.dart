@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:mindandsoul/screen/ui/home/breathe/breating.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 
 
@@ -20,153 +22,20 @@ class BreatheList extends StatefulWidget {
 
 class _BreatheListState extends State<BreatheList> {
 
-  List<dynamic> data = [
-    {
-      "title": "Calming Breath",
-      "purpose": "Stress Reduction",
-      "description": "Focuses on slow, deep diaphragmatic breathing to reduce stress and anxiety.",
-      "colorA": "FFD1DC",
-      "colorB": "FFA07A",
-      "average_time": "10 minutes",
-      "instructions": [
-        "Find a quiet and comfortable place to sit or lie down.",
-        "Close your eyes and take a few natural breaths.",
-        "Inhale deeply through your nose for a count of four, allowing your abdomen to rise.",
-        "Exhale slowly and completely through your mouth for a count of six, feeling tension release.",
-        "Focus on your breath and let go of stress and worries."
-      ],
-      "image": "assets/meditation/yoga1.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 1,
-        "breatheOut" : 6,
-        "hold2" : 1
-      }
-    },
-    {
-      "title": "Box Breathing",
-      "purpose": "Anxiety Relief",
-      "description": "Inhale, hold, exhale, and hold the breath for equal counts to alleviate anxiety.",
-      "colorA": "E6E6FA",
-      "colorB": "C5C1E0",
-      "average_time": "5 minutes",
-      "instructions": [
-        "Sit in a relaxed position with your back straight.",
-        "Close your eyes and take a slow, deep breath in through your nose for a count of four.",
-        "Hold your breath for a count of four.",
-        "Exhale slowly and completely through your nose for a count of four.",
-        "Pause and hold your breath for a count of four.",
-        "This technique helps calm anxiety and centers your mind."
-      ],
-      "image": "assets/meditation/yoga2.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 4,
-        "breatheOut" : 4,
-        "hold2" : 4
-      }
-    },
-    {
-      "title": "4-7-8 Relaxation Breath",
-      "purpose": "Sleep and Insomnia",
-      "description": "Aids sleep by using a 4-7-8 pattern to promote relaxation and improve sleep quality.",
-      "colorA": "98FB98",
-      "colorB": "86E986",
-      "average_time": "15 minutes",
-      "instructions": [
-        "Lie down in a comfortable position, or sit with your back straight.",
-        "Close your eyes and take a breath in quietly through your nose for a count of four.",
-        "Hold your breath for a count of seven.",
-        "Use this technique before bedtime to improve sleep quality."
-      ],
-      "image": "assets/meditation/yoga3.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 7,
-        "breatheOut" : 8,
-        "hold2" : 2
-      }
-    },
-    {
-      "title": "Energizing Breath",
-      "purpose": "Energy and Focus",
-      "description": "Utilizes rhythmic breath of fire to increase energy levels and enhance focus.",
-      "colorA": "AEEEEE",
-      "colorB": "87CEFA",
-      "average_time": "7 minutes",
-      "instructions": [
-        "Sit with your back straight and shoulders relaxed.",
-        "Inhale and exhale rapidly through your nose, keeping a steady rhythm.",
-        "Focus on the movement of your diaphragm.",
-        "This technique increases alertness and mental clarity."
-      ],
-      "image": "assets/meditation/yoga4.png",
-      "durations" : {
-        "breatheIn" : 2,
-        "hold1" : 0,
-        "breatheOut" : 2,
-        "hold2" : 0
-      }
-    },
-    {
-      "title": "Mindful Breath Awareness",
-      "purpose": "Mindfulness and Present Moment Awareness",
-      "description": "Encourages observation of the natural breath to promote mindfulness and presence.",
-      "colorA": "FFDAB9",
-      "colorB": "FFA07A",
-      "average_time": "12 minutes",
-      "instructions": [
-        "Find a quiet space to sit comfortably.",
-        "Close your eyes and take a few natural breaths.",
-        "Shift your attention to your breath.",
-        "Observe each inhale and exhale without trying to change it.",
-        "Practice being fully present in the moment."
-      ],
-      "image": "assets/meditation/yoga5.png",
-      "durations" : {
-        "breatheIn" : 3,
-        "hold1" : 3,
-        "breatheOut" : 3,
-        "hold2" : 3
-      }
-    },
-    {
-      "title": "Pain Relief Breath",
-      "purpose": "Pain Management and Relaxation",
-      "description": "Combines deep rhythmic breathing with visualization to relieve physical discomfort.",
-      "colorA": "C8A2C8",
-      "colorB": "DDA0DD",
-      "average_time": "8 minutes",
-      "instructions": [
-        "Sit or lie down in a relaxed position.",
-        "Close your eyes and take a few deep breaths to relax.",
-        "Visualize your breath as a soothing, healing energy.",
-        "As you inhale, imagine this energy flowing to the areas of discomfort or pain.",
-        "Exhale slowly, releasing tension and discomfort.",
-        "Use this technique to find relief from physical discomfort or pain."
-      ],
-      "image": "assets/meditation/yoga1.png",
-      "durations" : {
-        "breatheIn" : 5,
-        "hold1" : 1,
-        "breatheOut" : 8,
-        "hold2" : 2
-      }
-    }
-  ];
+
+  List<dynamic> data = [];
 
   List timers = [
-    1,2,5,10
+    1,2,3,5
   ];
 
   int timer = 1;
 
   Color myColor(String color){
-    return Color(int.parse('0xff${color}'));
+    return Color(int.parse('0xff$color'));
   }
 
   showActionSheet(int index){
-
     showModalBottomSheet(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
@@ -189,7 +58,8 @@ class _BreatheListState extends State<BreatheList> {
                // height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
-                decoration: const BoxDecoration(
+                decoration:  BoxDecoration(
+                  color: Colors.grey.shade300,
                   borderRadius:  BorderRadius.vertical(top: Radius.circular(25)),
                    // color: myColor(data[index]['colorA']),
                    /* gradient: LinearGradient(
@@ -205,7 +75,7 @@ class _BreatheListState extends State<BreatheList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 15,),
+                      const SizedBox(height: 20,),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -224,12 +94,24 @@ class _BreatheListState extends State<BreatheList> {
                         color: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.7),
                         fontWeight: FontWeight.w500
                       ),),
-                      const SizedBox(height: 27,),
+                      const SizedBox(height: 15,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                        buildbreathIndicator(MyIcons.inhale, 'Inhale', data[index]['durations']['breatheIn'],  context),
+                        buildbreathIndicator(MyIcons.pause_circle, 'Hold', data[index]['durations']['hold1'], context),
+                        buildbreathIndicator((data[index]['exhaleThrough'] == 'nose')?MyIcons.exhale:MyIcons.exhale_mouth, 'Exhale', data[index]['durations']['breatheOut'],  context),
+                        buildbreathIndicator(MyIcons.pause_circle, 'Hold', data[index]['durations']['hold2'], context),
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
                       Text('Directions',style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 19),
                       ),
-                      BulletList(data[index]['instructions']),
+                      BulletList(data[index]['instructions'],
+                       Components(context).myIconWidget(icon: MyIcons.breathe,color: Theme.of(context).colorScheme.primary,size: 12)
+                      ),
                       Divider(
                         indent: 10,
                         endIndent: 10,
@@ -299,50 +181,69 @@ class _BreatheListState extends State<BreatheList> {
                         ),),
                       ),*/
                       Center(
-                        child: InkWell(
-                          onTap: (){
-                            Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation) => Breathing(
+                          child: InkWell(
+                            onTap: (){
+                              var sumOfOne = data[index]['durations']['breatheIn'] + data[index]['durations']['breatheOut'] + data[index]['durations']['hold1'] + data[index]['durations']['hold2'];
+                              print((timer * 60/sumOfOne));
+                              print('No of times user has to do == ${(timer * 60/sumOfOne).ceil()}');
+                              Navigator.push(context, PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => Breathing(
                                   title: data[index]['title'],
                                   breatheIn: data[index]['durations']['breatheIn'],
                                   hold1: data[index]['durations']['hold1'],
                                   breatheOut: data[index]['durations']['breatheOut'],
                                   hold2: data[index]['durations']['hold2'],
-                                colorA: data[index]['colorA'],
-                                colorB: data[index]['colorB'],
+                                  colorA: data[index]['colorA'],
+                                  colorB: data[index]['colorB'],
+                                  noOfCounts: (timer * 60/sumOfOne).ceil(),
+                                ),
+                                transitionDuration: const Duration(
+                                    milliseconds: 500
+                                ),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              )).then((value) => Navigator.pop(context));
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: kToolbarHeight,
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  const BoxShadow(
+                                      offset: Offset(-0.5,-5),
+                                      color: Colors.white,
+                                      blurRadius: 8,
+                                      spreadRadius:5
+                                  ),
+                                  BoxShadow(
+                                    // /blurStyle: BlurStyle.solid,
+                                      offset: const Offset(0.15,5),
+                                      color: myColor(data[index]['colorA']).withOpacity(0.6),
+                                      blurRadius: 5,
+                                      spreadRadius: 5
+                                  ),
+                                ],
+                                borderRadius:  BorderRadius.circular(15),
+                                color: myColor(data[index]['colorA']),
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
+                                      myColor(data[index]['colorA']).withOpacity(0.6),
+                                      myColor(data[index]['colorA']).withOpacity(0.6),
+                                      Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
+                                    ]
+                                ),
                               ),
-                              transitionDuration: const Duration(
-                                milliseconds: 500
-                              ),
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            )).then((value) => Navigator.pop(context));
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: kToolbarHeight,
-                            width: MediaQuery.of(context).size.width * 0.95,
-                            decoration: BoxDecoration(
-                              borderRadius:  BorderRadius.circular(15),
-                               color: myColor(data[index]['colorA']),
-                               gradient: LinearGradient(
-                        colors: [
-                          myColor(data[index]['colorB']),
-                          myColor(data[index]['colorA']).withOpacity(0.8),
-                          myColor(data[index]['colorA']).withOpacity(0.8),
-                          myColor(data[index]['colorB']),
-                        ]
-                    ),
+                              child: Text('Begin',style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer
+                              ),),
                             ),
-                            child: Text('Begin',style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer
-                            ),),
-                          ),
-                        )
+                          )
                       ),
                       const SizedBox(height: 15,),
                     ],
@@ -353,7 +254,23 @@ class _BreatheListState extends State<BreatheList> {
            ),
         );
         }
-    );
+    ).then((value) => timer = 1);
+  }
+
+  getData()async{
+    String jsn = await DefaultAssetBundle.of(context).loadString("assets/data/breathingList.json");
+    setState(() {
+      var all = json.decode(jsn);
+      data  = all['data'];
+      //print(data);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getData();
+    super.initState();
   }
 
   @override
@@ -378,7 +295,9 @@ class _BreatheListState extends State<BreatheList> {
             ),
           ),
         ),
-        body: Container(
+        body: (data.isEmpty)
+            ? Components(context).Loader(textColor: theme.textColor)
+            :Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
               color: theme.themeColorA,
@@ -421,10 +340,10 @@ class _BreatheListState extends State<BreatheList> {
                           children: [
                             Container(
                               alignment: (index%2==0)?Alignment.centerRight:Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 22),
                               margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 35),
                               width: double.infinity,
-                              height: MediaQuery.of(context).size.height * 0.12,
+                             // height: MediaQuery.of(context).size.height * 0.12,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Colors.white60
@@ -434,8 +353,8 @@ class _BreatheListState extends State<BreatheList> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(int.parse('0xff${data[index]['colorB']}')),
-                                      Color(int.parse('0xff${data[index]['colorA']}')),
+                                      Color(int.parse('0xff${data[index]['colorB']}')).withOpacity(0.35),
+                                      Color(int.parse('0xff${data[index]['colorA']}')).withOpacity(0.35),
                                     ]
                                 ),
                               ),
@@ -448,12 +367,15 @@ class _BreatheListState extends State<BreatheList> {
                                       crossAxisAlignment: (index%2==0)?CrossAxisAlignment.start:CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.black87,fontWeight: FontWeight.w700),),
-                                        Text('For ${data[index]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45,fontWeight: FontWeight.w600),),
+                                        Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: theme.textColor,fontWeight: FontWeight.w700),),
+                                        Text('For ${data[index]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontWeight: FontWeight.w600),),
+                                        const SizedBox(height: 15,),
+                                        buildbreathsIndicatorList(data[index]['durations'],myColor(data[index]['colorB']),context)
+
                                       ],
                                     ),
                                   ),
-                                  (index%2!=0)?Spacer():SizedBox(),
+                                  (index%2!=0)?const Spacer():const SizedBox(),
                                 ],
                               ),
                             ),

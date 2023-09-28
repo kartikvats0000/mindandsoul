@@ -11,11 +11,13 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../../../services/services.dart';
+
 
 class ListviewB extends StatefulWidget {
   final String title;
-  final List data;
-  ListviewB({required this.title,required this.data});
+  final String categoryId;
+  ListviewB({required this.title,required this.categoryId});
 
   @override
   State<ListviewB> createState() => _ListviewBState();
@@ -52,11 +54,16 @@ class _ListviewBState extends State<ListviewB> {
     }
   }
 
+  getData()async{
+    var data = await Services().getContent(widget.categoryId);
+    setState(() {
+      items = data;
+    });
+  }
+
   @override
   void initState() {
-    setState(() {
-      items = widget.data;
-    });
+    getData();
     // TODO: implement initState
     super.initState();
   }
@@ -125,15 +132,16 @@ class _ListviewBState extends State<ListviewB> {
                       ).toList(),
                     ),
                   ),
-                ),
-                Expanded(
+                ),(items.isEmpty)
+                    ?Components(context).Loader(textColor: theme.textColor)
+                    :Expanded(
                   child: ListView.builder(
                       itemCount: filteredItems().length,
                     //  separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
                       itemBuilder: (context,index){
                         return GestureDetector(
                           onTap: (){
-                            contentViewRoute(type: filteredItems()[index]['type'], data:  filteredItems()[index], context: context, title:  widget.title);
+                            contentViewRoute(type: filteredItems()[index]['type'], id: filteredItems()[index]['_id'], context: context,);
                           },
                           child: AspectRatio(
                             aspectRatio: 6/4,

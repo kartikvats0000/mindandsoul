@@ -1,6 +1,11 @@
+import 'package:android_id/android_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mindandsoul/helper/components.dart';
+import 'package:mindandsoul/notification/notification_service.dart';
 import 'package:mindandsoul/screen/ui/home/bottomNavigationbarScreen.dart';
 import 'dart:io' show Platform;
 
@@ -19,6 +24,87 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  static const androidIdPlugin = AndroidId();
+  var androidId = '';
+  var iosId = '';
+
+  String deviceId = "", deviceType = "",fcmToken = "";
+  NotificationService notificationService  = NotificationService();
+
+  requestToken()async{
+    await notificationService.requestNotificationPermission();
+    await notificationService.firebaseInit(context);
+    await notificationService.isTokenFresh();
+    await notificationService.getDeviceToken().then((value) {
+      print('hello token-----$value');
+      fcmToken = value!;
+    });
+    User user = Provider.of<User>(context,listen: false);
+    await user.updateSplashData(deviceId, fcmToken);
+
+    getdevicedata();
+  }
+
+  getdevicedata() async {
+
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    //device type and device id
+    if (Platform.isAndroid) {
+      deviceType = 'android';
+      try {
+        androidId = await androidIdPlugin.getId() ?? 'Unknown ID';
+        print('android id -< $androidId');
+      } on PlatformException {
+        androidId = 'Failed to get Android ID.';
+      }
+      if (!mounted) return;
+
+      deviceId = androidId;
+      deviceType = "android";
+    } else if (Platform.isIOS) {
+      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceId = iosInfo.identifierForVendor!;
+      deviceType = "ios";
+    }
+
+    // if (settings.authorizationStatus == AuthorizationStatus.authorized){
+    //   await firebaseMessaging.getToken().then((value) {
+    //     fcmToken = value!;
+    //
+    //   }
+    //   );
+    // }
+    // if (settings.authorizationStatus == AuthorizationStatus.provisional){
+    //   await firebaseMessaging.getToken().then((value) {
+    //     fcmToken = value!;
+    //
+    //   }
+    //   );
+    // }
+    // else{
+    //   debugPrint('user Denied');
+    // }
+
+    //hitting api
+
+    /*await FirebaseMessaging.instance.getToken().then((newToken) {
+      setState(() {
+        fcmToken = newToken.toString();
+        print('fcm---$fcmToken');
+      });
+    });*/
+
+    var data = await Services().splashApi(
+        {'deviceId': deviceId, 'deviceType': deviceType, 'fcmToken': fcmToken});
+    User user = Provider.of<User>(context, listen: false);
+
+    await user.updateSplashData(deviceId, fcmToken);
+    print('fcm');
+    print(user.fcmToken);
+    print(user.fcmToken);
+  }
+
 
 
   Future googleSignin()async{
@@ -54,6 +140,14 @@ class _LoginState extends State<Login> {
 
 
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    requestToken();
+    //getdevicedata();
+    super.initState();
   }
 
   @override
@@ -107,7 +201,7 @@ class _LoginState extends State<Login> {
                                 ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 Padding(

@@ -227,138 +227,151 @@ class _SoundMixerState extends State<SoundMixer> {
                                         ),
                                       child: (contentList.isEmpty)
                                           ? Components(context).Loader(textColor: Color(int.parse('0xff' + widget.themeImage['textColor'])))
-                                          :ListView.builder(
-                                        padding: (audioplayers.isEmpty)?EdgeInsets.zero: EdgeInsets.only(bottom: 50),
-                                          shrinkWrap: true,
-                                          itemCount: contentList.length,
-                                          itemBuilder: (context, index) {
-                                            return Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                  child: Text(contentList[index]['title'],
-                                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Color(int.parse('0xff' + widget.themeImage['textColor'])).withOpacity(0.8)),textAlign: TextAlign.start,),
-                                                ),
-                                                const SizedBox(height: 15,),
-                                                GridView.builder(
-                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 3,
-                                                      crossAxisSpacing: 7,
-                                                      mainAxisSpacing: 7,
-                                                    mainAxisExtent: 120
-                                                  ),
-                                                   physics:const NeverScrollableScrollPhysics(),
-                                                   shrinkWrap: true,
-                                                    itemCount: contentList[index]['sounds'].length ,
-                                                    itemBuilder: (context, pos) {
-                                                    var isinplayer = audioplayers.where((element) => element.id == contentList[index]['sounds'][pos]['_id']);
-                                                    print('player with ${contentList[index]['sounds'][pos]['_id']} $isinplayer');
-                                                    print((isinplayer.isEmpty)?'no playa':isinplayer.first.name);
-                                                      return GestureDetector(
-                                                        onTap: (){
-                                                          AudioPlayer audioplayer1 = AudioPlayer();
-                                                          var check = false;
-                                                          int indexToRemove = -1;
-                                                          setState(() {
-                                                            for (int i = audioplayers.length - 1; i >= 0; i--) {
-                                                              var element = audioplayers[i];
-                                                              print('element id ${element.id}');
-                                                              print('current item id ${contentList[index]['sounds'][pos]['_id']}');
+                                          :Center(
+                                            child: ShaderMask(
+                                              shaderCallback: (Rect rect) {
+                                                return  LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [Color(int.parse('0xff' + widget.themeImage['colorA'])), Colors.transparent, Colors.transparent, Colors.transparent],
+                                                  stops: [0.0, 0.1, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                                ).createShader(rect);
+                                              },
+                                              blendMode: BlendMode.dstOut,
+                                              child: ListView.builder(
+                                        padding: (audioplayers.isEmpty)?EdgeInsets.only(top: 25): EdgeInsets.only(bottom: 50),
+                                              shrinkWrap: true,
+                                              itemCount: contentList.length,
+                                              itemBuilder: (context, index) {
+                                                return Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                      child: Text(contentList[index]['title'],
+                                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Color(int.parse('0xff' + widget.themeImage['textColor'])).withOpacity(0.8)),textAlign: TextAlign.start,),
+                                                    ),
+                                                    const SizedBox(height: 15,),
+                                                    GridView.builder(
+                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 3,
+                                                          crossAxisSpacing: 7,
+                                                          mainAxisSpacing: 7,
+                                                        mainAxisExtent: 120
+                                                      ),
+                                                       physics:const NeverScrollableScrollPhysics(),
+                                                       shrinkWrap: true,
+                                                        itemCount: contentList[index]['sounds'].length ,
+                                                        itemBuilder: (context, pos) {
+                                                        var isinplayer = audioplayers.where((element) => element.id == contentList[index]['sounds'][pos]['_id']);
+                                                        print('player with ${contentList[index]['sounds'][pos]['_id']} $isinplayer');
+                                                        print((isinplayer.isEmpty)?'no playa':isinplayer.first.name);
+                                                          return GestureDetector(
+                                                            onTap: (){
+                                                              AudioPlayer audioplayer1 = AudioPlayer();
+                                                              var check = false;
+                                                              int indexToRemove = -1;
+                                                              setState(() {
+                                                                for (int i = audioplayers.length - 1; i >= 0; i--) {
+                                                                  var element = audioplayers[i];
+                                                                  print('element id ${element.id}');
+                                                                  print('current item id ${contentList[index]['sounds'][pos]['_id']}');
 
-                                                              if (element.id == contentList[index]['sounds'][pos]['_id']) {
-                                                                element.player.stop();
-                                                                element.player.dispose();
-                                                                indexToRemove = i;
-                                                                check = true;
-                                                                break; // Exit the loop once you find the element to remove
-                                                              } else {
-                                                                check = false;
-                                                              }
-                                                            }
+                                                                  if (element.id == contentList[index]['sounds'][pos]['_id']) {
+                                                                    element.player.stop();
+                                                                    element.player.dispose();
+                                                                    indexToRemove = i;
+                                                                    check = true;
+                                                                    break; // Exit the loop once you find the element to remove
+                                                                  } else {
+                                                                    check = false;
+                                                                  }
+                                                                }
 
-                                                            print('check $check');
+                                                                print('check $check');
 
-                                                            if (check) {
-                                                              print('removing');
-                                                              audioplayers.removeAt(indexToRemove);
-                                                            } else {
-                                                              if(audioplayers.length >= 7){
-                                                                Components(context).showSuccessSnackBar('Only 7 Harmonies can be added together');
-                                                              }
-                                                              else{
-                                                                print('adding');
-                                                                audioplayer1.play(UrlSource(contentList[index]['sounds'][pos]['audio']));
-                                                                audioplayer1.setReleaseMode(ReleaseMode.loop);
-                                                                audioplayer1.setVolume(0.4);
-                                                                audioplayers.add(AudioPlayerModel(
-                                                                  id: contentList[index]['sounds'][pos]['_id'],
-                                                                  name: contentList[index]['sounds'][pos]['title'],
-                                                                  image: contentList[index]['sounds'][pos]['image'],
-                                                                  url: contentList[index]['sounds'][pos]['audio'],
-                                                                  player: audioplayer1,
-                                                                ));
-                                                              }
-                                                            }
-                                                          });
-                                                          playAll();
-                                                        },
-                                                        child: Column(
-                                                          children: [
-                                                            Text( '${contentList[index]['sounds'][pos]['title']}',
-                                                              maxLines: 1,
-                                                              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Color(int.parse('0xff' + widget.themeImage['textColor'])),
-                                                                  fontSize: 12),),
-                                                            const SizedBox(height: 10,),
-                                                            AnimatedContainer(
-                                                              height: 60,
-                                                              width: 60,
-                                                              duration: const Duration(milliseconds: 300 ),
-                                                              padding: const EdgeInsets.all(15),
-                                                             // radius: 40,
-                                                               decoration: BoxDecoration(
-                                                                 color: (isinplayer.isEmpty)? Colors.white.withOpacity(0.5):Theme.of(context).colorScheme.primary.withOpacity(0.65),
-                                                                 shape: BoxShape.circle,
-                                                                 boxShadow: [
-                                                                   BoxShadow(color: Theme.of(context).colorScheme.primary.withOpacity(0.7),blurRadius: 10,spreadRadius: 1)
-                                                                 ]
-                                                               ),
-                                                              child: SvgPicture.network(
-                                                                contentList[index]['sounds'][pos]['image'],
-                                                                color: (isinplayer.isEmpty)?Colors.black.withOpacity(0.8):Colors.white,//Color(int.parse('0xff' +widget.themeImage['textColor'] )),
+                                                                if (check) {
+                                                                  print('removing');
+                                                                  audioplayers.removeAt(indexToRemove);
+                                                                } else {
+                                                                  if(audioplayers.length >= 7){
+                                                                    Components(context).showSuccessSnackBar('Only 7 Harmonies can be added together');
+                                                                  }
+                                                                  else{
+                                                                    print('adding');
+                                                                    audioplayer1.play(UrlSource(contentList[index]['sounds'][pos]['audio']));
+                                                                    audioplayer1.setReleaseMode(ReleaseMode.loop);
+                                                                    audioplayer1.setVolume(0.4);
+                                                                    audioplayers.add(AudioPlayerModel(
+                                                                      id: contentList[index]['sounds'][pos]['_id'],
+                                                                      name: contentList[index]['sounds'][pos]['title'],
+                                                                      image: contentList[index]['sounds'][pos]['image'],
+                                                                      url: contentList[index]['sounds'][pos]['audio'],
+                                                                      player: audioplayer1,
+                                                                    ));
+                                                                  }
+                                                                }
+                                                              });
+                                                              playAll();
+                                                            },
+                                                            child: Column(
+                                                              children: [
+                                                                Text( '${contentList[index]['sounds'][pos]['title']}',
+                                                                  maxLines: 1,
+                                                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Color(int.parse('0xff' + widget.themeImage['textColor'])),
+                                                                      fontSize: 12),),
+                                                                const SizedBox(height: 10,),
+                                                                AnimatedContainer(
+                                                                  height: 60,
+                                                                  width: 60,
+                                                                  duration: const Duration(milliseconds: 300 ),
+                                                                  padding: const EdgeInsets.all(15),
+                                                                 // radius: 40,
+                                                                   decoration: BoxDecoration(
+                                                                     color: (isinplayer.isEmpty)? Colors.white.withOpacity(0.5):Theme.of(context).colorScheme.primary.withOpacity(0.65),
+                                                                     shape: BoxShape.circle,
+                                                                     boxShadow: [
+                                                                       BoxShadow(color: Theme.of(context).colorScheme.primary.withOpacity(0.7),blurRadius: 10,spreadRadius: 1)
+                                                                     ]
+                                                                   ),
+                                                                  child: SvgPicture.network(
+                                                                    contentList[index]['sounds'][pos]['image'],
+                                                                    color: (isinplayer.isEmpty)?Colors.black.withOpacity(0.8):Colors.white,//Color(int.parse('0xff' +widget.themeImage['textColor'] )),
 
+                                                                    ),
                                                                 ),
+                                                                const SizedBox(height: 10,),
+                                                                Expanded(
+                                                                  flex: 1,
+                                                                  child: Opacity(
+                                                                    //duration: const Duration(milliseconds: 300),
+                                                                    opacity: (isinplayer.isEmpty)?0:1,
+                                                                    child: Slider(
+                                                                      thumbColor: Theme.of(context).colorScheme.inversePrimary,
+                                                                        activeColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                                                                       // inactiveColor: Color(int.parse('0xff${widget.themeImage['textColor']}')).withOpacity(0.35),
+                                                                        value: (isinplayer.isEmpty)?0:isinplayer.first.player.volume, onChanged:(isinplayer.isEmpty)?null:(vol){
+                                                                      setState(() {
+                                                                        isinplayer.first.player.setVolume(vol);
+                                                                      });
+                                                                    }),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(height: 7,),
+                                                              ],
                                                             ),
-                                                            const SizedBox(height: 10,),
-                                                            Expanded(
-                                                              flex: 1,
-                                                              child: Opacity(
-                                                                //duration: const Duration(milliseconds: 300),
-                                                                opacity: (isinplayer.isEmpty)?0:1,
-                                                                child: Slider(
-                                                                  thumbColor: Theme.of(context).colorScheme.inversePrimary,
-                                                                    activeColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
-                                                                   // inactiveColor: Color(int.parse('0xff${widget.themeImage['textColor']}')).withOpacity(0.35),
-                                                                    value: (isinplayer.isEmpty)?0:isinplayer.first.player.volume, onChanged:(isinplayer.isEmpty)?null:(vol){
-                                                                  setState(() {
-                                                                    isinplayer.first.player.setVolume(vol);
-                                                                  });
-                                                                }),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(height: 7,),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  padding: const EdgeInsets.only(bottom: 7),
-                                                ),
-                                                const SizedBox(height: 7,),
-                                              ],
-                                            );
-                                          }
+                                                          );
+                                                        },
+                                                      padding: const EdgeInsets.only(bottom: 7),
+                                                    ),
+                                                    const SizedBox(height: 7,),
+                                                  ],
+                                                );
+                                              }
                                       ),
+                                            ),
+                                          ),
 
                                     ),
                                   ),

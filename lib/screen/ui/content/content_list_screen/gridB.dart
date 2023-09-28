@@ -4,17 +4,19 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../services/services.dart';
 
 class GridviewB extends StatefulWidget {
-  final List data;
+  final String categoryId;
   final String title;
-  const GridviewB({super.key,required this.title,required this.data});
+  const GridviewB({super.key,required this.title,required this.categoryId});
 
   @override
   State<GridviewB> createState() => _GridviewBState();
@@ -42,17 +44,23 @@ class _GridviewBState extends State<GridviewB> {
     }
   }
 
+  getData()async{
+    var data = await Services().getContent(widget.categoryId);
+    setState(() {
+      items = data;
+    });
+  }
+
   @override
   void initState() {
-    setState(() {
-      items = widget.data;
-    });
+    getData();
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('gridBrebuilt');
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
             backgroundColor: theme.themeColorA,
@@ -117,8 +125,9 @@ class _GridviewBState extends State<GridviewB> {
                           ).toList(),
                         ),
                       ),
-                    ),
-                    Expanded(
+                    ),(items.isEmpty)
+                        ?Components(context).Loader(textColor: theme.textColor)
+                        :Expanded(
                       child: MasonryGridView.count(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
@@ -128,7 +137,7 @@ class _GridviewBState extends State<GridviewB> {
                               crossAxisCellCount: index * 2 + 1,
                               child: GestureDetector(
                                 onTap: (){
-                                  contentViewRoute(type: filteredItems()[index]['type'], data:  filteredItems()[index], context: context, title:  widget.title);
+                                  contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context);
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
@@ -154,9 +163,7 @@ class _GridviewBState extends State<GridviewB> {
                                                     placeholder: (context,string)=> Container(
                                                         padding: const EdgeInsets.all(30),
                                                         alignment: Alignment.center,
-                                                        child: const CircularProgressIndicator(
-                                                          strokeWidth: 1,
-                                                        )),
+                                                        child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
                                                     imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,),
                                                 ),
                                               ),

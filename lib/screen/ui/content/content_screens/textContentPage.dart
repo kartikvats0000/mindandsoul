@@ -2,14 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:intl/intl.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
 
+import '../../../../services/services.dart';
+
 
 class TextContent extends StatefulWidget {
-  final Map data;
-  final String title;
-  const TextContent({super.key,required this.data,required this.title});
+  final String id;
+  const TextContent({super.key,required this.id});
 
   @override
   State<TextContent> createState() => _TextContentState();
@@ -23,6 +25,7 @@ class _TextContentState extends State<TextContent> {
   @override
   void initState() {
     // TODO: implement initState
+    getData();
     scrollController.addListener(() {
       if(scrollController.position.pixels < MediaQuery.of(context).size.height * 0.45
       ){
@@ -48,32 +51,49 @@ class _TextContentState extends State<TextContent> {
     'Sleep',
   ];
 
+  Map data = {};
+
+  getData()async{
+    var lst = await Services().getContentDetails(widget.id);
+    print(lst);
+    setState(() {
+      data = lst['data'];
+      print(data);
+    });
+  }
+
   bool like = false;
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    if(data.isEmpty){
+      return Scaffold(
+        body: Components(context).Loader(textColor: Colors.black),
+      );
+    }
+    else{
+      return Scaffold(
         backgroundColor:Theme.of(context).colorScheme.surface,
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight+10),
-          child: Components(context).customAppBar(
-            duration: const Duration(milliseconds: 150),
-              scrolledColor: Theme.of(context).colorScheme.primary.withOpacity(0.8),
-              actions: [
-                Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,),
-                const SizedBox(width: 5,),
-                Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
-              ],
-              title: Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 15.5,),maxLines: 2,overflow: TextOverflow.ellipsis,),
-              isScrolling: isScrolling
-          )
-      ),
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight+10),
+            child: Components(context).customAppBar(
+                duration: const Duration(milliseconds: 150),
+                scrolledColor: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                actions: [
+                  Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,),
+                  const SizedBox(width: 5,),
+                  Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
+                ],
+                title: Text(data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 15.5,),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                isScrolling: isScrolling
+            )
+        ),
         body: Stack(
           children: [
             SingleChildScrollView(
               controller: scrollController,
-             // padding: const EdgeInsets.all(12),
+              // padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,17 +102,17 @@ class _TextContentState extends State<TextContent> {
                     child: Stack(
                       children: [
                         Positioned.fill(child: Hero(
-                          tag: widget.data['_id'],
+                          tag: data['_id'],
                           child: ClipRRect(
-                              borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-                              child: CachedNetworkImage(imageUrl: widget.data['image'],fit: BoxFit.cover,)),
+                              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                              child: CachedNetworkImage(imageUrl: data['image'],fit: BoxFit.cover,)),
                         )
                         ),
                         Positioned.fill(
                             child: Container(
                               padding: const EdgeInsets.all(15),
                               decoration:  BoxDecoration(
-                                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
                                   gradient:  LinearGradient(
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
@@ -112,14 +132,14 @@ class _TextContentState extends State<TextContent> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Components(context).tags(
-                                        title:widget.title,
+                                        title:data['category'],
                                         context: context,
                                       ),
                                       Row(
                                         children: [
                                           Icon(Icons.watch_later_outlined,color: Colors.white.withOpacity(0.8),size: 13,),
                                           SizedBox(width: 5,),
-                                          Text('August 18, 2023',
+                                          Text(DateFormat('MMMM d, yyyy').format(DateTime.parse(data['updatedAt'])),
                                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 11,
@@ -131,7 +151,7 @@ class _TextContentState extends State<TextContent> {
                                     ],
                                   ),
                                   const SizedBox(height: 10,),
-                                  Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 19),),
+                                  Text(data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 19),),
                                   const SizedBox(height: 10,),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,7 +181,7 @@ class _TextContentState extends State<TextContent> {
                                             });
                                           }),
                                           /*SizedBox(width: 15,),
-                                          Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),*/
+                                              Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),*/
                                         ],
                                       )
                                     ],
@@ -170,16 +190,16 @@ class _TextContentState extends State<TextContent> {
                               ),
                             )
                         ),
-                       /* Positioned(
-                            top: 30,
-                            left: 5,
-                            child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){Navigator.pop(context);})
-                        ),
-                        Positioned(
-                            top: 30,
-                            right: 5,
-                            child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){})
-                        ),*/
+                        /* Positioned(
+                                top: 30,
+                                left: 5,
+                                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){Navigator.pop(context);})
+                            ),
+                            Positioned(
+                                top: 30,
+                                right: 5,
+                                child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){})
+                            ),*/
                       ],
                     ),
                   ),
@@ -189,7 +209,7 @@ class _TextContentState extends State<TextContent> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         HtmlWidget(
-                            widget.data['html']
+                            data['html']
                         ),
 
                         SizedBox(height: 15,),
@@ -212,24 +232,26 @@ class _TextContentState extends State<TextContent> {
               ),
             ),
             /*AnimatedPositioned(
-              duration: Duration(milliseconds: 350),
-              top: (isScrolling)?0:-kToolbarHeight-35,
-              right: 0,
-              left: 0,
-              curve: Curves.easeOut,
-              child: Components(context).customAppBar(
-                  actions: [
-                    Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite),
-                    const SizedBox(width: 5,),
-                    Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
-                  ],
-                  title: Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 15.5,),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                  duration: Duration(milliseconds: 350),
+                  top: (isScrolling)?0:-kToolbarHeight-35,
+                  right: 0,
+                  left: 0,
+                  curve: Curves.easeOut,
+                  child: Components(context).customAppBar(
+                      actions: [
+                        Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite),
+                        const SizedBox(width: 5,),
+                        Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
+                      ],
+                      title: Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 15.5,),maxLines: 2,overflow: TextOverflow.ellipsis,),
 
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-              ),
-            )*/
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  ),
+                )*/
           ],
         ),
-    );
+      );
+    }
+
   }
 }

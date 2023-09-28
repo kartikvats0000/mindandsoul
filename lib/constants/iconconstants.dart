@@ -7,11 +7,14 @@ class MyIcons{
   static const delete = 'assets/icons/delete.svg';
   static const download = 'assets/icons/download.svg';
   static const edit = 'assets/icons/edit.svg';
+  static const exhale = 'assets/icons/exhale.svg';
+  static const exhale_mouth = 'assets/icons/exhale_mouth.svg';
   static const favorite = 'assets/icons/favorite.svg';
   static const favorite_filled = 'assets/icons/favorite_filled.svg';
   static const gallery = 'assets/icons/gallery.svg';
   static const harmony = 'assets/icons/harmony.svg';
   static const home = 'assets/icons/home.svg';
+  static const inhale = 'assets/icons/inhale.svg';
   static const knowYourself = 'assets/icons/knowYourself.svg';
   static const like = 'assets/icons/like.svg';
   static const like_filled = 'assets/icons/like_filled.svg';
@@ -21,6 +24,7 @@ class MyIcons{
   static const mute = 'assets/icons/mute.svg';
   static const menu = 'assets/icons/menu.svg';
   static const notification = 'assets/icons/notification.svg';
+  static const pause_circle = 'assets/icons/pause_circle.svg';
   static const premium = 'assets/icons/premium.svg';
   static const profile = 'assets/icons/profile.svg';
   static const quotes = 'assets/icons/quotes.svg';

@@ -5,7 +5,7 @@ class Internet {
 
   bool connected = false;
 
-  Future<bool> checkInternet() async{
+  checkInternet() async{
 
     connected = await InternetConnectionChecker().hasConnection;
     final msg = connected ? "CONNECTED TO INTERNET" :  "NOT CONNECTED TO INTERNET";

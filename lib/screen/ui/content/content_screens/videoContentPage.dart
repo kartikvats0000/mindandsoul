@@ -311,11 +311,11 @@ import 'package:chewie/chewie.dart';
 
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../services/services.dart';
 
 class VideoContent extends StatefulWidget {
-  final Map data;
-  final String title;
-  const VideoContent({super.key,required this.data,required this.title});
+  final String id;
+  const VideoContent({super.key,required this.id});
 
   @override
   State<VideoContent> createState() => _VideoContentState();
@@ -330,7 +330,7 @@ class _VideoContentState extends State<VideoContent> {
   //late Future<void> _future;
 
   Future<void> initVideo()async{
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.data['video']),);
+    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(data['video']),);
     await videoPlayerController.initialize();
     setState(() {
       chewieController = ChewieController(
@@ -370,6 +370,18 @@ class _VideoContentState extends State<VideoContent> {
     });
   }
 
+  Map data = {};
+
+  getData()async{
+    var lst = await Services().getContentDetails(widget.id);
+    print(lst);
+    setState(() {
+      data = lst['data'];
+      print(data);
+    });
+    initVideo();
+  }
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -380,7 +392,7 @@ class _VideoContentState extends State<VideoContent> {
     ));
 
     // TODO: implement initState
-    initVideo();
+   getData();
     super.initState();
   }
 
@@ -443,13 +455,13 @@ class _VideoContentState extends State<VideoContent> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Components(context).tags(
-                                        title:widget.title,
+                                        title: data['category'],
                                         context: context,
                                         //textcolor: Theme.of(context).colorScheme.onSurface,
                                         textcolor: theme.themeColorB,
                                       ),
                                       const SizedBox(height: 10,),
-                                      Text(widget.data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 19),),
+                                      Text(data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 19),),
                                       const SizedBox(height: 20,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -541,7 +553,7 @@ class _VideoContentState extends State<VideoContent> {
                                       ),
                                       SizedBox(height: 15,),
                                       //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                                      Text('${widget.data['desc']}\n\n${widget.data['desc']}',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),)
+                                      Text('${data['desc']}',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),)
 
                                     ],
                                   ),

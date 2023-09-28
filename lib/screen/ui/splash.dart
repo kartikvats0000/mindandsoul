@@ -33,9 +33,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
 
 
 
-  static const androidIdPlugin = AndroidId();
+  /*static const androidIdPlugin = AndroidId();
   var androidId = '';
-  var iosId = '';
+  var iosId = '';*/
 
   String deviceId = "", deviceType = "",fcmToken = "";
 
@@ -65,11 +65,12 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
   void initState() {
     initVideo();
     setTheme();
-    getdevicedata();
+   // getdevicedata();
     getData();
 
     super.initState();
   }
+
 
   void initVideo(){
     /*ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
@@ -93,91 +94,36 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     super.dispose();
   }
 
-  getdevicedata() async {
-    //device type and device id
-    if (Platform.isAndroid) {
-      deviceType = 'android';
-      try {
-        androidId = await androidIdPlugin.getId() ?? 'Unknown ID';
 
-      } on PlatformException {
-        androidId = 'Failed to get Android ID.';
-      }
-      if (!mounted) return;
-
-      deviceId = androidId;
-      deviceType = "android";
-    }
-    else if (Platform.isIOS) {
-      deviceType = "ios";
-      try{
-        var iosInfo = await DeviceInfoPlugin().iosInfo;
-        iosId = iosInfo.identifierForVendor!;
-      }
-      on PlatformException{
-        debugPrint('Cannot get ios id');
-      }
-    }
-
-    //fcm token
-    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await firebaseMessaging.requestPermission(
-        alert: true,
-        announcement: true,
-        badge: true,
-        provisional: false,
-        sound: true
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized){
-      await firebaseMessaging.getToken().then((value) {
-        fcmToken = value!;
-
-      }
-      );
-    }
-    if (settings.authorizationStatus == AuthorizationStatus.provisional){
-      await firebaseMessaging.getToken().then((value) {
-        fcmToken = value!;
-
-      }
-      );
-    }
-    else{
-      debugPrint('user Denied');
-    }
-
-    //hitting api
-    var data = await Services().splashApi({
-      'deviceId' : deviceId,
-      'deviceType' : deviceType,
-      'fcmToken' : fcmToken
-    });
-
-    User user = Provider.of<User>(context,listen: false);
-
-
-    await user.updateSplashData(deviceId, fcmToken);
-    print('fcm');
-    print(user.fcmToken);
-
-  }
 
   getData() async {
-    User user = Provider.of<User>(context,listen: false);
+    User user = Provider.of<User>(context, listen: false);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var data = sharedPreferences.getString('loginData');
-
-    if(data == null){
-      Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>Login()))));
-    }
-    else{
-
+    /*notificationService.requestNotificationPermission();
+    notificationService.firebaseInit(context);
+    notificationService.isTokenFresh();
+    notificationService.getDeviceToken().then((value) {
+      print('hello token-----$value');
+      fcmToken = value!;
+    });*/
+   // await user.updateSplashData(deviceId, fcmToken);
+    if (data == null) {
+      Timer(
+          const Duration(milliseconds: 6500),
+              () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) => Login()))));
+    } else {
+      print(data);
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);
 
-      Timer(const Duration(milliseconds: 6500), () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>BottomNavScreen()))));
+      Timer(
+          const Duration(milliseconds: 6500),
+              () => Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: ((context) => BottomNavScreen()))));
     }
   }
 

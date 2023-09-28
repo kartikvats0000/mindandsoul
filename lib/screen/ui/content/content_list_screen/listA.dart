@@ -5,13 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
+import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
 
 class ListviewA extends StatefulWidget {
   final String title;
-  final List data;
-  const ListviewA({super.key, required this.title,required this.data});
+  final String categoryId;
+  const ListviewA({super.key, required this.title, required this.categoryId});
 
   @override
   State<ListviewA> createState() => _ListviewAState();
@@ -39,11 +40,16 @@ class _ListviewAState extends State<ListviewA> {
     }
   }
 
+  getData()async{
+    var data = await Services().getContent(widget.categoryId);
+    setState(() {
+      items = data;
+    });
+  }
+
   @override
   void initState() {
-    setState(() {
-      items = widget.data;
-    });
+    getData();
     // TODO: implement initState
     super.initState();
   }
@@ -112,8 +118,9 @@ class _ListviewAState extends State<ListviewA> {
                       ).toList(),
                     ),
                   ),
-                ),
-                Expanded(
+                ),(items.isEmpty)
+                    ?Components(context).Loader(textColor: theme.textColor)
+                    :Expanded(
                   child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: filteredItems().length,
@@ -127,7 +134,7 @@ class _ListviewAState extends State<ListviewA> {
                               filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
                               child: GestureDetector(
                                 onTap: (){
-                                  contentViewRoute(type: filteredItems()[index]['type'], data:  filteredItems()[index], context: context, title:  widget.title);
+                                  contentViewRoute(type: filteredItems()[index]['type'], context: context, id: filteredItems()[index]['_id']);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

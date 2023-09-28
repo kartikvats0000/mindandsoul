@@ -15,10 +15,12 @@ class Services {
   Future<dynamic> splashApi(Map<String, dynamic> params)async{
     final uri = Uri.parse('${baseurl}splash');
     print(uri);
+
+    print('params for apiSplash $params');
     
     http.Response response = await http.post(uri,body: params);
     var data = jsonDecode(response.body);
-    print(response.statusCode);
+    print(response.body + '  ' + response.statusCode.toString());
 
 
     return data;
@@ -36,10 +38,22 @@ class Services {
 
   ///GET
 
+
+
   Future<dynamic> getCategories()async{
     final uri = Uri.parse('${baseurl}category');
 
     http.Response response = await http.get(uri);
+    if (response.statusCode == 200){
+      var data = json.decode(response.body);
+      return data;
+    }
+  }
+
+  Future<dynamic> getHomeData(String userId)async{
+    final uri = Uri.parse('${baseurl}home?userId=$userId');
+
+    http.Response response = await http.get(uri,);
     if (response.statusCode == 200){
       var data = json.decode(response.body);
       return data;
@@ -56,8 +70,8 @@ class Services {
     }
   }
 
-  Future<dynamic> getContent()async{
-    final uri = Uri.parse('${baseurl}content');
+  Future<dynamic> getContent(String categoryId)async{
+    final uri = Uri.parse('${baseurl}content?catId=$categoryId');
 
     http.Response response = await http.get(uri);
 
@@ -67,6 +81,18 @@ class Services {
       var lst = data['data'];
       return lst;
     }
+  }
+
+  Future<dynamic> getContentDetails(String categoryId)async{
+
+    final uri = Uri.parse('${baseurl}content/detail');
+
+    http.Response response = await http.post(uri,body: {'contentId' : categoryId});
+
+    var data = json.decode(response.body);
+    return(data);
+
+
   }
 
   Future<dynamic> getWellnessContent()async{

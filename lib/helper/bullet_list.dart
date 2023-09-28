@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BulletList extends StatelessWidget {
-  final List<String> strings;
+  final List strings;
+   final Widget bullet;
 
-  const BulletList(this.strings, {super.key});
+   BulletList(this.strings, this.bullet, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +17,7 @@ class BulletList extends StatelessWidget {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
-                '•',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                  //height: 1.55,
-                  color: Theme.of(context).colorScheme.primary
-                ),
-              ),
+               bullet,
               const SizedBox(
                 width: 11,
               ),

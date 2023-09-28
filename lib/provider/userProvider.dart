@@ -49,6 +49,7 @@ class User extends ChangeNotifier{
       }
   );
 
+
   updateSplashData(String _deviceId, String _fcmToken){
     deviceId = _deviceId;
     fcmToken = _fcmToken;

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
@@ -110,6 +111,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
                             controller: homeScreenTabController,
                             isScrollable: false,
                             onTap: (index){
+                              HapticFeedback.selectionClick();
                               setState(() {
                                 _index = index;
                               });
@@ -153,7 +155,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(45),bottom: Radius.circular(45))
                           ),
                           child: GestureDetector(
-                            onTap: () => theme.changeScrollStatus(false),
+                            onTap: () {
+                              HapticFeedback.selectionClick();
+                              theme.changeScrollStatus(false);
+                            },
                             child: const CircleAvatar(
                               radius: 28,
                               backgroundColor: Colors.transparent,

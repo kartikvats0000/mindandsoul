@@ -10,11 +10,12 @@ import 'package:provider/provider.dart';
 import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../services/services.dart';
 
 class GridviewA extends StatefulWidget {
-  final List data;
+  final String categoryId;
   final String title;
-  const GridviewA({super.key,required this.title,required this.data});
+  const GridviewA({super.key,required this.title,required this.categoryId});
 
   @override
   State<GridviewA> createState() => _GridviewAState();
@@ -42,17 +43,24 @@ class _GridviewAState extends State<GridviewA> {
     }
   }
 
+  getData()async{
+    var data = await Services().getContent(widget.categoryId);
+
+    setState(() {
+      items = data;
+    });
+  }
+
   @override
   void initState() {
-    setState(() {
-      items = widget.data;
-    });
+    getData();
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('gridArebuilt');
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
             backgroundColor: theme.themeColorA,
@@ -118,7 +126,9 @@ class _GridviewAState extends State<GridviewA> {
                      ),
                    ),
                     Expanded(
-                      child: GridView.custom(
+                      child: (items.isEmpty)
+                          ?Components(context).Loader(textColor: theme.textColor)
+                          :GridView.custom(
                         padding: const EdgeInsets.only(bottom: 15,top: 10),
                         gridDelegate: SliverWovenGridDelegate.count(
                           pattern: const [
@@ -138,7 +148,7 @@ class _GridviewAState extends State<GridviewA> {
                                 (context, index) =>
                                 GestureDetector(
                                   onTap: (){
-                                    contentViewRoute(type: filteredItems()[index]['type'], data:  filteredItems()[index], context: context, title:  widget.title);
+                                    contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context, );
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

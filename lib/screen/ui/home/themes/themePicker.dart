@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:provider/provider.dart';
 
@@ -119,9 +120,7 @@ class _ThemePickerState extends State<ThemePicker> {
                                   placeholder: (context,string)=> Container(
                                       padding: const EdgeInsets.all(30),
                                       alignment: Alignment.center,
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 1,
-                                      )),
+                                      child:  SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
                                   imageUrl: themeData.themesList[index]['image'],fit: BoxFit.cover,),
                               ),
                             ),

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/sleepsounds/sound_player.dart';
@@ -163,6 +164,7 @@ class _SoundsListState extends State<SoundsList> {
 
   @override
   Widget build(BuildContext context) {
+    print('moods rebuilt');
     return Consumer<ThemeProvider>(
       builder: (context,theme,child) =>
       Scaffold(
@@ -296,9 +298,7 @@ class _SoundsListState extends State<SoundsList> {
                                     placeholder: (context,string)=> Container(
                                         padding: const EdgeInsets.all(30),
                                         alignment: Alignment.center,
-                                        child: const CircularProgressIndicator(
-                                          strokeWidth: 1,
-                                        )),
+                                        child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
                                     imageUrl: moodList[index]['image'],fit: BoxFit.cover,),
                                 ),
 

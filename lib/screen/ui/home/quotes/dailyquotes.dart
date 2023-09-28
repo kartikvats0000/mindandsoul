@@ -154,7 +154,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
         ),
         Positioned.fill(
             child: AnimatedContainer(
-              color: showDate?Colors.black.withOpacity(0.30):Colors.transparent,
+              color: showDate?Colors.black.withOpacity(0.075):Colors.transparent,
               duration: const Duration(milliseconds: 1500),
             )
         ),
@@ -447,9 +447,9 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           backgroundColor: Colors.black87,
                           child: Components(context).myIconWidget(icon: MyIcons.download,size: 15),
                           shape: const CircleBorder(),
-                          label: 'Download Image',
+                          label: 'Download Wallpaper',
                           labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall
+                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)?.copyWith(color: Colors.white)
                         ),
                         SpeedDialChild(
                           elevation: 0.0,
@@ -461,7 +461,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           shape: const CircleBorder(),
                           label: 'Download Quote',
                           labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall
+                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
                         ),
                         SpeedDialChild(
                           visible: !Platform.isIOS,
@@ -491,7 +491,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           shape: const CircleBorder(),
                           label: 'Set as Home Screen',
                           labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall
+                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
                         ),
                         SpeedDialChild(
                             visible: !Platform.isIOS,
@@ -512,8 +512,6 @@ class _DailyQuotesState extends State<DailyQuotes> {
                                   shareLoading = false;
                                 });
                               });
-
-
                             },
                           elevation: 0.0,
                           backgroundColor: Colors.black87,
@@ -521,7 +519,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           shape: const CircleBorder(),
                           label: 'Set as Lock Screen',
                           labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall
+                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
                         ),
                         SpeedDialChild(
                             visible: !Platform.isIOS,
@@ -551,7 +549,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           shape: const CircleBorder(),
                           label: 'Set Both',
                           labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall
+                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
                         ),
                       ],
                     )
@@ -566,17 +564,13 @@ class _DailyQuotesState extends State<DailyQuotes> {
                     ),
                     const SizedBox(width: 10,),
                     Components(context).BlurBackgroundCircularButton(
-
                         svg: MyIcons.share,
                         onTap: (){
                           setState(() {
                             shareLoading = true;
                           });
-
                           screenshotController.captureFromWidget(
-                              quoteScreen()
-                          )
-                              .then((value) async{
+                              quoteScreen()).then((value) async{
                             final tempDir = await getTemporaryDirectory();
                             File file = await File('${tempDir.path}/image.png').create();
                             file.writeAsBytesSync(value);

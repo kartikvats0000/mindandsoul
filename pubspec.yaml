@@ -75,6 +75,7 @@ dependencies:
   connectivity_plus: ^4.0.2
   csc_picker: ^0.2.7
   firebase_crashlytics: ^3.3.5
+  app_settings:
 
 dev_dependencies:
   flutter_test:
@@ -109,7 +110,7 @@ flutter:
     - assets/countries.json
     - assets/animations/
     - assets/meditation/
-
+    - assets/data/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
