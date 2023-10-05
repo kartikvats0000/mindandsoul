@@ -8,17 +8,22 @@ export 'internet_utilities.dart';
 
 
 class Services {
+  final String token;
+
+
+  Services(this.token);
 
   final String baseurl = 'http://13.200.60.212:8085/';
   //final String baseurl = 'http://192.168.1.146:8085/';
 
   Future<dynamic> splashApi(Map<String, dynamic> params)async{
+
     final uri = Uri.parse('${baseurl}splash');
     print(uri);
 
     print('params for apiSplash $params');
     
-    http.Response response = await http.post(uri,body: params);
+    http.Response response = await http.post(uri,body: params );
     var data = jsonDecode(response.body);
     print(response.body + '  ' + response.statusCode.toString());
 
@@ -30,20 +35,21 @@ class Services {
 
   Future<dynamic> login(Map<String,dynamic> params)async{
     final uri = Uri.parse('${baseurl}login');
-    http.Response response = await http.post(uri,body: params);
+    http.Response response = await http.post(uri,body: params,);
     var data = jsonDecode(response.body);
     print('user -> $data');
     return data;
   }
 
+
   ///GET
-
-
 
   Future<dynamic> getCategories()async{
     final uri = Uri.parse('${baseurl}category');
 
-    http.Response response = await http.get(uri);
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer ${token}'
+    });
     if (response.statusCode == 200){
       var data = json.decode(response.body);
       return data;
@@ -53,7 +59,9 @@ class Services {
   Future<dynamic> getHomeData(String userId)async{
     final uri = Uri.parse('${baseurl}home?userId=$userId');
 
-    http.Response response = await http.get(uri,);
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer ${token}'
+    });
     if (response.statusCode == 200){
       var data = json.decode(response.body);
       return data;
@@ -73,9 +81,34 @@ class Services {
   Future<dynamic> getContent(String categoryId)async{
     final uri = Uri.parse('${baseurl}content?catId=$categoryId');
 
-    http.Response response = await http.get(uri);
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer ${token}'
+    });
 
     var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+      var lst = data['data'];
+      return lst;
+    }
+  }
+
+  Future<dynamic> getFavouriteContent()async{
+
+    print('favo');
+    final uri = Uri.parse('${baseurl}content/favourite');
+
+    http.Response response = await http.get(uri,
+        headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    print(response.statusCode);
+
+
+    var data = json.decode(response.body);
+
+    print('favoruites $data}');
 
     if(response.statusCode == 200){
       var lst = data['data'];
@@ -87,7 +120,38 @@ class Services {
 
     final uri = Uri.parse('${baseurl}content/detail');
 
-    http.Response response = await http.post(uri,body: {'contentId' : categoryId});
+    http.Response response = await http.post(uri,body: {'contentId' : categoryId},headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    var data = json.decode(response.body);
+    return(data);
+
+
+  }
+
+  Future<dynamic> getFavouriteWellness()async{
+    final uri = Uri.parse('${baseurl}wellness/favourite');
+
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+      var lst = data['data'];
+      return lst;
+    }
+  }
+
+  Future<dynamic> getWellnessDetails(String wellnessId)async{
+
+    final uri = Uri.parse('${baseurl}wellness/detail');
+
+    http.Response response = await http.post(uri,body: {'wellId' : wellnessId},headers: {
+      'authorization' : 'Bearer ${token}'
+    });
 
     var data = json.decode(response.body);
     return(data);
@@ -98,7 +162,9 @@ class Services {
   Future<dynamic> getWellnessContent()async{
     final uri = Uri.parse('${baseurl}wellness');
 
-    http.Response response = await http.get(uri);
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer ${token}'
+    });
 
     var data = json.decode(response.body);
 
@@ -112,7 +178,9 @@ class Services {
     final uri = Uri.parse('${baseurl}harmony/mood');
 
     try{
-      http.Response response = await http.get(uri);
+      http.Response response = await http.get(uri,headers: {
+        'authorization' : 'Bearer ${token}'
+      });
 
       var data = json.decode(response.body);
 
@@ -129,7 +197,9 @@ class Services {
     final uri = Uri.parse('${baseurl}harmony/cat');
 
     try{
-      http.Response response = await http.get(uri);
+      http.Response response = await http.get(uri,headers: {
+        'authorization' : 'Bearer ${token}'
+      });
 
       var data = json.decode(response.body);
 
@@ -161,12 +231,29 @@ class Services {
 
     final uri = Uri.parse('${baseurl}quote');
 
-    http.Response response = await http.post(uri,body: {'country' : country});
+    http.Response response = await http.post(uri,body: {'country' : country},headers: {
+      'authorization' : 'Bearer ${token}'
+    });
 
 
 
     var data = json.decode(response.body);
     print(data);
+
+    if(response.statusCode == 200){
+      var lst = data['data'];
+      return lst;
+    }
+  }
+
+  Future<dynamic> getFavouriteQuotes()async{
+    final uri = Uri.parse('${baseurl}quote/favourite');
+
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    var data = json.decode(response.body);
 
     if(response.statusCode == 200){
       var lst = data['data'];

@@ -45,7 +45,6 @@ class _ThemePreviewState extends State<ThemePreview> {
     sharedPreferences.setString('defaultTheme', theme);
   }
 
-
   @override
   void initState() {
     initVideo();
@@ -240,9 +239,11 @@ class _ThemePreviewState extends State<ThemePreview> {
                                                     (Route<dynamic> route) => false
                                             );*/
 
-                                            Timer(const Duration(milliseconds: 600), () {
-                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>  BottomNavScreen()), (route) => true);
-                                              //Navigator.pop(context);
+                                            Timer(const Duration(milliseconds: 1000), () {
+                                              //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>  const BottomNavScreen()), (route) => true);
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+
                                             });
 
                                             Components(context).showSuccessSnackBar('Essence Aligned Harmoniously',margin: const EdgeInsets.only(bottom: kToolbarHeight+15,right: 15,left: 15));

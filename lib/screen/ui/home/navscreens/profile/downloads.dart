@@ -46,7 +46,7 @@ class _DownloadsState extends State<Downloads> {
                   colors: [
                     theme.themeColorA,
                     theme.themeColorB,
-                    theme.themeColorA,
+                   // theme.themeColorA,
                   ]
               )
           ),

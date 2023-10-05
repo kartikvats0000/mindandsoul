@@ -9,6 +9,7 @@ import 'package:mindandsoul/screen/ui/home/navscreens/Home.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/notifications.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/profile.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 
 import '../../../helper/miniplayer.dart';
@@ -46,11 +47,17 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
   int _index = 0;
 
 
-  List<Widget> screens = const [
-    Home(),
-    Notifications(),
-    Notifications(),
-    Profile()
+  List<Widget> screens =  [
+    ShowCaseWidget(
+      builder: Builder(
+        builder: (context) {
+          return const Home();
+        }
+      ),
+    ),
+    const Notifications(),
+    const Notifications(),
+    const Profile()
   ];
   DateTime? currentBackPressTime;
   

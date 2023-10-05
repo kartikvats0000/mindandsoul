@@ -311,6 +311,7 @@ import 'package:chewie/chewie.dart';
 
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 class VideoContent extends StatefulWidget {
@@ -373,7 +374,8 @@ class _VideoContentState extends State<VideoContent> {
   Map data = {};
 
   getData()async{
-    var lst = await Services().getContentDetails(widget.id);
+    User user = Provider.of<User>(context,listen: false);
+    var lst = await Services(user.token).getContentDetails(widget.id);
     print(lst);
     setState(() {
       data = lst['data'];
@@ -581,26 +583,20 @@ Widget _buildBox({
   //ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
   return GestureDetector(
     onTap: onTap,
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15,sigmaY: 15),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
-          // height: 50,
-          // width: 50,
-          decoration: BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.circular(radius)
-          ),
-          child: Row(
-            children: [
-              icon,
-              SizedBox(width: (label == '')?0:7,),
-              Text(label,style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),fontSize: 12),),
-            ],
-          ),
-        ),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+      // height: 50,
+      // width: 50,
+      decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(radius)
+      ),
+      child: Row(
+        children: [
+          icon,
+          SizedBox(width: (label == '')?0:7,),
+          Text(label,style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),fontSize: 12),),
+        ],
       ),
     ),
   );

@@ -8,6 +8,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../helper/components.dart';
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 class InfoGraphic extends StatefulWidget {
@@ -28,7 +29,8 @@ class _InfoGraphicState extends State<InfoGraphic> {
   Map data = {};
 
   getData()async{
-    var lst = await Services().getContentDetails(widget.id);
+    User user = Provider.of<User>(context,listen: false);
+    var lst = await Services(user.token).getContentDetails(widget.id);
     print(lst);
     setState(() {
       data = lst['data'];

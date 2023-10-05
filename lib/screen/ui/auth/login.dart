@@ -1,6 +1,6 @@
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
       });
     });*/
 
-    var data = await Services().splashApi(
+    var data = await Services('').splashApi(
         {'deviceId': deviceId, 'deviceType': deviceType, 'fcmToken': fcmToken});
     User user = Provider.of<User>(context, listen: false);
 
@@ -116,7 +116,7 @@ class _LoginState extends State<Login> {
     }
 
     else{
-      var data = await Services().login({
+      var data = await Services('').login({
         'name' : googleUser.displayName,
         'email' : googleUser.email,
         'deviceId' : user.deviceId,

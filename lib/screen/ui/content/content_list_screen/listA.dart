@@ -8,6 +8,8 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../provider/userProvider.dart';
+
 
 class ListviewA extends StatefulWidget {
   final String title;
@@ -40,10 +42,14 @@ class _ListviewAState extends State<ListviewA> {
     }
   }
 
+  bool loading = true;
+
   getData()async{
-    var data = await Services().getContent(widget.categoryId);
+    User user = Provider.of<User>(context,listen: false);
+    var data = await Services(user.token).getContent(widget.categoryId);
     setState(() {
       items = data;
+      loading  = false;
     });
   }
 
@@ -60,21 +66,7 @@ class _ListviewAState extends State<ListviewA> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight + 20),
-            child: AppBar(
-              toolbarHeight: kToolbarHeight + 20,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              scrolledUnderElevation: 0.0,
-              automaticallyImplyLeading: false,
-              leading: Padding(
-                padding: EdgeInsets.all(7),
-                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
-              ),
-              title: Text(widget.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
-            ),
-          ),
+          appBar: Components(context).myAppBar(widget.title),
           body: Container(
 
             height: MediaQuery.of(context).size.height,
@@ -83,13 +75,15 @@ class _ListviewAState extends State<ListviewA> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      theme.themeColorA.withOpacity(0.2),
+                      theme.themeColorA,
                       theme.themeColorB,
                     ]
                 )
             ),
 
-            child: Column(
+            child: (loading)
+                ?Components(context).Loader(textColor: theme.textColor)
+                :(items.isEmpty)?Center(child: Text('No data'),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
@@ -118,9 +112,7 @@ class _ListviewAState extends State<ListviewA> {
                       ).toList(),
                     ),
                   ),
-                ),(items.isEmpty)
-                    ?Components(context).Loader(textColor: theme.textColor)
-                    :Expanded(
+                ),Expanded(
                   child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: filteredItems().length,
@@ -128,62 +120,56 @@ class _ListviewAState extends State<ListviewA> {
                       itemBuilder: (context,index){
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-                              child: GestureDetector(
-                                onTap: (){
-                                  contentViewRoute(type: filteredItems()[index]['type'], context: context, id: filteredItems()[index]['_id']);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    // color: Colors.black12,
-                                      borderRadius: BorderRadius.circular(15)
-                                  ),
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  // height: MediaQuery.of(context).size.height * 0.15,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: AspectRatio(
-                                            aspectRatio: 1,
-                                            child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(20),
-                                                child: Hero(
-                                                  tag: filteredItems()[index]['_id'],
-                                                    child: CachedNetworkImage(imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,))),
-                                          ),
-                                        ),
+                          child: GestureDetector(
+                            onTap: (){
+                              contentViewRoute(type: filteredItems()[index]['type'], context: context, id: filteredItems()[index]['_id']);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                // color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              padding: const EdgeInsets.only(bottom: 5),
+                              // height: MediaQuery.of(context).size.height * 0.15,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: AspectRatio(
+                                        aspectRatio: 1,
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: Hero(
+                                              tag: filteredItems()[index]['_id'],
+                                                child: CachedNetworkImage(imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,))),
                                       ),
-                                      Expanded(
-                                          flex: 7,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16,fontWeight: FontWeight.bold),maxLines: 2,overflow: TextOverflow.ellipsis,),
-                                                SizedBox(height: 10,),
-                                                Components(context).tags(
-                                                  title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
-                                                  context: context,
-                                                  textcolor: theme.textColor.withOpacity(0.7)
-                                                )
-                                              ],
-                                            ),
-                                          )),
-                                      Expanded(
-                                          child: Icon(CupertinoIcons.ellipsis,color: theme.textColor.withOpacity(0.6),)
-                                      )
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  Expanded(
+                                      flex: 7,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16,fontWeight: FontWeight.bold),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                            SizedBox(height: 10,),
+                                            Components(context).tags(
+                                              title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
+                                              context: context,
+                                              textcolor: theme.textColor.withOpacity(0.7)
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  Expanded(
+                                      child: Icon(CupertinoIcons.ellipsis,color: theme.textColor.withOpacity(0.6),)
+                                  )
+                                ],
                               ),
                             ),
                           ),

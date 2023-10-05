@@ -5,7 +5,9 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 
@@ -54,7 +56,8 @@ class _TextContentState extends State<TextContent> {
   Map data = {};
 
   getData()async{
-    var lst = await Services().getContentDetails(widget.id);
+    User user = Provider.of<User>(context,listen: false);
+    var lst = await Services(user.token).getContentDetails(widget.id);
     print(lst);
     setState(() {
       data = lst['data'];

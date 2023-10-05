@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -113,7 +114,7 @@ class _EditProfileState extends State<EditProfile> {
       print('No Image');
     }
     else{
-      imageurl = await Services().uploadImage(image!,user.token);
+      imageurl = await Services(user.token).uploadImage(image!,user.token);
       print(imageurl);
       setState(() {});
     }
@@ -311,6 +312,7 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
+                  HapticFeedback.lightImpact();
                   showActionSheet();
                 },
                 child: Stack(
@@ -322,7 +324,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Positioned(
                       bottom: 0,
-                        right: 5,
+                        right: 0,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(40),
                           child: BackdropFilter(
@@ -538,7 +540,7 @@ class _EditProfileState extends State<EditProfile> {
                       'profile_picture' : imageurl,
                       'country' : countryVal
                     };
-                    var data = await Services().editProfile(body, user.token);
+                    var data = await Services(user.token).editProfile(body, user.token);
                     SharedPreferences sharedpreference = await SharedPreferences.getInstance();
                     await sharedpreference.setString('loginData', json.encode(data['data']));
                     Components(context).showSuccessSnackBar('Profile Serenely Updated',margin: const EdgeInsets.only(bottom: kToolbarHeight+15,right: 15,left: 15));

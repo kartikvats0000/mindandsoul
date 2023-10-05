@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 class GridviewB extends StatefulWidget {
@@ -44,10 +45,14 @@ class _GridviewBState extends State<GridviewB> {
     }
   }
 
+  bool loading = true;
+
   getData()async{
-    var data = await Services().getContent(widget.categoryId);
+    User user = Provider.of<User>(context,listen: false);
+    var data = await Services(user.token).getContent(widget.categoryId);
     setState(() {
       items = data;
+      loading = false;
     });
   }
 
@@ -64,22 +69,7 @@ class _GridviewBState extends State<GridviewB> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
             backgroundColor: theme.themeColorA,
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight + 20),
-
-              child: AppBar(
-                toolbarHeight: kToolbarHeight + 20,
-                backgroundColor: Colors.transparent,
-                elevation: 0.0,
-                scrolledUnderElevation: 0.0,
-                automaticallyImplyLeading: false,
-                leading: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
-                ),
-                title: Text(widget.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
-              ),
-            ),
+            appBar: Components(context).myAppBar(widget.title),
             body: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: MediaQuery.of(context).size.height,
@@ -90,12 +80,14 @@ class _GridviewBState extends State<GridviewB> {
                         colors: [
                           theme.themeColorA,
                           theme.themeColorB,
-                          theme.themeColorA,
+                         // theme.themeColorA,
                         ]
                     )
                 ),
 
-                child: Column(
+                child: (loading)
+                    ?Components(context).Loader(textColor: theme.textColor)
+                    :(items.isEmpty)?Center(child: Text('No data'),):Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -125,9 +117,8 @@ class _GridviewBState extends State<GridviewB> {
                           ).toList(),
                         ),
                       ),
-                    ),(items.isEmpty)
-                        ?Components(context).Loader(textColor: theme.textColor)
-                        :Expanded(
+                    ),
+                    Expanded(
                       child: MasonryGridView.count(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
@@ -141,55 +132,52 @@ class _GridviewBState extends State<GridviewB> {
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.black26
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Hero(
-                                                tag: filteredItems()[index]['_id'],
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  child: CachedNetworkImage(
-                                                    placeholder: (context,string)=> Container(
-                                                        padding: const EdgeInsets.all(30),
-                                                        alignment: Alignment.center,
-                                                        child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
-                                                    imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,),
-                                                ),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.black26
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Hero(
+                                              tag: filteredItems()[index]['_id'],
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: CachedNetworkImage(
+                                                  placeholder: (context,string)=> Container(
+                                                      padding: const EdgeInsets.all(30),
+                                                      alignment: Alignment.center,
+                                                      child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
+                                                  imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,),
                                               ),
-                                              Positioned(
-                                                  top: 7,
-                                                  right: 7,
-                                                  child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite)
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 15,),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 14),),
-                                          ),
-                                          const SizedBox(height: 10,),
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 15.0,left: 8),
-                                            child: Components(context).tags(
-                                              title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
-                                              context: context,
+                                            ),
+                                            Positioned(
+                                                top: 7,
+                                                right: 7,
+                                                child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite)
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 15,),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                          child: Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 14),),
+                                        ),
+                                        const SizedBox(height: 10,),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 15.0,left: 8),
+                                          child: Components(context).tags(
+                                            title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
+                                            context: context,
 
-                                            )
-                                          ),
-                                        ],
-                                      ),
+                                          )
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

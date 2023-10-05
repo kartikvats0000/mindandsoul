@@ -6,6 +6,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/bottomNavigationbarScreen.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../provider/playerProvider.dart';
 import '../../provider/themeProvider.dart';
 import '../../services/services.dart';
 
@@ -27,9 +29,9 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> with TickerProviderStateMixin{
 
-  late AnimationController motionController;
+ /* late AnimationController motionController;
   late Animation motionAnimation;
-  double size = 20;
+  double size = 20;*/
 
 
 
@@ -40,8 +42,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
   String deviceId = "", deviceType = "",fcmToken = "";
 
   setTheme()async{
+
     //Get all themes from JSON
-    var data =  await Services().getThemes();
+    var data =  await Services('').getThemes();
 
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     await theme.addThemes(data);
@@ -50,40 +53,52 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var _theme = sharedPreferences.getString('defaultTheme');
     if(_theme == null){
-
+      print('No default theme');
       await theme.updateTheme(theme.themesList[0]);
     }
     else{
+      print('already has theme');
       await theme.updateTheme(json.decode(_theme));
     }
 
   }
 
   late VideoPlayerController videoPlayerController;
+  late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
-    initVideo();
+    setState(() {
+      videoPlayerController = VideoPlayerController.asset('assets/splash/splash.mp4',videoPlayerOptions: VideoPlayerOptions());
+      _initializeVideoPlayerFuture = videoPlayerController.initialize();
+
+    });
+  //  initVideo();
     setTheme();
-   // getdevicedata();
+    //getdevicedata();
     getData();
 
     super.initState();
   }
 
 
-  void initVideo(){
-    /*ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
-    MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);*/
+   initVideo(){
+    //ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
+    //MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
     videoPlayerController = VideoPlayerController.asset('assets/splash/splash.mp4')..initialize()
         .then((_) {
-      videoPlayerController.play();
-      videoPlayerController.addListener(() {
+      /*setState(() {
+        videoPlayerController.play();
+      });*/
+     /* videoPlayerController.addListener(() async{
         if(videoPlayerController.value.position == videoPlayerController.value.duration) {
-          print('video Ended');
+          await setTheme();
+          getData();
         }
-      });
+      });*/
     });
+
+
    // videoPlayerController.setVolume(0.60);
 
   }
@@ -98,8 +113,10 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
 
   getData() async {
     User user = Provider.of<User>(context, listen: false);
+
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var data = sharedPreferences.getString('loginData');
+
     /*notificationService.requestNotificationPermission();
     notificationService.firebaseInit(context);
     notificationService.isTokenFresh();
@@ -110,20 +127,20 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
    // await user.updateSplashData(deviceId, fcmToken);
     if (data == null) {
       Timer(
-          const Duration(milliseconds: 6500),
+          const Duration(milliseconds: 6200),
               () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: ((context) => Login()))));
+                  builder: ((context) => const Login()))));
     } else {
       print(data);
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);
-
+      print('my token ${user.token}');
       Timer(
-          const Duration(milliseconds: 6500),
-              () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: ((context) => BottomNavScreen()))));
+          const Duration(milliseconds: 6200),
+              () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: ((context) => const BottomNavScreen()))));
     }
   }
 
@@ -132,19 +149,29 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     return Consumer<ThemeProvider>(
       builder: (context,theme,child) =>
        Scaffold(
-         backgroundColor: theme.themeColorA.withOpacity(0.3),
+         backgroundColor: theme.themeColorA,
         extendBody: true,
-        body: SizedBox.expand(
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: videoPlayerController.value.size.width,
-              height: videoPlayerController.value.size.height,
-              child: VideoPlayer(
-                videoPlayerController
-              ),
-            ),
-          ),
+        body: FutureBuilder(
+          future: _initializeVideoPlayerFuture,
+          builder: (context,snapshot) {
+            if(snapshot.connectionState == ConnectionState.done){
+              videoPlayerController.play();
+              return Stack(
+                children: [
+                  Positioned.fill(child: VideoPlayer(videoPlayerController)),
+                  Positioned(
+                    bottom: 85,
+                      child: Visibility(
+                        visible: videoPlayerController.value.duration == videoPlayerController.value.position,
+                          child: const SpinKitSpinningLines(color: Colors.deepOrangeAccent,)))
+                ],
+              );
+            }
+            else{
+              return Container();
+            }
+
+          }
         )
       ),
     );

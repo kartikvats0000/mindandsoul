@@ -7,6 +7,7 @@ import 'package:mindandsoul/helper/components.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/themeProvider.dart';
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 import 'Themepreview.dart';
 
@@ -20,11 +21,13 @@ class ThemePicker extends StatefulWidget {
 class _ThemePickerState extends State<ThemePicker> {
 
   bool loading = false;
+
   updateThemes()async {
+    User user = Provider.of<User>(context,listen: false);
     setState(() {
       loading = true;
     });
-    var data =  await Services().getThemes();
+    var data =  await Services('').getThemes();
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     await theme.clearThemes();
     await theme.addThemes(data);
@@ -39,27 +42,9 @@ class _ThemePickerState extends State<ThemePicker> {
          backgroundColor: themeData.themeColorA,
         //extendBody: true,
         //extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight + 20),
-          child: AppBar(
-            toolbarHeight: kToolbarHeight + 20,
-            elevation: 0.0,
-            scrolledUnderElevation: 0.0,
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: Text('Essence',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 30),),
-            leading: Padding(
-                padding: EdgeInsets.all(7),
-                child: Components(context).BlurBackgroundCircularButton(
-                  icon: Icons.chevron_left,
-                  onTap: (){Navigator.pop(context);},
-                )
-            ),
-
-          ),
-        ),
+        appBar: Components(context).myAppBar('Essence'),
         body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: themeData.themeColorA,
               gradient: LinearGradient(
@@ -68,7 +53,7 @@ class _ThemePickerState extends State<ThemePicker> {
                   colors: [
                     themeData.themeColorA.withOpacity(0.2),
                     themeData.themeColorB,
-                    themeData.themeColorA,
+                   // themeData.themeColorA,
                   ]
               )
           ),
@@ -133,13 +118,10 @@ class _ThemePickerState extends State<ThemePicker> {
                                 right: 5,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 15,sigmaY: 15),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.black.withOpacity(0.2),
-                                      radius: 16,
-                                      child: Icon(Icons.check,color: Colors.white,),
-                                    ),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.black.withOpacity(0.35),
+                                    radius: 16,
+                                    child: Icon(Icons.check,color: Colors.white,),
                                   ),
                                 )
                             ),

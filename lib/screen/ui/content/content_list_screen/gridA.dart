@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 class GridviewA extends StatefulWidget {
@@ -35,6 +36,8 @@ class _GridviewAState extends State<GridviewA> {
 
   String selectedChip = 'All';
 
+  bool loading = true;
+
   List filteredItems() {
     if (selectedChip == 'All') {
       return items;
@@ -44,10 +47,11 @@ class _GridviewAState extends State<GridviewA> {
   }
 
   getData()async{
-    var data = await Services().getContent(widget.categoryId);
-
+    User user = Provider.of<User>(context,listen: false);
+    var data = await Services(user.token).getContent(widget.categoryId);
     setState(() {
       items = data;
+      loading = false;
     });
   }
 
@@ -64,21 +68,7 @@ class _GridviewAState extends State<GridviewA> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
             backgroundColor: theme.themeColorA,
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight + 20),
-              child: AppBar(
-                toolbarHeight: kToolbarHeight + 20,
-                backgroundColor: Colors.transparent,
-                elevation: 0.0,
-                scrolledUnderElevation: 0.0,
-                automaticallyImplyLeading: false,
-                leading: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
-                ),
-                title: Text(widget.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
-              ),
-            ),
+            appBar: Components(context).myAppBar(widget.title),
             body: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: MediaQuery.of(context).size.height,
@@ -89,12 +79,14 @@ class _GridviewAState extends State<GridviewA> {
                         colors: [
                           theme.themeColorA,
                           theme.themeColorB,
-                          theme.themeColorA,
+                         // theme.themeColorA,
                         ]
                     )
                 ),
 
-                child: Column(
+                child: (loading)
+                    ?Components(context).Loader(textColor: theme.textColor)
+                    :(items.isEmpty)?Center(child: Text('No data'),):Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -126,9 +118,7 @@ class _GridviewAState extends State<GridviewA> {
                      ),
                    ),
                     Expanded(
-                      child: (items.isEmpty)
-                          ?Components(context).Loader(textColor: theme.textColor)
-                          :GridView.custom(
+                      child: GridView.custom(
                         padding: const EdgeInsets.only(bottom: 15,top: 10),
                         gridDelegate: SliverWovenGridDelegate.count(
                           pattern: const [

@@ -2,10 +2,8 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
-import 'package:mindandsoul/services/notificationServices.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +17,7 @@ import 'package:timezone/data/latest.dart' as tz;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
   tz.initializeTimeZones();
   //LocalNotifyManager.init();
   //NotificationServices().initializeNotification();
@@ -31,7 +30,7 @@ Future<void> main() async {
   );*/
 
   Paint.enableDithering = true;
-  await Firebase.initializeApp(
+ await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -223,7 +222,7 @@ class MyApp extends StatelessWidget {
                   )
               ),
               debugShowCheckedModeBanner: false,
-              title: 'Mind N Soul',
+              title: 'Brain N Soul',
               home: const Splash()
           );
         }

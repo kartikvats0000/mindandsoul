@@ -11,6 +11,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 
@@ -54,10 +55,14 @@ class _ListviewBState extends State<ListviewB> {
     }
   }
 
+  bool loading  = true;
+
   getData()async{
-    var data = await Services().getContent(widget.categoryId);
+    User user = Provider.of<User>(context,listen: false);
+    var data = await Services(user.token).getContent(widget.categoryId);
     setState(() {
       items = data;
+      loading = false;
     });
   }
 
@@ -73,21 +78,7 @@ class _ListviewBState extends State<ListviewB> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight + 20),
-            child: AppBar(
-              toolbarHeight: kToolbarHeight + 20,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              scrolledUnderElevation: 0.0,
-              automaticallyImplyLeading: false,
-              leading: Padding(
-                padding: EdgeInsets.all(7),
-                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
-              ),
-              title: Text(widget.title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 30),),
-            ),
-          ),
+          appBar: Components(context).myAppBar(widget.title),
           body: Container(
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
@@ -95,13 +86,15 @@ class _ListviewBState extends State<ListviewB> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      theme.themeColorA.withOpacity(0.2),
+                      theme.themeColorA,
                       theme.themeColorB,
                     ]
                 )
             ),
 
-            child: Column(
+            child: (loading)
+                ?Components(context).Loader(textColor: theme.textColor)
+                :(items.isEmpty)?Center(child: Text('No data'),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
@@ -132,9 +125,8 @@ class _ListviewBState extends State<ListviewB> {
                       ).toList(),
                     ),
                   ),
-                ),(items.isEmpty)
-                    ?Components(context).Loader(textColor: theme.textColor)
-                    :Expanded(
+                ),
+                Expanded(
                   child: ListView.builder(
                       itemCount: filteredItems().length,
                     //  separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
@@ -158,16 +150,13 @@ class _ListviewBState extends State<ListviewB> {
                                   children: [
                                     Container(
                                       width: double.infinity,
-                                      padding: EdgeInsets.all(10),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
                                         gradient: const LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
-                                            colors: [
-                                              Colors.transparent,
-                                              Colors.black54
-                                            ]
+                                            colors: [Colors.transparent, Colors.black54]
                                         ),
                                       ),
                                       child: Column(
@@ -175,7 +164,7 @@ class _ListviewBState extends State<ListviewB> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.92),fontWeight: FontWeight.w800,fontSize: 17),),
-                                          SizedBox(height: 10,),
+                                          const SizedBox(height: 10,),
                                           Row(
                                             children: [
                                               Expanded(

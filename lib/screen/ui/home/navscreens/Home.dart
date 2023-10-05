@@ -13,6 +13,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
+import 'package:mindandsoul/helper/showcasewidget.dart';
+import 'package:mindandsoul/helper/theme_icon_animation.dart';
 import 'package:mindandsoul/helper/volume_slider_video.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
@@ -22,16 +24,18 @@ import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
 import 'package:mindandsoul/screen/ui/home/breathe/breatheList.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
-import 'package:mindandsoul/screen/ui/content/wellness.dart';
+import 'package:mindandsoul/screen/ui/home/wellness/wellness.dart';
 import 'package:mindandsoul/screen/ui/sleepsounds/soundlist.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
 import '../../../../services/services.dart';
 import '../../content/content_list_screen/gridA.dart';
+import '../../sleepsounds/soundmaker.dart';
 
 
 class Home extends StatefulWidget {
@@ -97,7 +101,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var map = sharedPreferences.getString('quoteData');
     if(map == null){
-      var data = await Services().getQuotes(user.country);
+      var data = await Services(user.token).getQuotes(user.country);
       setState(() {
         quotesList = data;
         log('quotes =  ${quotesList.toString()}');
@@ -110,7 +114,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
    else{
      var quoteData = json.decode(map);
      if(quoteData['date'] != DateFormat('d-M').format(DateTime.now()).toString()){
-       var data = await Services().getQuotes(user.country);
+       var data = await Services(user.token).getQuotes(user.country);
        setState(() {
          quotesList = data;
          log('quotes =  ${quotesList.toString()}');
@@ -193,8 +197,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   getData()async{
     User user = Provider.of<User>(context,listen: false);
 
-    var data = await Services().getHomeData(user.id);
+    var data = await Services(user.token).getHomeData(user.id);
     String jsn = await DefaultAssetBundle.of(context).loadString("assets/data/breathingList.json");
+    print(jsn);
     var all = json.decode(jsn);
     setState(() {
       categoryList = data['data']['category'];
@@ -244,8 +249,16 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     });
   }*/
 
+  final GlobalKey themeKey = GlobalKey();
+  final GlobalKey weatherKey = GlobalKey();
+  final GlobalKey volumeKey = GlobalKey();
+  final GlobalKey quoteKey = GlobalKey();
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) { ShowCaseWidget.of(context).startShowCase(
+        [themeKey,quoteKey]);
+    });
     //checkForInternet();
     fetchWeather();
     getQuotes();
@@ -277,7 +290,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
-    print('homepageRebuilt');
+    debugPrint('homepageRebuilt');
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     return Consumer<ThemeProvider>(
@@ -455,12 +468,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 ),
                                 Row(
                                   children: [
-                                    Components(context).BlurBackgroundCircularButton(
-                                      svg: MyIcons.theme,
-                                      onTap: ()async{ HapticFeedback.selectionClick();
+                                    ShowCaseView(
+                                     // shapeBorder: CircleBorder(),
+                                      globalKey: themeKey,
+                                      title: 'Essence',
+                                      description: 'Change App Theme',
+                                      child: GestureDetector(
+                                        onTap: ()async{ HapticFeedback.selectionClick();
                                         await videoPlayerController.pause();
                                         Navigator.push(context, MaterialPageRoute(builder: (context) => const ThemePicker())).then((value) => initVideo());
-                                      },
+                                        },
+                                        child: ThemeButtonAnimation(),
+                                      )
                                     ),
                                     const SizedBox(width: 10,),
                                     Components(context).BlurBackgroundCircularButton(
@@ -510,8 +529,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                         end: Alignment.bottomCenter,
                         colors: [
                           themeData.themeColorA.withOpacity(0.2),
-                          themeData.themeColorB,
+                          themeData.themeColorA.withOpacity(0.7),
                          // themeData.themeColorB,
+                          themeData.themeColorB.withOpacity(0.5),
                           themeData.themeColorB,
                         ],
                       ),
@@ -556,66 +576,72 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 10,),
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                              height: 170,
-                              width: double.infinity,
-                              child: GridView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: categoryList.length,
-                                  gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 1.5 / 2.5,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 7,
-                                    mainAxisExtent: w * 0.3
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: (){ HapticFeedback.selectionClick();
-                                        videoPlayerController.pause();
-                                        contentPageRoute((index % 2 == 0)?'b':'a',categoryList[index]['_id'],categoryList[index]['title']);
-                                      },
-                                      child: Container(
-                                        height: 60,
-                                        // margin: EdgeInsets.all(6),
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.primary.withOpacity(0.35),
-                                            borderRadius: BorderRadius.circular(45)
+                           // const SizedBox(height: 10,),
+                            Visibility(
+                              visible: categoryList.isNotEmpty,
+                              child: Container(
+                                width: double.infinity,
+                                child: GridView.builder(
+                                  padding: const  EdgeInsets.symmetric(vertical: 10,horizontal: 7),
+                                  shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    //scrollDirection: Axis.horizontal,
+                                    itemCount: categoryList.length,
+                                    gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5/1.5,//1.5 / 2.5,
+                                        crossAxisSpacing: 7,
+                                        mainAxisSpacing: 10,
+                                     // mainAxisExtent: w * 0.3, //maxCrossAxisExtent: 170/2
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: (){ HapticFeedback.selectionClick();
+                                          videoPlayerController.pause();
+                                          contentPageRoute((index % 2 == 0)?'d':'d',categoryList[index]['_id'],categoryList[index]['title']);
+                                        },
+                                        child: Container(
+                                          height: 60,
+                                          // margin: EdgeInsets.all(6),
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                              borderRadius: BorderRadius.circular(45)
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .center,
+                                            children: [
+                                              const SizedBox(height: 7,),
+                                              Expanded(child: SvgPicture.network(
+                                                categoryList[index]['image'],
+                                                color: themeData.textColor,
+                                                height: 25,
+                                                width: 25,)),
+                                              //SizedBox(height: ,),
+                                              Text(categoryList[index]['title'],
+                                                style: TextStyle(
+                                                    color: themeData.textColor,
+                                                    fontSize: 12),),
+                                              const SizedBox(height: 7,),
+                                            ],
+                                          ),
                                         ),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .center,
-                                          children: [
-                                            const SizedBox(height: 7,),
-                                            Expanded(child: SvgPicture.network(
-                                              categoryList[index]['image'],
-                                              color: themeData.textColor,
-                                              height: 25,
-                                              width: 25,)),
-                                            //SizedBox(height: ,),
-                                            Text(categoryList[index]['title'],
-                                              style: TextStyle(
-                                                  color: themeData.textColor,
-                                                  fontSize: 12),),
-                                            const SizedBox(height: 7,),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                      );
+                                    }
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10,),
-                            Divider(
-                              thickness: 0.2,
-                              color: themeData.textColor.withOpacity(0.5),
-                              indent: 15,
-                              endIndent: 15,
+                            Visibility(
+                              visible: categoryList.isNotEmpty,
+                              child: Divider(
+                                thickness: 0.2,
+                                color: themeData.textColor.withOpacity(0.5),
+                                indent: 15,
+                                endIndent: 15,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -686,7 +712,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         ),
                                       ),
                                       const SizedBox(height: 10,),
-                                      Text('Know Yourself',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
+                                      Text('Know Yourself',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),maxLines: 1,)
                                     ],
                                   )),
                                   Expanded(child: Column(
@@ -751,48 +777,57 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       .withOpacity(0.35),
                                   borderRadius: BorderRadius.circular(25),
                                 ),
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                        child: AspectRatio(
-                                          aspectRatio: 1,
-                                            child: (quotesList.isEmpty)
-                                                ?SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,):ClipRRect(
-                                              borderRadius: BorderRadius.circular(10),
-                                                child: Stack(
-                                                  children: [
-                                                    Positioned.fill(child: CachedNetworkImage(imageUrl: quotesList.first['image'],fit: BoxFit.cover,placeholder: (context,url) =>Container(color: Theme.of(context).colorScheme.primary,),)),
-                                                    Center(
-                                                      child: Text(DateTime.now().day.toString().padLeft(2,'0'),
-                                                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white,fontSize: 18),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ))
-                                        )
+
+                                child: ShowCaseView(
+                                  shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  globalKey: quoteKey,
+                                  title: "Today's Quote",
+                                  description: 'New Motivational Quote Daily',
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                            child: AspectRatio(
+                                              aspectRatio: 1,
+                                                child: (quotesList.isEmpty)
+                                                    ?SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,):ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                    child: Stack(
+                                                      children: [
+                                                        Positioned.fill(child: CachedNetworkImage(imageUrl: quotesList.first['image'],fit: BoxFit.cover,placeholder: (context,url) =>Container(color: Theme.of(context).colorScheme.primary,),)),
+                                                        Center(
+                                                          child: Text(DateTime.now().day.toString().padLeft(2,'0'),
+                                                            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white,fontSize: 18),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ))
+                                            )
+                                        ),
+                                        const SizedBox(width: 10,),
+                                         Expanded(
+                                          flex: 10,
+                                            child:Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Today's Quote",style: Theme.of(context).textTheme.labelLarge,),
+                                                const SizedBox(height: 5,),
+                                                (quotesList.isEmpty)?const Text('Loading...'): Text(quotesList.first['quote'],
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.8)),
+                                                  maxLines: 1,overflow: TextOverflow.ellipsis,)
+                                              ],
+                                            )
+                                        ),
+                                        const SizedBox(width: 5,),
+                                      Icon(Icons.chevron_right,color: themeData.textColor,)
+                                      //   TextButton(onPressed: null, style: TextButton.styleFrom(backgroundColor: Colors.white
+                                      //       .withOpacity(0.15),),child: Text('Show',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.black87),)),
+                                      // ],
+                                    ]
                                     ),
-                                    const SizedBox(width: 10,),
-                                     Expanded(
-                                      flex: 10,
-                                        child:Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Today's Quote",style: Theme.of(context).textTheme.labelLarge,),
-                                            const SizedBox(height: 5,),
-                                            (quotesList.isEmpty)?const Text('Loading...'): Text(quotesList.first['quote'],
-                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.8)),
-                                              maxLines: 1,overflow: TextOverflow.ellipsis,)
-                                          ],
-                                        )
-                                    ),
-                                    const SizedBox(width: 5,),
-                                  Icon(Icons.chevron_right,color: themeData.textColor,)
-                                  //   TextButton(onPressed: null, style: TextButton.styleFrom(backgroundColor: Colors.white
-                                  //       .withOpacity(0.15),),child: Text('Show',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.black87),)),
-                                  // ],
-                                ]
+                                  ),
                                 ),
                               ),
                             ),
@@ -848,8 +883,17 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       return Consumer<MusicPlayerProvider>(
                                         builder: (context,player,child) =>
                                             GestureDetector(
-                                              onTap: (){ HapticFeedback.selectionClick();
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
+                                              onTap: ()async{ HapticFeedback.selectionClick();
+                                              User user = Provider.of<User>(context,listen: false);
+                                              //Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
+                                              if(wellnessData[i]['image'] != player.currentTrack?.thumbnail){
+                                                  debugPrint('wellness details api hit');
+                                                  var data = await Services(user.token).getWellnessDetails(wellnessData[i]['_id']);
+                                                  var wellData = data['data'];
+                                                  player.play(Track(title: wellData['title'], thumbnail: wellData['image'], audioUrl:wellData['audio'], gif: wellData['anim']));
+                                                }
+                                              Components(context).showPlayerSheet();
+                                               // Navigator.push(context, CupertinoPageRoute(builder: (context) => WellnessPlayer(),fullscreenDialog: true));
                                               },
                                               child: Container(
                                                 width: w * 0.33,
@@ -898,16 +942,127 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                               ),
                             ],
                           ),
-                           /* Column(
+                            Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('Harmony', style: Theme.of(context).textTheme.titleMedium,),
+                                    GestureDetector(
+                                      onTap: () { HapticFeedback.selectionClick();
+                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+                                        videoPlayerController.pause();
+                                        setState(() {
+                                          onThisPage = false;
+                                        });
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundsList())).then((value) {
+                                          setState(() {
+                                            onThisPage = true;
+                                          });
+                                          if(!player.audioPlayer.playing){
+                                            videoPlayerController.play();
+                                          }
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets
+                                            .fromLTRB(10, 2, 0, 2),
+                                        child: Text(
+                                          "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 15,),
+                              SizedBox(
+                                height: h * 0.32,
+                                child: ListView.builder(
+                                    itemCount: wellnessData.length ,
+                                    scrollDirection: Axis.horizontal,
+                                    padding: const EdgeInsets.only(
+                                        right: 10),
+                                    itemBuilder: (context, i) {
+                                      return  GestureDetector(
+                                        onTap: (){
+                                          HapticFeedback.selectionClick();
+                                          harmonyData[i]['colorA'] = harmonyData[i]['colorA'].toString().replaceAll('#', '');
+                                          harmonyData[i]['colorB'] =  harmonyData[i]['colorB'].toString().replaceAll('#', '');
+                                          harmonyData[i]['textColor'] = harmonyData[i]['textColor'] .toString().replaceAll('#', '');
+
+                                          Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: harmonyData[i],)));
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          width:  w * 0.4,
+                                          decoration:  BoxDecoration(
+                                              borderRadius: BorderRadius.circular(25)
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Positioned.fill(
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(25),
+                                                  child: CachedNetworkImage(
+                                                    placeholder: (context,string)=> Container(
+                                                        padding: const EdgeInsets.all(30),
+                                                        alignment: Alignment.center,
+                                                        child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
+                                                    imageUrl: harmonyData[i]['image'],fit: BoxFit.cover,),
+                                                ),
+
+                                              ),
+                                              Positioned(
+                                                  bottom: 0,
+                                                  right: 0,
+                                                  left: 0,
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+
+                                                    child: Container(
+                                                      padding: const EdgeInsets.all(10),
+                                                      decoration:   BoxDecoration(
+                                                          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                                                          color: Colors.black.withOpacity(0.7)
+
+                                                      ),
+                                                      child: Text(harmonyData[i]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
+                                                    ),
+                                                  )
+                                              ),
+                                              Positioned(
+                                                  top: 5,
+                                                  right: 5,
+                                                  child: Components(context).BlurBackgroundCircularButton(
+                                                      svg: MyIcons.premium,
+                                                      iconSize: 18,
+                                                      buttonRadius: 17,
+                                                      iconColor: Colors.white
+                                                  )
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ),
+                              const SizedBox(height: 15,)
+                            ],
+                          ),
+                            Column(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text('Breathe',
                                         style: Theme.of(context).textTheme.titleMedium,
@@ -938,101 +1093,31 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 15,),
+                             //   const SizedBox(height: 15,),
                                 SizedBox(
-                                  //color: Colors.yellow,
-                                 // height: h * 0.32,
-                                  child: SingleChildScrollView(
-                                    //  shrinkWrap: true,
-                                      //itemCount: breatheData.length ,
-                                      scrollDirection: Axis.horizontal,
-                                      padding: const EdgeInsets.only(
-                                          right: 15),
-                                      child: Row(
-                                        children: [
-                                          for(int i =0; i<breatheData.length;i++)
-                                              GestureDetector(
-                                      onTap: () { HapticFeedback.selectionClick();
-                                MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                videoPlayerController.pause();
-                                setState(() {
-                                onThisPage = false;
-                                });
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) {
-                                setState(() {
-                                onThisPage = true;
-                                });
-                                if(!player.audioPlayer.playing){
-                                videoPlayerController.play();
-                                }
-                                });
-                                },
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        alignment: (i%2==0)?Alignment.centerRight:Alignment.centerLeft,
-                                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 22),
-                                        margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 35),
-                                        width: double.infinity,
-                                        // height: MediaQuery.of(context).size.height * 0.12,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.white60
-                                          ),
-                                          borderRadius: BorderRadius.circular(20),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                              colors: [
-                                                Color(int.parse('0xff${breatheData[i]['colorB']}')).withOpacity(0.35),
-                                                Color(int.parse('0xff${breatheData[i]['colorA']}')).withOpacity(0.35),
-                                              ]
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            (i%2==0)?const Spacer():const SizedBox(),
-                                            Expanded(
-                                              flex:2,
-                                              child: Column(
-                                                crossAxisAlignment: (i%2==0)?CrossAxisAlignment.start:CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(breatheData[i]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: themeData.textColor,fontWeight: FontWeight.w700),),
-                                                  Text('For ${breatheData[i]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.7),fontWeight: FontWeight.w600),),
-                                                  const SizedBox(height: 15,),
-                                                  buildbreathsIndicatorList(breatheData[i]['durations'],myColor(breatheData[i]['colorB']),context)
+                                  height: h * 0.25,
+                                  child: Visibility(
+                                    visible: breatheData.isNotEmpty,
+                                    child: PageView.builder(
 
-                                                ],
-                                              ),
-                                            ),
-                                            (i%2!=0)?const Spacer():const SizedBox(),
-                                          ],
-                                        ),
-                                      ),
-                                      (i%2==0)
-                                          ?Positioned(
-                                          top: 0,
-                                          bottom: 0,
-                                          left: 0,
-                                          //alignment: Alignment.topLeft,
-                                          child: Image.asset(breatheData[i]['image'],height: 150,width: 150,))
-                                          :Positioned(
-                                          top: 0,
-                                          bottom: 0,
-                                          right: 0,
-                                          //alignment: Alignment.topLeft,
-                                          child: Image.asset(breatheData[i]['image'],height: 150,width: 150,)),
-                                    ],
-                                  ),
-                                )
-                                        ],
-                                      ),
+                                      pageSnapping: true,
+                                        itemCount: 5 ,
+                                        scrollDirection: Axis.horizontal,
+
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: (){
+                                              videoPlayerController.pause();
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) =>videoPlayerController.play());
+                                            },
+                                            child: Container(width: w,margin: const EdgeInsets.all(5),child: buildBreahtheListItem(breatheData, index, context),)
+                                          );
+                                        }
+                                    ),
                                   ),
                                 ),
                               ],
-                            ),*/
+                            ),
                             Center(
                               child:ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
@@ -1079,8 +1164,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                 itemBuilder: (context, i) {
                                                   return GestureDetector(
                                                     onTap: ()async{ HapticFeedback.selectionClick();
-                                                    //videoPlayerController.pause();
-                                                    //await contentViewRoute(type: listingData[i]['type'], data: listingData[i], context: context, title:  categoryList[index]['title']);
+                                                    videoPlayerController.pause();
+                                                    await contentViewRoute(type: listingData[i]['type'],  id: listingData[i]['_id'], context: context);
                                                     },
                                                     child: Container(
                                                       width: w * 0.35,
@@ -1095,12 +1180,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                               child: Container(
                                                                   color: Colors.black54,
                                                                   margin: const EdgeInsets.only(bottom: 10),
-                                                                  child: CachedNetworkImage(
-                                                                    imageUrl: listingData[i]['image'],
-                                                                    fit: BoxFit.cover,
-                                                                    placeholder: (context, str) =>
-                                                                        Center(
-                                                                          child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
+                                                                  child: Hero(
+                                                                    tag: listingData[i]['_id'],
+                                                                    child: CachedNetworkImage(
+                                                                      imageUrl: listingData[i]['image'],
+                                                                      fit: BoxFit.cover,
+                                                                      placeholder: (context, str) =>
+                                                                          Center(
+                                                                            child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
+                                                                    ),
                                                                   )
                                                               ),
                                                             ),
@@ -1138,7 +1226,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       ),
                                     );
                                   }
-                              ),),
+                              ),
+                            ),
                             const SizedBox(height: 5,),
                             Container(
                               padding: const EdgeInsets.symmetric(

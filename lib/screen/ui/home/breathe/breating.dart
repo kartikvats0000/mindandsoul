@@ -10,7 +10,6 @@ import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/screen/ui/home/breathe/breatheList.dart';
 
 import '../../../../constants/iconconstants.dart';
-import '../../../../helper/bullet_list.dart';
 
 class Breathing extends StatefulWidget {
   final String title;
@@ -21,9 +20,10 @@ class Breathing extends StatefulWidget {
   final String colorA;
   final String colorB;
   final int noOfCounts;
+  final String exhaleThrough;
 
 
-  const Breathing({super.key, required this.title,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.colorA,required this.colorB,required this.noOfCounts});
+  const Breathing({super.key, required this.title,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.colorA,required this.colorB,required this.noOfCounts,required this.exhaleThrough});
 
   @override
   State<Breathing> createState() => _BreathingState();
@@ -40,15 +40,6 @@ class _BreathingState extends State<Breathing> {
   bool startAnimation = false;
   bool showBox = false;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-
-  
-  
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +209,7 @@ class _BreathingState extends State<Breathing> {
                               child: PulsatingAnimation(
                                 key: const ValueKey<int>(2),
                                 //key: Key('anim'),
-                                breatheIn: widget.breatheIn,hold1: widget.hold1,breatheOut: widget.breatheOut,hold2: widget.hold2,noOfCounts: widget.noOfCounts,colorA: widget.colorA,colorB: widget.colorB,),
+                                breatheIn: widget.breatheIn,hold1: widget.hold1,breatheOut: widget.breatheOut,hold2: widget.hold2,noOfCounts: widget.noOfCounts,colorA: widget.colorA,colorB: widget.colorB, exhaleThrough: widget.exhaleThrough,),
                             ),
                           ),
                         )
@@ -244,9 +235,10 @@ class PulsatingAnimation extends StatefulWidget {
   final int noOfCounts;
   final String colorA;
   final String colorB;
+  final String exhaleThrough;
 
 
-  const PulsatingAnimation({super.key,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.noOfCounts,required this.colorA,required this.colorB});
+  const PulsatingAnimation({super.key,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.noOfCounts,required this.colorA,required this.colorB,required this.exhaleThrough});
 
   @override
   State<PulsatingAnimation> createState() => _PulsatingAnimationState();
@@ -277,7 +269,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
             child: StatefulBuilder(
               builder: (context,setState) =>
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.95 ,
+                    height: MediaQuery.of(context).size.height * 0.85 ,
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
                     decoration: const BoxDecoration(
@@ -419,13 +411,14 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
     'Relax'
   ];
 
+  List icons = [];
+
   int numberOfCounts = 0;
   Timer? vibrationTimer;
   bool startAnimation  = false;
 
-
-
   initSound()async{
+
     await audioPlayer.play(UrlSource('https://eeasy.s3.ap-south-1.amazonaws.com/brain/harmony/1694864290956.mp3'));
     audioPlayer.setReleaseMode(ReleaseMode.loop);
     audioPlayer.setVolume(0.4);
@@ -436,6 +429,26 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
 
   @override
   void initState() {
+    print(widget.exhaleThrough);
+    setState(() {
+      if(widget.exhaleThrough == 'nose'){
+        icons = [
+          MyIcons.inhale,
+          MyIcons.pause_circle,
+          MyIcons.exhale,
+          MyIcons.pause_circle,
+        ];
+      }
+      else{
+        icons = [
+          MyIcons.inhale,
+          MyIcons.pause_circle,
+          MyIcons.exhale_mouth,
+          MyIcons.pause_circle,
+        ];
+      }
+
+    });
     initSound();
     _animationController = AnimationController(
         vsync: this,
@@ -545,25 +558,14 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                         ],
                       ),
                       child:  Center(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: activateListener?AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 1000),
-                            child: Text(
-                              texts[selectedText],
-                              key: ValueKey<int>(selectedText),
-                              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                fontSize: 15,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ):Text(
-                            'paused',
-                            //key: ValueKey<int>(selectedText),
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              fontSize: 15,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                        child:AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 1000),
+                          child: SvgPicture.asset(
+                            icons[selectedText],
+                            height: 60,
+                            width: 60,
+                            color: Theme.of(context).colorScheme.primary,
+                            key: ValueKey<int>(selectedText),
                           ),
                         )
                       )
@@ -580,6 +582,23 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                    });
                  },
                    backgroundColor: Colors.white,svg: (audioPlayer.volume  == 0)?MyIcons.mute:MyIcons.volume_high),),
+            Positioned(
+             bottom:  0,//MediaQuery.of(context).padding.top,
+               right: 0,
+               left: 0,
+               top: MediaQuery.of(context).size.height * 0.5 + 20,
+               child: AnimatedSwitcher(
+                 duration: const Duration(milliseconds: 1000),
+                 child: Text(
+                   texts[selectedText],
+                   key: ValueKey<int>(selectedText),
+                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                     fontSize: 15,
+                     color: Theme.of(context).colorScheme.primary,
+                   ),
+                 ),
+               )
+            )
               /*  Positioned(
                     bottom: 10,
                     //right: 25,
@@ -591,7 +610,8 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                           onPressed: (){
                             _animationController.reset();
                             print(_animationController.status);
-                            *//*setState(() {
+                            */
+                /*setState(() {
                               activateListener = !activateListener;
                             });
                             print(activateListener);
@@ -599,7 +619,8 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                               _animationController.stop();
                             } else {
                               _animationController.forward();
-                            *//*},
+                            */
+                /*},
                           icon: (activateListener)?Icon(Icons.pause_rounded):Icon(Icons.play_arrow_rounded),
                           label: Text((activateListener)?'Pause':'Play')
                       ),

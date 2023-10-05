@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   http:
   convert: ^3.1.1
-  firebase_core: ^2.15.0
+  firebase_core: ^2.16.0
   firebase_auth: ^4.7.2
   firebase_messaging: ^14.6.5
   firebase_analytics: ^10.4.3
@@ -76,6 +76,7 @@ dependencies:
   csc_picker: ^0.2.7
   firebase_crashlytics: ^3.3.5
   app_settings:
+  showcaseview: ^2.0.3
 
 dev_dependencies:
   flutter_test:

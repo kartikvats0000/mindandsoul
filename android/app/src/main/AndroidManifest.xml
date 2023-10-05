@@ -16,6 +16,8 @@
 
     <application
         android:allowBackup="false"
+        android:allowClearUserData="false"
+        android:usesCleartextTraffic="false"
         android:label="Brain n Soul"
         android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"

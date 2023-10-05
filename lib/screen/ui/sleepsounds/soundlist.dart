@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../constants/iconconstants.dart';
 import '../../../helper/components.dart';
+import '../../../provider/userProvider.dart';
 import 'soundmaker.dart';
 
 class SoundsList extends StatefulWidget {
@@ -136,13 +137,14 @@ class _SoundsListState extends State<SoundsList> {
   List moodList = [];
   
   getMoods()async{
-    var data = await Services().getHarmonyMoods();
+    User user = Provider.of<User>(context,listen: false);
+    var data = await Services(user.token).getHarmonyMoods();
     setState(() {
       moodList = data;
     });
-    
+
   }
-  
+
 
   List<AudioPlayerModel> audioplayers = [];
 
@@ -169,21 +171,7 @@ class _SoundsListState extends State<SoundsList> {
       builder: (context,theme,child) =>
       Scaffold(
         backgroundColor: theme.themeColorA,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight + 20),
-          child: AppBar(
-            toolbarHeight: kToolbarHeight + 10,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            scrolledUnderElevation: 0.0,
-            automaticallyImplyLeading: false,
-            leading: Padding(
-              padding: const EdgeInsets.all(7),
-              child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
-            ),
-            title: Text("Harmony",style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 25),),
-          ),
-        ),
+        appBar: Components(context).myAppBar('Harmony'),
         body: Container(
           height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -193,9 +181,9 @@ class _SoundsListState extends State<SoundsList> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      theme.themeColorA.withOpacity(0.2),
-                      theme.themeColorB,
                       theme.themeColorA,
+                      theme.themeColorB,
+                      //theme.themeColorA,
                     ]
                 )
             ),
@@ -310,17 +298,14 @@ class _SoundsListState extends State<SoundsList> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
 
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(sigmaX: 3,sigmaY: 3),
-                                      child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        decoration:  const BoxDecoration(
-                                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-                                            color: Colors.black54
+                                    child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration:  const BoxDecoration(
+                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                          color: Colors.black54
 
-                                        ),
-                                        child: Text(moodList[index]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
                                       ),
+                                      child: Text(moodList[index]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
                                     ),
                                   )
                               ),

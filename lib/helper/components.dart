@@ -64,6 +64,23 @@ class Components{
     );
   }
 
+  AppBar myAppBar(String title){
+    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      scrolledUnderElevation: 0.0,
+      automaticallyImplyLeading: false,
+      leading: Padding(
+        padding: const EdgeInsets.all(9),
+        child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
+      ),
+      title: Text(title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 25),),
+    );
+  }
+
+
+
   Widget myIconWidget({required String icon, Color color = Colors.white70, double size = 23}){
     return SvgPicture.asset(icon,color: color,height: size,width: size,);
   }
@@ -158,19 +175,13 @@ class Components{
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(100),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: CircleAvatar(
-            backgroundColor:backgroundColor,
-            //Colors.black54.withOpacity(0.75),
-            radius: buttonRadius,
-            child: (svg == null)
-                ?Icon(icon,color: iconColor,size: iconSize,)
-                :Components(context).myIconWidget(icon: svg,color: iconColor,size: iconSize)
-          ),
-        ),
+      child: CircleAvatar(
+        backgroundColor:backgroundColor,
+        //Colors.black54.withOpacity(0.75),
+        radius: buttonRadius,
+        child: (svg == null)
+            ?Icon(icon,color: iconColor,size: iconSize,)
+            :Components(context).myIconWidget(icon: svg,color: iconColor,size: iconSize)
       ),
     );
   }
@@ -234,10 +245,7 @@ class Components{
     );
   }
   showPlayerSheet() async {
-
     final ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
-    // final MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-    // var colorscheme = await ColorScheme.fromImageProvider(provider: NetworkImage(player.currentTrack!.thumbnail));
     showModalBottomSheet(
       isScrollControlled : true,
       context: context,
@@ -251,7 +259,7 @@ class Components{
                       extendBodyBehindAppBar: true,
                       extendBody: true,
                       appBar: PreferredSize(
-                        preferredSize: const Size.fromHeight(kToolbarHeight+40),
+                        preferredSize: Size.fromHeight(kToolbarHeight+40),
                         child: AppBar(
                           toolbarHeight: kToolbarHeight+40,
                           backgroundColor: Colors.transparent,
@@ -271,11 +279,13 @@ class Components{
                       body: Stack(
                         children: [
                           Positioned.fill(child: CachedNetworkImage(imageUrl: musicPlayerProvider.currentTrack!.gif,fit: BoxFit.cover,
-                            placeholder: (context,url) => Image.network(musicPlayerProvider.currentTrack!.thumbnail,fit: BoxFit.cover,),
-                          )
-                          ),
+                            placeholder: (context,url) => CachedNetworkImage(imageUrl: musicPlayerProvider.currentTrack!.thumbnail,fit: BoxFit.cover,placeholder: (context,uri) =>Center(child: Loader(textColor: theme.textColor),),
+                            /*progressIndicatorBuilder: (context,url,progress){
+                            return Center(child: CircularProgressIndicator(value: progress.progress,));
+                            },*/
+                          ))),
                           Positioned.fill(child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                                 color: Colors.black26
                             ),
                           ),),
@@ -386,18 +396,7 @@ class Components{
                                                   }
                                                 },
                                               ),
-                                              /*BlurBackgroundCircularButton(
-                                                buttonRadius: 28,
-                                                onTap: (){
-                                                  if (musicPlayerProvider.audioPlayer.playerState.playing == true) {
-                                                    musicPlayerProvider.pause();
-                                                  } else {
-                                                    musicPlayerProvider.audioPlayer.play();
-                                                  }
-                                                },
-                                                icon: (musicPlayerProvider.audioPlayer.playerState.playing == false)?Icons.play_arrow_rounded:Icons.pause,
-                                                iconSize: 28
-                                            ),*/
+
                                               BlurBackgroundCircularButton(
                                                   onTap: (){
                                                     _setState((){
@@ -411,24 +410,6 @@ class Components{
                                               // SizedBox(width: 25,),
                                             ],
                                           ),
-                                          /*  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(getDurationString(musicPlayerProvider.position),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
-                                        Expanded(
-                                          child: Slider(
-                                              min: 0.0,
-                                              value: musicPlayerProvider.duration.inSeconds.isNaN==true ? 0 :musicPlayerProvider.position.inSeconds/musicPlayerProvider.duration.inSeconds,
-                                              onChanged: (value){
-                                                musicPlayerProvider.seek(Duration(milliseconds:(musicPlayerProvider.duration.inSeconds * value * 1000).toInt()));
-                                              }
-                                          ),
-                                        ),
-                                        Text(getDurationString(musicPlayerProvider.duration),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),),
-                                      ],
-                                    ),
-                                  ),*/
                                         ],
                                       ),
                                     ),
@@ -488,18 +469,15 @@ class Components{
     required List<Widget> actions,
   }) => ClipRRect(
     borderRadius: BorderRadius.circular(15),
-    child: BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.65),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        title: Text(title),
-        content: Text(message),
-        titleTextStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 19,fontWeight: FontWeight.w700),
-        actions: actions
+    child: AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
       ),
+      title: Text(title),
+      content: Text(message),
+      titleTextStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 19,fontWeight: FontWeight.w700),
+      actions: actions
     ),
   );
 
@@ -516,7 +494,7 @@ String getDurationString(Duration duration) {
   }
 }
 
-Widget buildbreathsIndicatorList(Map durations,Color color,BuildContext context){
+Widget buildbreathsIndicatorList(Map durations,Color color, String exhaleTrough, BuildContext context){
   ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
   return Theme(
     data: Theme.of(context).copyWith(
@@ -550,7 +528,7 @@ Widget buildbreathsIndicatorList(Map durations,Color color,BuildContext context)
                 children: [
                   Row(
                     children: [
-                      Components(context).myIconWidget(icon: MyIcons.exhale,size: 16,color: theme.textColor),
+                      Components(context).myIconWidget(icon:(exhaleTrough == 'nose')? MyIcons.exhale:MyIcons.exhale_mouth,size: 16,color: theme.textColor),
                       Text(' : ${durations['breatheOut']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor),),
                     ],
                   ),
@@ -593,5 +571,7 @@ Widget buildbreathIndicator(String icon, String title, int breath,BuildContext c
 Color myColor(String color){
   return Color(int.parse('0xff$color'));
 }
+
+
 
 

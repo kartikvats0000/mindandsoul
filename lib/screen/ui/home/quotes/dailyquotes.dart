@@ -154,7 +154,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
         ),
         Positioned.fill(
             child: AnimatedContainer(
-              color: showDate?Colors.black.withOpacity(0.075):Colors.transparent,
+              color: showDate?Colors.red.withOpacity(0.15):Colors.transparent,
               duration: const Duration(milliseconds: 1500),
             )
         ),
@@ -321,7 +321,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                           ),
                           Positioned.fill(
                               child: AnimatedContainer(
-                                color: showDate?(shareLoading)?Colors.black.withOpacity(0.65):Colors.black.withOpacity(0.35):Colors.transparent,
+                                color: showDate?(shareLoading)?Colors.black.withOpacity(0.65):Colors.black.withOpacity(0.15):Colors.transparent,
                                 duration: const Duration(milliseconds: 1200),
                               )
                           ),

@@ -195,6 +195,7 @@ class _BreatheListState extends State<BreatheList> {
                                   hold2: data[index]['durations']['hold2'],
                                   colorA: data[index]['colorA'],
                                   colorB: data[index]['colorB'],
+                                  exhaleThrough: data[index]['exhaleThrough'],
                                   noOfCounts: (timer * 60/sumOfOne).ceil(),
                                 ),
                                 transitionDuration: const Duration(
@@ -257,6 +258,18 @@ class _BreatheListState extends State<BreatheList> {
     ).then((value) => timer = 1);
   }
 
+  void _showDisclaimerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Components(context).confirmationDialog(context, title: 'Disclaimer', message: 'These breathing exercises are compiled from publicly available sources and are intended for relaxation and stress relief. \n\n'
+            'If you have underlying medical conditions, please consult a healthcare professional before practicing. \n\nResults may vary between individuals, and we do not guarantee specific outcomes. Listen to your body and practice mindfully for your well-being.',
+            actions: [FilledButton.tonal(onPressed: (){Navigator.pop(context);}, child: Text('Close'))]);
+      },
+    );
+  }
+
+
   getData()async{
     String jsn = await DefaultAssetBundle.of(context).loadString("assets/data/breathingList.json");
     setState(() {
@@ -280,19 +293,16 @@ class _BreatheListState extends State<BreatheList> {
       => Scaffold(
         backgroundColor: theme.themeColorA,
         extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight+25),
-          child: AppBar(
-            elevation: 0.0,
-            scrolledUnderElevation: 0.0,
-            backgroundColor: Colors.transparent,
-            leading: Padding(
-                padding: const EdgeInsets.all(7),
-                child: Components(context).BlurBackgroundCircularButton(
-                  icon: Icons.chevron_left,
-                  onTap: (){Navigator.pop(context);},
-                )
-            ),
+        appBar: AppBar(
+          elevation: 0.0,
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Colors.transparent,
+          leading: Padding(
+              padding: const EdgeInsets.all(7),
+              child: Components(context).BlurBackgroundCircularButton(
+                icon: Icons.chevron_left,
+                onTap: (){Navigator.pop(context);},
+              )
           ),
         ),
         body: (data.isEmpty)
@@ -305,103 +315,117 @@ class _BreatheListState extends State<BreatheList> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    theme.themeColorA.withOpacity(0.2),
-                    theme.themeColorB,
                     theme.themeColorA,
+                    theme.themeColorB,
                   ]
               )
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
-                ),
-                Text('Breathe',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32,fontWeight: FontWeight.bold),textAlign: TextAlign.start,),
-                const SizedBox(height: 20,),
-                Text('Discover a collection of guided breathing exercises tailored to calm your mind and reduce stress...',style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: theme.textColor.withOpacity(0.75),
-                    fontSize: 14.5
-                ),),
-                const SizedBox(height: 20,),
-                ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: data.length,
-                    itemBuilder: (context,index){
-                      return GestureDetector(
-                        onTap: (){
-                          showActionSheet(index);
-                        },
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              alignment: (index%2==0)?Alignment.centerRight:Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 22),
-                              margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 35),
-                              width: double.infinity,
-                             // height: MediaQuery.of(context).size.height * 0.12,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.white60
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(int.parse('0xff${data[index]['colorB']}')).withOpacity(0.35),
-                                      Color(int.parse('0xff${data[index]['colorA']}')).withOpacity(0.35),
-                                    ]
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  (index%2==0)?Spacer():SizedBox(),
-                                  Expanded(
-                                    flex:2,
-                                    child: Column(
-                                      crossAxisAlignment: (index%2==0)?CrossAxisAlignment.start:CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: theme.textColor,fontWeight: FontWeight.w700),),
-                                        Text('For ${data[index]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontWeight: FontWeight.w600),),
-                                        const SizedBox(height: 15,),
-                                        buildbreathsIndicatorList(data[index]['durations'],myColor(data[index]['colorB']),context)
-
-                                      ],
-                                    ),
-                                  ),
-                                  (index%2!=0)?const Spacer():const SizedBox(),
-                                ],
-                              ),
-                            ),
-                            (index%2==0)
-                                ?Positioned(
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                //alignment: Alignment.topLeft,
-                                child: Image.asset(data[index]['image'],height: 150,width: 150,))
-                                :Positioned(
-                                top: 0,
-                                bottom: 0,
-                                right: 0,
-                                //alignment: Alignment.topLeft,
-                                child: Image.asset(data[index]['image'],height: 150,width: 150,)),
-                          ],
-                        ),
-                      );
-                    }
-                )
-              ],
+          child:  SingleChildScrollView(
+        child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
             ),
-          ),
+            Text('Breathe', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
+            const SizedBox(height: 20,),
+            Text('Discover a collection of guided breathing exercises tailored to calm your mind and reduce stress...', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: theme.textColor.withOpacity(0.75),
+                fontSize: 14.5
+            ),),
+            const SizedBox(height: 20,),
+            ListView.builder(
+              padding: const EdgeInsets.only(bottom: 10),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    showActionSheet(index);
+                  },
+                  child: buildBreahtheListItem(data, index, context),
+                );
+              },
+            ),
+            SizedBox(height: 20), // Add some space before the Disclaimer link.
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  _showDisclaimerDialog(context); // Show the disclaimer dialog.
+                },
+                child: Text('Disclaimer', style: Theme.of(context).textTheme.bodyMedium), // Style this link accordingly.
+              ),
+            ),
+          ],
         ),
+      ),
+
+    ),
       ),
     );
   }
+}
+
+buildBreahtheListItem(List data, int index, BuildContext context){
+  ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      Container(
+        alignment: (index%2==0)?Alignment.centerRight:Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 22),
+        margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 27),
+        //width: double.infinity,
+        // height: MediaQuery.of(context).size.height * 0.12,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white60
+          ),
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(int.parse('0xff${data[index]['colorB']}')).withOpacity(0.35),
+                Color(int.parse('0xff${data[index]['colorA']}')).withOpacity(0.35),
+              ]
+          ),
+        ),
+        child: Row(
+          children: [
+            (index%2==0)?const Spacer():const SizedBox(),
+            Expanded(
+              flex:2,
+              child: Column(
+                crossAxisAlignment: (index%2==0)?CrossAxisAlignment.start:CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: theme.textColor,fontWeight: FontWeight.w700),),
+                  Text('For ${data[index]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontWeight: FontWeight.w600),),
+                  const SizedBox(height: 15,),
+                  buildbreathsIndicatorList(data[index]['durations'],myColor(data[index]['colorB']),data[index]['exhaleThrough'],context)
+
+                ],
+              ),
+            ),
+            (index%2!=0)?const Spacer():const SizedBox(),
+          ],
+        ),
+      ),
+      (index%2==0)
+          ?Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          //alignment: Alignment.topLeft,
+          child: Image.asset(data[index]['image'],height: 150,width: 150,))
+          :Positioned(
+          top: 0,
+          bottom: 0,
+          right: 0,
+          //alignment: Alignment.topLeft,
+          child: Image.asset(data[index]['image'],height: 150,width: 150,)),
+    ],
+  );
 }

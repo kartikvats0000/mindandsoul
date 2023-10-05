@@ -27,7 +27,7 @@ class _NotificationsState extends State<Notifications> {
          ),
          extendBodyBehindAppBar: true,
          body: Container(
-           padding: EdgeInsets.symmetric(horizontal: 10),
+           padding: const EdgeInsets.symmetric(horizontal: 10),
            decoration: BoxDecoration(
                color: theme.themeColorA,
                gradient: LinearGradient(
@@ -36,7 +36,7 @@ class _NotificationsState extends State<Notifications> {
                    colors: [
                      theme.themeColorA,
                      theme.themeColorB,
-                     theme.themeColorB.withOpacity(0.7),
+                     //theme.themeColorB.withOpacity(0.7),
                    ]
                )
            ),
