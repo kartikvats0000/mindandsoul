@@ -57,7 +57,8 @@ class _FavouriteQuoteState extends State<FavouriteQuote> {
                 ),
                 child: Center(
                     child: (loader)? (data.isEmpty)
-                        ? const NoFavourite()
+                        ? const
+                    NoFavourite()
                         :  RefreshIndicator(
                       onRefresh: ()async{
                         getData();
