@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mindandsoul/screen/ui/home/navscreens/profile/favourites.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../constants/iconconstants.dart';
@@ -47,6 +49,61 @@ class _FavouriteWellnesState extends State<FavouriteWellnes> {
   }
 
 
+
+  showOptionSheet(ThemeProvider theme, int index){
+    User user  = Provider.of<User>(context,listen: false);
+    showModalBottomSheet(
+      //showDragHandle: true,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        context: context, builder: (context)=>
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+          child: Wrap(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Options',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                      Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
+                    ],
+                  ),
+                  const SizedBox(height: 15,),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          onTap: ()async{
+                            String message = await Services(user.token).likeWellness(data[index]['_id']);
+                            Navigator.pop(context);
+                            getData();
+                            // Components(context).showSuccessSnackBar(message);
+                          },
+                          leading: Components(context).BlurBackgroundCircularButton(
+                              backgroundColor: Colors.white12,
+                              svg: MyIcons.favorite_filled ,
+                              iconColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)
+                          ),
+                          title: Text('Remove from Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -60,8 +117,9 @@ class _FavouriteWellnesState extends State<FavouriteWellnes> {
                   color: theme.themeColorA,
                 ),
                 child: Center(
-                    child: (!loader)
-                        ? RefreshIndicator(
+                    child: (!loader) ? (data.isEmpty)
+                        ? const NoFavourite()
+                        : RefreshIndicator(
                       onRefresh: ()async{
                         getData();
                       },
@@ -69,7 +127,7 @@ class _FavouriteWellnesState extends State<FavouriteWellnes> {
                           separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
                           itemCount: data.length,
                           itemBuilder: (context,index){
-                            tracks = List.generate(data.length, (i) => Track(title: data[i]['title'], thumbnail: data[i]['image'], audioUrl: data[i]['audio'],gif: data[index]['anim'] ));
+                            tracks = List.generate(data.length, (i) => Track(id:data[i]['title'], title: data[i]['title'], thumbnail: data[i]['image'], audioUrl: data[i]['audio'],gif: data[index]['anim'],liked: true));
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
                               child: ClipRRect(
@@ -80,12 +138,12 @@ class _FavouriteWellnesState extends State<FavouriteWellnes> {
                                         onTap: (){
                                           if(player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail){
                                             if(mounted){
-                                              Components(context).showPlayerSheet();
+                                              showPlayerSheet(context);
                                             }
                                           }else{
-                                            player.play(Track(gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio']));
+                                            player.play(Track(id: data[index]['title'],gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio'],liked: true));
                                             if(player.duration.inSeconds.isNaN == false){
-                                              Components(context).showPlayerSheet();
+                                              showPlayerSheet(context);
                                             }
                                             else{
                                               print('please wait!');
@@ -95,6 +153,7 @@ class _FavouriteWellnesState extends State<FavouriteWellnes> {
                                         },
                                         onLongPress: (){
                                           HapticFeedback.lightImpact();
+                                          showOptionSheet(theme, index);
                                         },
                                         child: Container(
                                           //height: MediaQuery.of(context).size.height * 0.12,

@@ -19,10 +19,10 @@ class ThemeProvider extends ChangeNotifier {
   String id = '';
   String videoName = '';
   String videoUrl = '';
-  Color themeColorA = Color(0xfffffff);
-  Color themeColorB = Color(0xfffffff);
+  Color themeColorA = const Color(0x0fffffff);
+  Color themeColorB = const Color(0x0fffffff);
 //  String themeColorC = '';
-  Color textColor = Color(0x000000);
+  Color textColor = const Color(0x00000000);
 
   addThemes(List<dynamic> list){
     themesList = list;
@@ -40,7 +40,6 @@ class ThemeProvider extends ChangeNotifier {
     "video": videoUrl,
     "baseColor1": themeColorA,
     "baseColor2": themeColorB,
-   // "theme_color_c": themeColorC,
     "textColor": textColor,
   };
 
@@ -50,7 +49,6 @@ class ThemeProvider extends ChangeNotifier {
     "video": videoUrl,
     "baseColor1": themeColorA,
     "baseColor2": themeColorB,
-    // "theme_color_c": themeColorC,
     "textColor": textColor,
   });
 

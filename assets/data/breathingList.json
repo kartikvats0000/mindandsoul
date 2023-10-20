@@ -1,143 +1,1639 @@
 {
   "data" : [
     {
-      "title": "Calming Breath",
-      "purpose": "Stress Reduction",
-      "description": "Focuses on slow, deep diaphragmatic breathing to reduce stress and anxiety.",
-      "colorA": "FFD1DC",
-      "colorB": "FFA07A",
-      "average_time": "10 minutes",
-      "instructions": [
-        "Find a quiet and comfortable place to sit or lie down.",
-        "Close your eyes and take a few natural breaths.",
-        "Inhale deeply through your nose for a count of four, allowing your abdomen to rise.",
-        "Exhale slowly and completely through your mouth for a count of six, feeling tension release.",
-        "Focus on your breath and let go of stress and worries."
-      ],
-      "image": "assets/meditation/yoga1.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 1,
-        "breatheOut" : 6,
-        "hold2" : 1
+    "category" : "Reduce Stress",
+    "tagline" : "Calm Your Mind, Relax Deeply",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat1.jpg",
+    "data" : [
+      {
+        "title": "Calming Breath",
+        "purpose": "Stress Reduction",
+        "description": "Calming Breath focuses on slow, deep diaphragmatic breathing to reduce stress and anxiety.",
+        "detail": "Calming Breath is a simple yet effective breathing exercise that encourages slow, deep breaths to activate the body's relaxation response. By emphasizing diaphragmatic breathing, it helps calm the nervous system and reduce stress and anxiety. This exercise is particularly useful in moments of heightened tension or when you need to find a sense of calm.",
+        "benefits": "1. Stress Reduction: Calming Breath promotes relaxation and helps reduce stress and anxiety, making it an excellent tool for managing everyday stressors.\n2. Anxiety Relief: By engaging the diaphragm and deepening each breath, it can alleviate symptoms of anxiety and create a sense of calm.\n3. Emotional Balance: This exercise supports emotional balance by slowing down the breath and allowing you to regain control over your emotions.\n4. Improved Focus: Calming Breath can enhance concentration and mental clarity by bringing your attention to the present moment.\n5. Better Sleep: Practicing this technique before bedtime can improve sleep quality by relaxing the body and mind.",
+        "colorA": "FFFF99",
+        "colorB": "FFD700",
+        "average_time": "10 minutes",
+        "instructions": [
+          "Find a quiet and comfortable place to sit or lie down.",
+          "Close your eyes and take a few natural breaths.",
+          "Inhale deeply through your nose for a count of four, allowing your abdomen to rise.",
+          "Exhale slowly and completely through your mouth for a count of six, feeling tension release.",
+          "Focus on your breath and let go of stress and worries."
+        ],
+        "image": "assets/meditation/yoga1.png",
+        "durations": {
+          "breatheIn": {
+            "duration": 4,
+            "message": "Inhale deeply, expanding your diaphragm"
+          },
+          "hold1": {
+            "duration": 1,
+            "message": "Hold Your Breath"
+          },
+          "breatheOut": {
+            "duration": 6,
+            "message": "Exhale completely through your mouth, and let go of any Tension"
+          },
+          "hold2": {
+            "duration": 1,
+            "message": "Relax"
+          }
+        },
+        "exhaleThrough": "mouth"
       },
-      "exhaleThrough" : "mouth"
+
+      {
+  "title": "Deep Breathing",
+  "purpose": "Stress Reduction",
+  "description": "Deep breathing, also known as diaphragmatic or abdominal breathing, is a relaxation technique that focuses on slow, deep breaths to reduce stress and anxiety.",
+  "detail": "Deep breathing is a simple yet highly effective breathing technique that can be done anywhere and anytime to alleviate stress and promote a sense of calm and well-being. It involves taking slow, deep breaths to engage the diaphragm, reduce the production of stress hormones, and activate the body's relaxation response.",
+  "benefits": "1. Stress Reduction: Deep breathing calms the nervous system and reduces stress hormones like cortisol.\n2. Anxiety Relief: It helps alleviate symptoms of anxiety and panic attacks by calming the nervous system.\n3. Improved Mental Focus: Deep breathing enhances concentration and mental clarity, making it useful for tasks that require focus and creativity.\n4. Enhanced Sleep: Practicing deep breathing before bedtime can promote better sleep by relaxing the body and mind, making it easier to fall asleep and stay asleep.\n5. Lowered Blood Pressure: Regular deep breathing can help reduce blood pressure by promoting relaxation and improved circulation.\n6. Improved Lung Function: Deep breathing exercises can increase lung capacity and improve the efficiency of oxygen exchange, which can be beneficial for overall respiratory health.\n7. Pain Management: Deep breathing can be used as a complementary technique for managing pain, especially chronic pain conditions.\n8. Emotional Regulation: It can help you become more in tune with your emotions and provide a sense of emotional balance and stability.",
+  "colorA": "FFD1DC",
+  "colorB": "FFA07A",
+  "average_time": "10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale deeply through your nose for a count of four, allowing your abdomen to rise.",
+    "Exhale slowly and completely through your mouth for a count of six, feeling tension release.",
+    "Focus on your breath and let go of stress and worries."
+  ],
+  "image": "assets/meditation/yoga1.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply, expanding your diaphragm."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Hold Your Breath."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale completely through your mouth, and let go of any tension."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Relax."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+      {
+  "title": "Diaphragmatic Breathing",
+  "purpose": "Stress Reduction",
+  "description": "Diaphragmatic breathing, also known as abdominal or deep breathing, is a relaxation technique that emphasizes the use of the diaphragm to reduce stress and promote calmness.",
+  "detail": "Diaphragmatic breathing is a fundamental breathing technique that encourages deep, slow breaths by engaging the diaphragm muscle. This technique is highly effective in reducing stress and promoting relaxation. It involves inhaling deeply through the nose, allowing the abdomen to rise, and then exhaling slowly through the mouth to release tension and stress.",
+  "benefits": "1. Stress Reduction: Diaphragmatic breathing activates the body's relaxation response, reducing stress and anxiety.\n2. Anxiety Relief: It can alleviate symptoms of anxiety and panic attacks by calming the nervous system.\n3. Improved Lung Function: This technique enhances lung capacity and improves oxygen exchange, benefiting overall respiratory health.\n4. Lowered Blood Pressure: Regular practice of diaphragmatic breathing can help lower blood pressure by promoting relaxation and improved circulation.\n5. Pain Management: It can be used as an adjunct therapy for managing chronic pain conditions.\n6. Enhanced Mindfulness: Diaphragmatic breathing fosters mindfulness and self-awareness, helping individuals connect with their breath and reduce racing thoughts.\n7. Improved Digestion: By massaging the abdominal organs, diaphragmatic breathing may aid in digestion and reduce gastrointestinal discomfort.\n8. Better Sleep: Practicing diaphragmatic breathing before bedtime can improve sleep quality by relaxing the body and mind.",
+  "colorA": "C7B2DE",
+  "colorB": "A38EC6",
+  "average_time": "10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Place one hand on your chest and the other on your abdomen.",
+    "Inhale deeply through your nose, allowing your abdomen to rise as you fill your lower lungs.",
+    "Exhale slowly and completely through your mouth, feeling tension release.",
+    "Continue this deep, rhythmic breathing for about 10 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga2.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply, allowing your abdomen to rise."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Hold Your Breath."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth, releasing any tension."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Relax."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+      {
+  "title": "4-7-8 Breath",
+  "purpose": "Stress Reduction",
+  "description": "The 4-7-8 breath technique is a calming exercise designed to reduce stress and promote relaxation by regulating the breath.",
+  "detail": "The 4-7-8 breath, also known as the relaxing breath, is a simple and effective technique that can be practiced anywhere to alleviate stress and anxiety. This technique involves a specific pattern of inhaling, holding the breath, and exhaling. It can quickly calm the nervous system and induce a sense of relaxation.",
+  "benefits": "1. Stress Reduction: The 4-7-8 breath is a proven method to activate the body's relaxation response, reducing stress and tension.\n2. Anxiety Relief: It can help alleviate symptoms of anxiety, panic attacks, and racing thoughts by calming the mind and body.\n3. Improved Sleep: Practicing this technique before bedtime can promote better sleep and reduce insomnia.\n4. Enhanced Focus: The 4-7-8 breath can improve concentration and mental clarity.\n5. Lowered Blood Pressure: Regular practice may help lower blood pressure by inducing relaxation and better oxygenation.\n6. Mindful Awareness: This technique encourages mindfulness by focusing on the breath and being present in the moment.\n7. Reduced Muscle Tension: It can help relax muscles, reducing physical tension and discomfort.\n8. Emotional Regulation: The 4-7-8 breath aids in emotional balance and stability.",
+  "colorA": "AEDFF7",
+  "colorB": "7FCDE7",
+  "average_time": "5 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale quietly through your nose for a count of four.",
+    "Hold your breath for a count of seven.",
+    "Exhale completely through your mouth for a count of eight, making a whooshing sound.",
+    "Repeat this cycle for about 5 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga3.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale quietly through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 7,
+      "message": "Hold Your Breath."
+    },
+    "breatheOut": {
+      "duration": 8,
+      "message": "Exhale completely through your mouth for a count of eight."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Repeat the cycle."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+      {
+  "title": "Belly Breathing",
+  "purpose": "Stress Reduction",
+  "description": "Belly breathing, also known as abdominal breathing, is a relaxation technique that focuses on deep breaths to reduce stress and promote relaxation.",
+  "detail": "Belly breathing is a simple yet powerful relaxation technique that emphasizes the use of the diaphragm to take deep breaths. This technique encourages slow and deep inhalations and exhalations, promoting relaxation and reducing stress and anxiety. By placing one hand on the abdomen, you can feel the rise and fall of the belly as you breathe.",
+  "benefits": "1. Stress Reduction: Belly breathing activates the body's relaxation response, reducing stress hormones and promoting a sense of calm.\n2. Anxiety Relief: It can alleviate symptoms of anxiety and panic attacks by calming the nervous system.\n3. Improved Lung Function: Belly breathing enhances lung capacity and improves oxygen exchange.\n4. Lowered Blood Pressure: Regular practice can help lower blood pressure by promoting relaxation and better circulation.\n5. Enhanced Mindfulness: Focusing on the rise and fall of the abdomen fosters mindfulness and self-awareness.\n6. Reduced Muscle Tension: It helps relax muscles, reducing physical tension and discomfort.\n7. Emotional Regulation: Belly breathing can aid in emotional balance and stability.",
+  "colorA": "FFF4B3",
+  "colorB": "FFE78F",
+  "average_time": "5 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Place one hand on your chest and the other on your abdomen.",
+    "Inhale deeply through your nose, allowing your abdomen to rise like a balloon.",
+    "Exhale slowly and completely through your mouth, feeling tension release.",
+    "Continue this deep, rhythmic breathing for about 5 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga4.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose, allowing your abdomen to rise like a balloon."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Hold Your Breath."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth, releasing any tension."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Relax."
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+    ]
     },
     {
-      "title": "Box Breathing",
-      "purpose": "Anxiety Relief",
-      "description": "Inhale, hold, exhale, and hold the breath for equal counts to alleviate anxiety.",
-      "colorA": "E6E6FA",
-      "colorB": "C5C1E0",
-      "average_time": "5 minutes",
-      "instructions": [
-        "Sit in a relaxed position with your back straight.",
-        "Close your eyes and take a slow, deep breath in through your nose for a count of four.",
-        "Hold your breath for a count of four.",
-        "Exhale slowly and completely through your nose for a count of four.",
-        "Pause and hold your breath for a count of four.",
-        "This technique helps calm anxiety and centers your mind."
-      ],
-      "image": "assets/meditation/yoga2.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 4,
-        "breatheOut" : 4,
-        "hold2" : 4
-      },
-      "exhaleThrough" : "nose"
+      "category" : "Anxiety Relief",
+      "tagline" : "Find Peace Amidst Chaos",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat2.jpg",
+      "data" : [
+        {
+  "title": "Alternate Nostril Breathing",
+  "purpose": "Anxiety Relief",
+  "description": "Alternate nostril breathing, or Nadi Shodhana, is a calming breathing exercise that helps alleviate anxiety and promote balance.",
+  "detail": "Alternate nostril breathing is a yogic technique that aims to balance the two hemispheres of the brain and calm the nervous system. It involves inhaling and exhaling through one nostril at a time while using the fingers to gently close off one nostril and then the other in a rhythmic pattern.",
+  "benefits": "1. Anxiety Relief: Alternate nostril breathing helps reduce anxiety and stress by calming the mind and body.\n2. Enhanced Focus: This technique can improve concentration and mental clarity.\n3. Mind-Body Balance: It aims to balance the left and right sides of the brain, fostering a sense of equilibrium.\n4. Improved Breath Awareness: Practicing this technique increases awareness of your breath and its effects on your well-being.",
+  "colorA": "ffdf91",
+  "colorB": "ffc45e",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit with your spine straight.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Place your right thumb against your right nostril and gently close it off.",
+    "Inhale slowly and deeply through your left nostril.",
+    "Release your right nostril, close your left nostril with your ring finger, and exhale through your right nostril.",
+    "Inhale through your right nostril, then release your left nostril and exhale through your left nostril.",
+    "Repeat this pattern for about 5-10 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga5.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale through your open nostril."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Switch nostrils."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale through the other nostril."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Repeat."
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Visualization Breath",
+  "purpose": "Anxiety Relief",
+  "description": "Visualization breath is a breathing exercise that combines deep breathing with mental imagery to reduce anxiety and stress.",
+  "detail": "Visualization breath involves imagining a peaceful scene or situation while practicing deep breathing. This technique combines the calming effects of controlled breathing with the soothing power of visualization to reduce anxiety and induce relaxation.",
+  "benefits": "1. Anxiety Relief: Visualization breath reduces anxiety and stress by shifting your focus to positive mental imagery.\n2. Relaxation: The combination of deep breathing and visualization helps relax the body and mind.\n3. Enhanced Creativity: It can enhance creativity and imaginative thinking by engaging the mind in a positive way.",
+  "colorA": "64DFDF",
+  "colorB": "4CC1C1",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Imagine a peaceful and serene place, such as a beach, forest, or meadow.",
+    "As you inhale deeply, visualize yourself in that place, taking in the sights, sounds, and sensations.",
+    "As you exhale slowly, continue to immerse yourself in the serene environment.",
+    "Continue this deep, rhythmic breathing and visualization for about 5-10 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga6.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply while visualizing your peaceful place."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Hold the visualization."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly while remaining in your serene environment."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Continue the visualization."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Sama Vritti (Equal Breathing)",
+  "purpose": "Anxiety Relief",
+  "description": "Sama Vritti, or equal breathing, is a breathing exercise that involves equal-duration inhales and exhales to reduce anxiety and promote balance.",
+  "detail": "Sama Vritti is a balanced breathing technique that involves inhaling and exhaling for the same duration. This practice can be calming and grounding, helping to reduce anxiety and create a sense of equilibrium in the body and mind.",
+  "benefits": "1. Anxiety Relief: Sama Vritti reduces anxiety and stress by promoting a balanced and controlled breath.\n2. Mind-Body Balance: It fosters a sense of balance and harmony by synchronizing inhalations and exhalations.\n3. Enhanced Focus: Equal breathing can improve concentration and mental clarity.\n4. Relaxation: It helps relax the body and calm the nervous system.",
+  "colorA": "DED1FF",
+  "colorB": "BCB0E7",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly through your nose for a count of four.",
+    "Exhale slowly and completely through your nose for a count of four.",
+    "Continue this rhythmic and balanced breathing for about 5-10 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga7.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 4,
+      "message": "Exhale slowly through your nose for a count of four."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Progressive Relaxation Breath",
+  "purpose": "Anxiety Relief",
+  "description": "Progressive relaxation breath is a technique that combines deep breathing with muscle relaxation to reduce anxiety and tension.",
+  "detail": "Progressive relaxation breath combines the benefits of deep breathing with progressive muscle relaxation. This technique involves inhaling deeply and then exhaling while focusing on relaxing different muscle groups in the body, helping to reduce anxiety and physical tension.",
+  "benefits": "1. Anxiety Relief: Progressive relaxation breath reduces anxiety and stress by combining deep breathing with muscle relaxation.\n2. Muscle Tension Reduction: It helps relax and release tension in various muscle groups, reducing physical discomfort.\n3. Enhanced Mind-Body Awareness: The practice promotes mindfulness and awareness of tension in the body.\n4. Improved Sleep: Practicing this technique before bedtime can improve sleep quality by relaxing the body and mind.",
+  "colorA": "FFD2E4",
+  "colorB": "FFB6CD",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale deeply through your nose while gently tensing the muscles in your feet.",
+    "Exhale slowly through your mouth and release the tension in your feet.",
+    "Continue this pattern, moving up your body, tensing and then releasing each muscle group, including your calves, thighs, abdomen, chest, arms, and face.",
+    "Finish by taking a few natural breaths and focusing on relaxation.",
+    "Practice this progressive relaxation breath for about 5-10 minutes."
+  ],
+  "image": "assets/meditation/yoga8.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose while tensing the muscles."
+    },
+    "hold1": {
+      "duration": 1,
+      "message": "Hold the tension."
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth and release the tension."
+    },
+    "hold2": {
+      "duration": 1,
+      "message": "Move to the next muscle group."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Box Breathing",
+  "purpose": "Anxiety Relief",
+  "description": "Box breathing is a rhythmic breathing exercise that involves equal-duration inhalations, holds, exhalations, and holds to reduce anxiety and promote relaxation.",
+  "detail": "Box breathing is a structured breathing technique that involves inhaling, holding the breath, exhaling, and holding the breath again, all for equal durations. This rhythmic pattern can help reduce anxiety and create a sense of calm and focus.",
+  "benefits": "1. Anxiety Relief: Box breathing reduces anxiety and stress through its structured and rhythmic pattern.\n2. Enhanced Focus: The technique can improve concentration, mental clarity, and cognitive performance.\n3. Mindfulness: Box breathing fosters mindfulness by focusing on the breath and creating a calming rhythm.\n4. Stress Reduction: It activates the relaxation response, reducing stress and promoting relaxation.",
+  "colorA": "A4E1A5",
+  "colorB": "7CCB7E",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale deeply through your nose for a count of four.",
+    "Hold your breath for a count of four.",
+    "Exhale slowly through your mouth for a count of four.",
+    "Hold your breath again for a count of four.",
+    "Repeat this rhythmic pattern for about 5-10 minutes, focusing on your breath and relaxation."
+  ],
+  "image": "assets/meditation/yoga9.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 4,
+      "message": "Hold your breath."
+    },
+    "breatheOut": {
+      "duration": 4,
+      "message": "Exhale slowly through your mouth for a count of four."
+    },
+    "hold2": {
+      "duration": 4,
+      "message": "Hold your breath."
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Ocean Breathing",
+  "purpose": "Anxiety Relief",
+  "description": "Ocean breathing is a calming breathing exercise that mimics the rhythm of ocean waves to reduce anxiety and promote relaxation.",
+  "detail": "Ocean breathing, also known as wave breath or Ujjayi pranayama, involves creating a soft, ocean-like sound during your breath, similar to the sound of ocean waves. This technique helps to reduce anxiety, calm the mind, and promote relaxation.",
+  "benefits": "1. Anxiety Relief: Ocean breathing reduces anxiety and stress by mimicking the soothing sound of ocean waves.\n2. Enhanced Mindfulness: It fosters mindfulness by focusing on the breath and the rhythmic sound it produces.\n3. Relaxation: The calming rhythm of ocean breathing helps relax the body and mind.\n4. Improved Concentration: Ocean breathing can enhance concentration and mental clarity.",
+  "colorA": "B5D8E6",
+  "colorB": "86BBD8",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit with your spine straight.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale and exhale deeply through your nose, constricting the back of your throat to create a soft, ocean-like sound during both inhalation and exhalation.",
+    "Continue this rhythmic ocean breathing for about 5-10 minutes, focusing on your breath and the soothing sound."
+  ],
+  "image": "assets/meditation/yoga10.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply with the ocean sound."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale deeply with the ocean sound."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+}
+      ]
     },
     {
-      "title": "4-7-8 Relaxation Breath",
-      "purpose": "Sleep and Insomnia",
-      "description": "Aids sleep by using a 4-7-8 pattern to promote relaxation and improve sleep quality.",
-      "colorA": "98FB98",
-      "colorB": "86E986",
-      "average_time": "15 minutes",
-      "instructions": [
-        "Lie down in a comfortable position, or sit with your back straight.",
-        "Close your eyes and take a breath in quietly through your nose for a count of four.",
-        "Hold your breath for a count of seven.",
-        "Exhale completely through your mouth, making a whoosh sound for a count of eight.",
-        "Use this technique before bedtime to improve sleep quality."
-      ],
-      "image": "assets/meditation/yoga3.png",
-      "durations" : {
-        "breatheIn" : 4,
-        "hold1" : 7,
-        "breatheOut" : 8,
-        "hold2" : 2
-      },
-      "exhaleThrough" : "mouth"
+      "category" : "Sleep and Insomnia",
+      "tagline" : "Restful Nights, Blissful Sleep",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat3.jpg",
+      "data" : [
+        {
+  "title": "3-6-9 Sleep Breath",
+  "purpose": "Sleep and Insomnia",
+  "description": "The 3-6-9 sleep breath is a calming breathing exercise designed to help improve sleep quality and alleviate insomnia.",
+  "detail": "The 3-6-9 sleep breath is a variation of rhythmic breathing that involves inhaling for a count of three, holding the breath for a count of six, and exhaling for a count of nine. This pattern is known for its soothing effect on the nervous system, promoting relaxation and better sleep.",
+  "benefits": "1. Improved Sleep: The 3-6-9 sleep breath can help improve sleep quality and reduce insomnia.\n2. Relaxation: This technique promotes relaxation, making it easier to fall asleep and stay asleep.\n3. Stress Reduction: It can reduce stress and calm the nervous system.\n4. Enhanced Sleep Routine: Incorporating this technique into your bedtime routine can signal to the body that it's time to sleep.",
+  "colorA": "ffe95e",
+  "colorB": "ffc732",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable position in bed, lying on your back with your eyes closed.",
+    "Take a few natural breaths to relax and center yourself.",
+    "Inhale deeply through your nose for a count of three.",
+    "Hold your breath for a count of six.",
+    "Exhale slowly and completely through your mouth for a count of nine.",
+    "Repeat this 3-6-9 pattern for about 5-10 minutes, focusing on relaxation and preparing for sleep."
+  ],
+  "image": "assets/meditation/yoga11.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 3,
+      "message": "Inhale deeply through your nose for a count of three."
+    },
+    "hold1": {
+      "duration": 6,
+      "message": "Hold your breath."
+    },
+    "breatheOut": {
+      "duration": 9,
+      "message": "Exhale slowly through your mouth for a count of nine."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Sleepy Waves Breathing",
+  "purpose": "Sleep and Insomnia",
+  "description": "Sleepy waves breathing is a calming breath exercise that mimics the rhythm of gentle ocean waves to promote sleep and reduce insomnia.",
+  "detail": "Sleepy waves breathing, also known as ocean wave breath, involves inhaling and exhaling with a slow and soothing rhythm, similar to the gentle ebb and flow of ocean waves. This calming pattern helps reduce insomnia and prepares the mind and body for sleep.",
+  "benefits": "1. Improved Sleep: Sleepy waves breathing can help improve sleep quality and reduce insomnia.\n2. Relaxation: This technique promotes relaxation and prepares the body for restful sleep.\n3. Stress Reduction: It reduces stress and tension, making it easier to fall asleep.\n4. Enhanced Sleep Routine: Incorporating this technique into your bedtime routine can signal to the body that it's time to sleep.",
+  "colorA": "A4C4D9",
+  "colorB": "7A98B4",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable position in bed, lying on your back with your eyes closed.",
+    "Take a few natural breaths to relax and center yourself.",
+    "Inhale slowly through your nose, counting to four as if you're breathing in the scent of a peaceful ocean breeze.",
+    "Exhale even more slowly through your mouth, counting to six as if you're releasing your breath in sync with gentle ocean waves.",
+    "Continue this rhythmic and soothing breathing pattern for about 5-10 minutes, focusing on relaxation and preparing for sleep."
+  ],
+  "image": "assets/meditation/yoga12.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly through your nose, counting to four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale even more slowly through your mouth, counting to six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Bedtime Body Scan Breath",
+  "purpose": "Sleep and Insomnia",
+  "description": "The bedtime body scan breath is a relaxing breathing exercise combined with a body scan to reduce insomnia and promote sleep.",
+  "detail": "The bedtime body scan breath combines deep, soothing breaths with a mental body scan. This practice involves inhaling and exhaling while mentally scanning and relaxing different parts of the body. It helps reduce insomnia by calming the mind and body.",
+  "benefits": "1. Improved Sleep: The bedtime body scan breath can improve sleep quality by relaxing the body and mind.\n2. Insomnia Reduction: It reduces insomnia by promoting relaxation and reducing racing thoughts.\n3. Stress Reduction: This technique reduces stress and tension, making it easier to fall asleep.\n4. Enhanced Body Awareness: The body scan promotes mindfulness and body awareness.",
+  "colorA": "ff827c",
+  "colorB": "ff9d44",
+  "average_time": "10-15 minutes",
+  "instructions": [
+    "Lie comfortably in your bed with your eyes closed and your hands resting at your sides.",
+    "Take a few natural breaths to relax and center yourself.",
+    "As you inhale deeply through your nose, mentally scan and focus on relaxing your toes.",
+    "As you exhale slowly through your mouth, let go of any tension in your toes.",
+    "Continue this pattern, moving up your body and mentally scanning and relaxing each body part, including your feet, ankles, calves, thighs, abdomen, chest, arms, neck, and head.",
+    "Finish by taking a few natural breaths and focusing on relaxation.",
+    "Practice this bedtime body scan breath for about 10-15 minutes as you prepare for sleep."
+  ],
+  "image": "assets/meditation/yoga13.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose as you mentally scan and relax each body part."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth, releasing tension."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Tranquil Breath Count",
+  "purpose": "Sleep and Insomnia",
+  "description": "Tranquil breath count is a calming breathing exercise with a focus on counting breaths to reduce insomnia and promote sleep.",
+  "detail": "The tranquil breath count involves counting each breath to a specific number, providing a simple yet effective way to calm the mind and reduce insomnia. This practice encourages relaxation and prepares the body for restful sleep.",
+  "benefits": "1. Improved Sleep: Tranquil breath count can improve sleep quality by calming the mind and body.\n2. Insomnia Reduction: It reduces insomnia by focusing the mind on a simple and repetitive task.\n3. Stress Reduction: This technique reduces stress and tension, making it easier to fall asleep.\n4. Enhanced Concentration: The practice enhances concentration by requiring mental focus on counting.",
+  "colorA": "C1D9D1",
+  "colorB": "8DBFA4",
+  "average_time": "10-15 minutes",
+  "instructions": [
+    "Lie comfortably in your bed with your eyes closed and your hands resting at your sides.",
+    "Take a few natural breaths to relax and center yourself.",
+    "Inhale deeply through your nose and mentally count 'one'.",
+    "Exhale slowly through your mouth, then inhale again, counting 'two'.",
+    "Continue this pattern, counting each inhalation and exhalation up to 'ten'.",
+    "After reaching 'ten', start again from 'one'.",
+    "Continue this tranquil breath count for about 10-15 minutes as you prepare for sleep."
+  ],
+  "image": "assets/meditation/yoga14.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose and mentally count each breath."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Serene Moonlight Breath",
+  "purpose": "Sleep and Insomnia",
+  "description": "Serene moonlight breath is a calming breathing exercise that draws inspiration from the serenity of moonlight to reduce insomnia and promote sleep.",
+  "detail": "Serene moonlight breath involves inhaling deeply and exhaling slowly, visualizing the calming and soothing light of moonlight filling your body. This practice reduces insomnia by calming the mind and creating a peaceful atmosphere for sleep.",
+  "benefits": "1. Improved Sleep: Serene moonlight breath can improve sleep quality by promoting relaxation and tranquility.\n2. Insomnia Reduction: It reduces insomnia by creating a serene mental imagery of moonlight.\n3. Stress Reduction: This technique reduces stress and tension, making it easier to fall asleep.\n4. Mindfulness: Serene moonlight breath fosters mindfulness by focusing on the breath and visualization.",
+  "colorA": "C7D0E8",
+  "colorB": "A2A9C3",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable position in bed, lying on your back with your eyes closed.",
+    "Take a few natural breaths to relax and center yourself.",
+    "Inhale deeply through your nose, visualizing the calming light of moonlight filling your body.",
+    "Exhale slowly through your mouth, releasing any tension and letting go of stress.",
+    "Continue this calming moonlight breath for about 5-10 minutes, focusing on relaxation and preparing for sleep."
+  ],
+  "image": "assets/meditation/yoga15.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose, visualizing the calming light of moonlight."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth, releasing tension."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Starry Night Breath",
+  "purpose": "Sleep and Insomnia",
+  "description": "Starry night breath is a calming breathing exercise that draws inspiration from the beauty of a starry night to reduce insomnia and promote sleep.",
+  "detail": "Starry night breath involves deep inhalations and slow exhalations while visualizing a serene starry night sky. This practice reduces insomnia by calming the mind and creating a peaceful mental atmosphere for sleep.",
+  "benefits": "1. Improved Sleep: Starry night breath can improve sleep quality by promoting relaxation and tranquility.\n2. Insomnia Reduction: It reduces insomnia by creating a serene mental imagery of a starry night sky.\n3. Stress Reduction: This technique reduces stress and tension, making it easier to fall asleep.\n4. Mindfulness: Starry night breath fosters mindfulness by focusing on the breath and visualization.",
+  "colorA": "F0ECEC",
+  "colorB": "D0C5C5",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable position in bed, lying on your back with your eyes closed.",
+    "Take a few natural breaths to relax and center yourself.",
+    "Inhale deeply through your nose, visualizing the serene beauty of a starry night sky.",
+    "Exhale slowly through your mouth, releasing any tension and letting go of stress.",
+    "Continue this calming starry night breath for about 5-10 minutes, focusing on relaxation and preparing for sleep."
+  ],
+  "image": "assets/meditation/yoga16.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose, visualizing the serene beauty of a starry night sky."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth, releasing tension."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+      ]
     },
     {
-      "title": "Energizing Breath",
-      "purpose": "Energy and Focus",
-      "description": "Utilizes rhythmic breath of fire to increase energy levels and enhance focus.",
-      "colorA": "b5ead7",
-      "colorB": "87CEFA",
-      "average_time": "7 minutes",
-      "instructions": [
-        "Sit with your back straight and shoulders relaxed.",
-        "Inhale and exhale rapidly through your nose, keeping a steady rhythm.",
-        "Focus on the movement of your diaphragm.",
-        "This technique increases alertness and mental clarity."
-      ],
-      "image": "assets/meditation/yoga4.png",
-      "durations" : {
-        "breatheIn" : 3,
-        "hold1" : 1,
-        "breatheOut" : 3,
-        "hold2" : 1
-      },
-      "exhaleThrough" : "nose"
+    "category" : "Improve Energy and Focus",
+    "tagline" : "Boost Vitality and Alertness",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat4.jpg",
+    "data" : [
+      {
+  "title": "Energizing Nose Breaths",
+  "purpose": "Energy and Focus",
+  "description": "Energizing nose breaths involve alternating nostril breathing to boost energy and enhance focus.",
+  "detail": "Energizing nose breaths combine deep nasal inhalations with alternate nostril exhalations. This technique balances energy channels and increases alertness, making it ideal for improving focus and energy levels.",
+  "benefits": "1. Increased Energy: Energizing nose breaths provide a quick energy boost by increasing oxygen intake.\n2. Enhanced Focus: It improves mental clarity and concentration, making it suitable for tasks that require focus.\n3. Stress Reduction: This technique can help reduce stress and mental fatigue.\n4. Balancing Energy: It balances the flow of energy in the body, fostering a sense of equilibrium.",
+  "colorA": "D9E3E3",
+  "colorB": "A7C3C3",
+  "average_time": "3-5 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Using your right thumb, close your right nostril.",
+    "Inhale deeply and slowly through your left nostril for a count of four.",
+    "Release your right nostril and close your left nostril with your ring finger.",
+    "Exhale slowly through your right nostril for a count of six.",
+    "Inhale deeply and slowly through your right nostril for a count of four.",
+    "Release your left nostril and close your right nostril with your thumb.",
+    "Exhale slowly through your left nostril for a count of six.",
+    "Repeat this alternating nostril pattern for about 3-5 minutes, focusing on increased energy and mental alertness."
+  ],
+  "image": "assets/meditation/yoga19.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your open nostril."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale through the other nostril."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "alternate nostrils"
+},
+      {
+  "title": "Focus and Revitalize Breath",
+  "purpose": "Energy and Focus",
+  "description": "Focus and revitalize breath is a rhythmic nasal breathing exercise to boost energy and enhance mental focus.",
+  "detail": "Focus and revitalize breath involves inhaling and exhaling through the nose with a specific rhythm. This technique helps oxygenate the brain, increase alertness, and improve concentration, making it ideal for enhancing energy and focus.",
+  "benefits": "1. Increased Energy: Focus and revitalize breath increases oxygen intake, boosting energy levels.\n2. Enhanced Focus: It improves mental clarity, concentration, and cognitive performance.\n3. Stress Reduction: This technique can help reduce stress and improve overall well-being.\n4. Mind-Body Connection: It enhances the connection between the mind and body.",
+  "colorA": "ffb07c",
+  "colorB": "ff8a4a",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply through your nose for a count of four.",
+    "Exhale slowly and completely through your nose for a count of six.",
+    "Continue this rhythmic and revitalizing breathing pattern for about 5-7 minutes, focusing on increased energy and mental alertness."
+  ],
+  "image": "assets/meditation/yoga20.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your nose for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+      {
+  "title": "Uplifting Breath Burst",
+  "purpose": "Energy and Focus",
+  "description": "Uplifting breath burst is a dynamic nasal breathing exercise to quickly boost energy and enhance focus.",
+  "detail": "Uplifting breath burst involves rapid and rhythmic nasal inhalations and exhalations. This technique quickly oxygenates the body and mind, providing an instant burst of energy and heightened focus.",
+  "benefits": "1. Instant Energy Boost: Uplifting breath burst provides a rapid boost of energy and alertness.\n2. Enhanced Focus: It sharpens mental focus, making it suitable for tasks that require concentration.\n3. Stress Reduction: This technique can help reduce stress and elevate mood.\n4. Increased Awareness: It enhances awareness of the breath and its effect on the body.",
+  "colorA": "F7D6CB",
+  "colorB": "F0AC9F",
+  "average_time": "2-3 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale and exhale rapidly through your nose, maintaining a steady and rhythmic pace.",
+    "Continue this rapid nasal breathing for about 2-3 minutes, focusing on the surge of energy and heightened focus."
+  ],
+  "image": "assets/meditation/yoga21.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 1,
+      "message": "Rapidly inhale through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 1,
+      "message": "Rapidly exhale through your nose."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+      {
+  "title": "Power Breath Boost",
+  "purpose": "Energy and Focus",
+  "description": "Power breath boost is a dynamic mouth breathing exercise designed to quickly boost energy and enhance mental focus.",
+  "detail": "Power breath boost involves rapid and rhythmic inhalations and exhalations through the mouth. This technique provides an immediate surge of energy, increased alertness, and heightened mental focus.",
+  "benefits": "1. Rapid Energy Boost: Power breath boost delivers a rapid and substantial increase in energy levels.\n2. Enhanced Focus: It sharpens mental focus, making it suitable for tasks that require concentration.\n3. Stress Reduction: This technique can help reduce stress and elevate mood.\n4. Increased Awareness: It enhances awareness of the breath and its impact on energy.",
+  "colorA": "96A4FF",
+  "colorB": "bbc4ff",
+  "average_time": "2-3 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale and exhale rapidly through your mouth, maintaining a steady and rhythmic pace.",
+    "Continue this rapid mouth breathing for about 2-3 minutes, focusing on the surge of energy and heightened focus."
+  ],
+  "image": "assets/meditation/yoga22.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 1,
+      "message": "Rapidly inhale through your mouth."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 1,
+      "message": "Rapidly exhale through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+      {
+  "title": "Focus and Energize Breath",
+  "purpose": "Energy and Focus",
+  "description": "Focus and energize breath is a rhythmic mouth breathing exercise designed to enhance energy and mental focus.",
+  "detail": "Focus and energize breath involves inhaling and exhaling through the mouth with a specific rhythm. This technique quickly oxygenates the body and mind, providing an instant surge of energy and sharpened focus.",
+  "benefits": "1. Immediate Energy Boost: Focus and energize breath provides an instant increase in energy levels.\n2. Enhanced Focus: It sharpens mental focus, making it suitable for tasks that require concentration.\n3. Stress Reduction: This technique can help reduce stress and elevate mood.\n4. Increased Breath Awareness: It enhances awareness of breath and its role in energy and focus.",
+  "colorA": "FFE2CC",
+  "colorB": "FFB57A",
+  "average_time": "2-3 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale and exhale rapidly through your mouth, maintaining a steady and rhythmic pace.",
+    "Continue this rapid mouth breathing for about 2-3 minutes, focusing on the surge of energy and heightened focus."
+  ],
+  "image": "assets/meditation/yoga23.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 1,
+      "message": "Rapidly inhale through your mouth."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 1,
+      "message": "Rapidly exhale through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+      {
+  "title": "Mindful Breath for Focus",
+  "purpose": "Energy and Focus",
+  "description": "Mindful breath for focus is a controlled mouth breathing exercise designed to enhance mental clarity and energy.",
+  "detail": "Mindful breath for focus involves deep and controlled inhalations and exhalations through the mouth. This technique enhances mental clarity, increases alertness, and fosters improved focus and concentration.",
+  "benefits": "1. Enhanced Mental Clarity: Mindful breath for focus enhances mental clarity and cognitive performance.\n2. Increased Alertness: It boosts alertness and mental energy, making it suitable for tasks requiring focus.\n3. Stress Reduction: This technique can help reduce stress and promote relaxation.\n4. Mindfulness: It fosters mindfulness by focusing on the breath and its effects.",
+  "colorA": "F3E5E5",
+  "colorB": "D4A4A4",
+  "average_time": "3-5 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your mouth for a count of four.",
+    "Exhale slowly and completely through your mouth for a count of six.",
+    "Continue this controlled and mindful mouth breathing for about 3-5 minutes, focusing on mental clarity and heightened energy."
+  ],
+  "image": "assets/meditation/yoga24.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your mouth for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+    ]
+  },
+    {
+      "category" : "Enhance Concentration",
+      "tagline" : "Focus and Sharpen Your Mind",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat5.jpg",
+      "data" : [
+        {
+  "title": "Concentration-Boosting Breath",
+  "purpose": "Concentration",
+  "description": "Concentration-boosting breath is a focused nasal breathing exercise designed to enhance mental concentration and clarity.",
+  "detail": "Concentration-boosting breath involves deep and rhythmic nasal inhalations and exhalations. This technique increases oxygen flow to the brain, improves mental focus, and enhances concentration.",
+  "benefits": "1. Enhanced Concentration: Concentration-boosting breath sharpens mental focus and cognitive performance.\n2. Mental Clarity: It clears the mind, promoting better decision-making and problem-solving.\n3. Stress Reduction: This technique can help reduce stress and anxiety.\n4. Mind-Body Connection: It enhances the connection between the mind and body.",
+  "colorA": "E0D5D5",
+  "colorB": "BFA7A7",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your nose for a count of four.",
+    "Exhale slowly and completely through your nose for a count of six.",
+    "Continue this rhythmic nasal breathing for about 5-7 minutes, focusing on enhanced concentration and mental clarity."
+  ],
+  "image": "assets/meditation/yoga25.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your nose for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Clarity Breath Flow",
+  "purpose": "Concentration",
+  "description": "Clarity breath flow is a mindful nasal breathing exercise aimed at enhancing mental clarity and concentration.",
+  "detail": "Clarity breath flow involves deep and controlled nasal inhalations and exhalations. This technique promotes mental clarity, increases alertness, and fosters improved concentration.",
+  "benefits": "1. Heightened Concentration: Clarity breath flow sharpens mental focus, aiding in tasks requiring attention.\n2. Mental Calmness: It calms the mind, reducing mental clutter and distractions.\n3. Stress Reduction: This technique can help reduce stress and promote a sense of tranquility.\n4. Mindful Awareness: It fosters mindfulness by directing attention to the breath.",
+  "colorA": "C9D9D9",
+  "colorB": "A7C2C2",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your nose for a count of four.",
+    "Exhale slowly and completely through your nose for a count of six.",
+    "Continue this controlled nasal breathing for about 5-7 minutes, focusing on enhanced concentration and mental calmness."
+  ],
+  "image": "assets/meditation/yoga26.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your nose for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Focus Enhancer Breath",
+  "purpose": "Concentration",
+  "description": "Focus enhancer breath is a controlled nasal breathing exercise designed to enhance mental focus and concentration.",
+  "detail": "Focus enhancer breath involves deep and focused nasal inhalations and exhalations. This technique increases oxygen supply to the brain, sharpens mental focus, and enhances concentration.",
+  "benefits": "1. Improved Concentration: Focus enhancer breath boosts mental focus and concentration.\n2. Enhanced Cognitive Performance: It aids in mental tasks, promoting clarity and precision.\n3. Stress Reduction: This technique can help reduce stress and promote a sense of calmness.\n4. Mindful Presence: It encourages mindfulness by directing attention to the breath.",
+  "colorA": "D9D9E0",
+  "colorB": "A7A7C2",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your nose for a count of four.",
+    "Exhale slowly and completely through your nose for a count of six.",
+    "Continue this focused nasal breathing for about 5-7 minutes, concentrating on improved focus and cognitive clarity."
+  ],
+  "image": "assets/meditation/yoga27.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your nose for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Precision Focus Breath",
+  "purpose": "Concentration",
+  "description": "Precision focus breath is a controlled mouth breathing exercise aimed at enhancing mental precision and concentration.",
+  "detail": "Precision focus breath involves deep and rhythmic mouth inhalations and exhalations. This technique increases oxygen intake, sharpens mental precision, and enhances concentration.",
+  "benefits": "1. Enhanced Concentration: Precision focus breath sharpens mental focus and cognitive precision.\n2. Improved Decision-Making: It aids in making precise and informed decisions.\n3. Stress Reduction: This technique can help reduce stress and promote mental clarity.\n4. Mindful Awareness: It encourages mindfulness by directing attention to the breath.",
+  "colorA": "ffeb94",
+  "colorB": "ffc737",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your mouth for a count of four.",
+    "Exhale slowly and completely through your mouth for a count of six.",
+    "Continue this focused mouth breathing for about 5-7 minutes, concentrating on enhanced focus and mental precision."
+  ],
+  "image": "assets/meditation/yoga28.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your mouth for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Cognitive Clarity Breath",
+  "purpose": "Concentration",
+  "description": "Cognitive clarity breath is a focused mouth breathing exercise designed to enhance mental clarity and concentration.",
+  "detail": "Cognitive clarity breath involves deep and controlled mouth inhalations and exhalations. This technique improves oxygen supply to the brain, sharpens mental clarity, and enhances concentration.",
+  "benefits": "1. Improved Concentration: Cognitive clarity breath enhances mental focus and cognitive performance.\n2. Enhanced Problem-Solving: It aids in finding clear and effective solutions to challenges.\n3. Stress Reduction: This technique can help reduce stress and promote mental composure.\n4. Mindful Presence: It encourages mindfulness by directing attention to the breath.",
+  "colorA": "d7ffc4",
+  "colorB": "94d0e0",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your mouth for a count of four.",
+    "Exhale slowly and completely through your mouth for a count of six.",
+    "Continue this controlled mouth breathing for about 5-7 minutes, focusing on enhanced concentration and mental clarity."
+  ],
+  "image": "assets/meditation/yoga29.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your mouth for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Clarity Boost Breath",
+  "purpose": "Concentration",
+  "description": "Clarity boost breath is a focused mouth breathing exercise aimed at enhancing mental clarity and concentration.",
+  "detail": "Clarity boost breath involves deep and rhythmic mouth inhalations and exhalations. This technique increases oxygen intake, sharpens mental clarity, and enhances concentration.",
+  "benefits": "1. Enhanced Concentration: Clarity boost breath sharpens mental focus and cognitive precision.\n2. Improved Decision-Making: It aids in making clear and effective decisions.\n3. Stress Reduction: This technique can help reduce stress and promote mental composure.\n4. Mindful Awareness: It encourages mindfulness by directing attention to the breath.",
+  "colorA": "FFE2CC",
+  "colorB": "FFB57A",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply and slowly through your mouth for a count of four.",
+    "Exhale slowly and completely through your mouth for a count of six.",
+    "Continue this focused mouth breathing for about 5-7 minutes, concentrating on enhanced focus and mental clarity."
+  ],
+  "image": "assets/meditation/yoga30.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your mouth for a count of four."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth for a count of six."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+      ]
     },
     {
-      "title": "Mindful Breath Awareness",
-      "purpose": "Mindfulness and Present Moment Awareness",
-      "description": "Encourages observation of the natural breath to promote mindfulness and presence.",
-      "colorA": "FFDAB9",
-      "colorB": "FFA07A",
-      "average_time": "12 minutes",
-      "instructions": [
-        "Find a quiet space to sit comfortably.",
-        "Close your eyes and take a few natural breaths.",
-        "Shift your attention to your breath.",
-        "Observe each inhale and exhale without trying to change it.",
-        "Practice being fully present in the moment."
-      ],
-      "image": "assets/meditation/yoga5.png",
-      "durations" : {
-        "breatheIn" : 3,
-        "hold1" : 3,
-        "breatheOut" : 3,
-        "hold2" : 3
-      },
-      "exhaleThrough" : "nose"
+      "category" : "Improve Lung health",
+      "tagline" : "Breathe Easy, Stay Healthy",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat6.jpg",
+      "data" : [
+        {
+  "title": "Diaphragmatic Breathing for Lung Health",
+  "purpose": "Lung Health",
+  "description": "Diaphragmatic breathing focuses on using the diaphragm to improve lung capacity and overall lung health.",
+  "detail": "Diaphragmatic breathing, also known as abdominal or belly breathing, involves the active engagement of the diaphragm while breathing. This technique helps increase the capacity of the lungs, promotes efficient oxygen exchange, and supports lung health.",
+  "benefits": "1. Improved Lung Capacity: Diaphragmatic breathing enhances lung capacity and oxygen intake.\n2. Better Oxygen Exchange: It promotes efficient exchange of oxygen and carbon dioxide.\n3. Stress Reduction: This technique can help reduce stress and anxiety.\n4. Enhanced Respiratory Function: It supports overall lung health and respiratory function.",
+  "colorA": "D7E9D7",
+  "colorB": "A1CBA1",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable seated or lying-down position with your back straight.",
+    "Place one hand on your chest and the other on your abdomen, just below your ribcage.",
+    "Inhale deeply through your nose, allowing your abdomen to rise as your diaphragm contracts.",
+    "Exhale slowly and completely through your mouth or nose, feeling your abdomen fall as your diaphragm relaxes.",
+    "Continue this diaphragmatic breathing for 5-10 minutes, focusing on expanding and contracting your diaphragm."
+  ],
+  "image": "assets/meditation/yoga31.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply, allowing your abdomen to rise."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly and completely."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth_or_nose"
+},
+        {
+  "title": "Pursed Lip Breathing for Lung Health",
+  "purpose": "Lung Health",
+  "description": "Pursed lip breathing is a technique that helps improve lung function and oxygen exchange.",
+  "detail": "Pursed lip breathing involves inhaling through the nose and exhaling through pursed lips. This technique creates back pressure in the airways, allowing for better oxygen exchange and improved lung function.",
+  "benefits": "1. Improved Lung Function: Pursed lip breathing enhances lung function and oxygen exchange.\n2. Increased Oxygen Levels: It helps increase oxygen levels in the blood.\n3. Stress Reduction: This technique can promote relaxation and reduce anxiety.\n4. Better Breath Control: It aids in better breath control and respiratory efficiency.",
+  "colorA": "bbc4ff",
+  "colorB": "96a4ff",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your back straight.",
+    "Inhale slowly and deeply through your nose for a count of two.",
+    "Purse your lips as if you were blowing out a candle.",
+    "Exhale slowly and completely through pursed lips for a count of four.",
+    "Repeat this pursed lip breathing pattern for 5-10 minutes, focusing on efficient and controlled breathing."
+  ],
+  "image": "assets/meditation/yoga32.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 2,
+      "message": "Inhale slowly and deeply through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 4,
+      "message": "Exhale slowly through pursed lips."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "pursed_lips"
+},
+        {
+  "title": "Alternate Nostril Breathing for Lung Health",
+  "purpose": "Lung Health",
+  "description": "Alternate nostril breathing balances the flow of air and energy, promoting lung health and respiratory efficiency.",
+  "detail": "Alternate nostril breathing, also known as Nadi Shodhana, involves alternating between nostrils during inhalation and exhalation. This technique harmonizes the flow of air and energy in the body, enhancing lung health and respiratory function.",
+  "benefits": "1. Improved Lung Health: Alternate nostril breathing supports lung health and respiratory efficiency.\n2. Balanced Energy: It balances the flow of energy in the body, fostering a sense of equilibrium.\n3. Stress Reduction: This technique can help reduce stress and promote relaxation.\n4. Enhanced Breath Control: It aids in better breath control and lung capacity.",
+  "colorA": "E0D7D7",
+  "colorB": "A1B3CB",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your back straight.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Using your right thumb, close your right nostril.",
+    "Inhale deeply and slowly through your left nostril for a count of four.",
+    "Release your right nostril and use your right ring finger to close your left nostril.",
+    "Exhale slowly and completely through your right nostril for a count of four.",
+    "Inhale deeply through your right nostril for a count of four.",
+    "Release your left nostril and close your right nostril with your thumb.",
+    "Exhale slowly through your left nostril for a count of four.",
+    "Repeat this alternating nostril pattern for 5-10 minutes, focusing on balanced breathing and lung health."
+  ],
+  "image": "assets/meditation/yoga33.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your open nostril."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 4,
+      "message": "Exhale through the other nostril."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "alternate_nostrils"
+},
+        {
+  "title": "Lung Cleansing Breath",
+  "purpose": "Lung Health",
+  "description": "Lung cleansing breath is a technique that helps clear and detoxify the lungs.",
+  "detail": "Lung cleansing breath involves deep inhalation followed by forceful exhalation. This technique helps clear mucus, toxins, and impurities from the lungs, supporting lung health and function.",
+  "benefits": "1. Lung Detoxification: Lung cleansing breath helps remove toxins and impurities from the lungs.\n2. Improved Lung Function: It supports better lung function and respiratory efficiency.\n3. Stress Reduction: This technique can promote relaxation and reduce anxiety.\n4. Enhanced Breath Control: It aids in better breath control and lung capacity.",
+  "colorA": "bfffc2",
+  "colorB": "A1CBA1",
+  "average_time": "5-10 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your back straight.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply through your nose, filling your lungs to full capacity.",
+    "Exhale forcefully through your mouth, expelling air as completely as possible.",
+    "Repeat this lung cleansing breath pattern for 5-10 minutes, focusing on clearing your lungs and promoting lung health."
+  ],
+  "image": "assets/meditation/yoga34.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 4,
+      "message": "Exhale forcefully through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+      ]
     },
     {
-      "title": "Pain Relief Breath",
-      "purpose": "Pain Management and Relaxation",
-      "description": "Combines deep rhythmic breathing with visualization to relieve physical discomfort.",
-      "colorA": "C8A2C8",
-      "colorB": "DDA0DD",
-      "average_time": "8 minutes",
-      "instructions": [
-        "Sit or lie down in a relaxed position.",
-        "Close your eyes and take a few deep breaths to relax.",
-        "Visualize your breath as a soothing, healing energy.",
-        "As you inhale, imagine this energy flowing to the areas of discomfort or pain.",
-        "Exhale slowly, releasing tension and discomfort.",
-        "Use this technique to find relief from physical discomfort or pain."
-      ],
-      "image": "assets/meditation/yoga1.png",
-      "durations" : {
-        "breatheIn" : 5,
-        "hold1" : 1,
-        "breatheOut" : 8,
-        "hold2" : 2
-      },
-      "exhaleThrough" : "mouth"
+      "category" : "Mood Improvment",
+      "tagline" : "Elevate Your Emotional Well-being",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat7.jpg",
+      "data" : [
+        {
+  "title": "Blissful Breath",
+  "purpose": "Mood Improvement",
+  "description": "Blissful breath is a calming breathing exercise that promotes relaxation and uplifts your mood.",
+  "detail": "Blissful breath involves slow, deep inhalations and exhalations through the nose. This technique helps activate the body's relaxation response, reducing stress and improving overall mood.",
+  "benefits": "1. Stress Reduction: Blissful breath helps reduce stress and anxiety.\n2. Enhanced Mood: It uplifts your mood and promotes a sense of well-being.\n3. Improved Mental Clarity: This technique can enhance mental clarity and focus.\n4. Mindful Relaxation: It fosters mindfulness by focusing on the breath and relaxation.",
+  "colorA": "FFD1DC",
+  "colorB": "FFA07A",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale deeply through your nose for a count of four, allowing your abdomen to rise.",
+    "Exhale slowly and completely through your nose for a count of six, feeling tension release.",
+    "Focus on your breath and let go of stress and worries.",
+    "Continue this blissful breath for 5-7 minutes, embracing a sense of relaxation and improved mood."
+  ],
+  "image": "assets/meditation/yoga35.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your nose."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Joyful Breath",
+  "purpose": "Mood Improvement",
+  "description": "Joyful breath is an invigorating breathing exercise that promotes feelings of joy and positivity.",
+  "detail": "Joyful breath involves deep, rhythmic inhalations and exhalations through the mouth. This technique activates the body's energy centers and can boost feelings of joy and enthusiasm.",
+  "benefits": "1. Enhanced Mood: Joyful breath promotes feelings of joy and positivity.\n2. Increased Energy: It boosts energy levels and enthusiasm.\n3. Stress Reduction: This technique can help reduce stress and tension.\n4. Mind-Body Connection: It enhances awareness of the breath and its effects on mood.",
+  "colorA": "bbc4ff",
+  "colorB": "a085ff",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale deeply through your mouth for a count of four, feeling energy fill your body.",
+    "Exhale slowly and completely through your mouth for a count of six, releasing any tension.",
+    "Continue this joyful breath for 5-7 minutes, focusing on a sense of joy and positivity."
+  ],
+  "image": "assets/meditation/yoga36.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale deeply through your mouth."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Gratitude Breath",
+  "purpose": "Mood Improvement",
+  "description": "Gratitude breath is a heart-opening breathing exercise that cultivates feelings of gratitude and positivity.",
+  "detail": "Gratitude breath involves slow inhalations and exhalations through the nose or mouth while focusing on feelings of gratitude. This technique can shift your perspective and improve your mood.",
+  "benefits": "1. Improved Mood: Gratitude breath enhances feelings of gratitude and positivity.\n2. Heart Opening: It opens the heart center, fostering emotional well-being.\n3. Stress Reduction: This technique can help reduce stress and tension.\n4. Mindful Awareness: It encourages mindfulness by focusing on gratitude and the breath.",
+  "colorA": "FFE4B5",
+  "colorB": "FFA07A",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly and deeply through your nose or mouth, focusing on something you're grateful for.",
+    "Exhale slowly and completely, releasing any tension and negativity.",
+    "Continue this gratitude breath for 5-7 minutes, embracing feelings of gratitude and positivity."
+  ],
+  "image": "assets/meditation/yoga37.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly and deeply."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly and completely."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose_or_mouth"
+},
+        {
+  "title": "Serenity Breath",
+  "purpose": "Mood Improvement",
+  "description": "Serenity breath is a calming and grounding breathing exercise that promotes inner peace and serenity.",
+  "detail": "Serenity breath involves slow, deep inhalations through the nose and gentle exhalations through pursed lips. This technique helps calm the nervous system and cultivate a sense of inner tranquility.",
+  "benefits": "1. Calm and Serenity: Serenity breath promotes inner peace and serenity.\n2. Stress Reduction: It helps reduce stress, anxiety, and tension.\n3. Grounding: This technique grounds you in the present moment.\n4. Mindful Relaxation: It encourages mindfulness by focusing on the breath and calmness.",
+  "colorA": "F0E68C",
+  "colorB": "DAA520",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly and deeply through your nose for a count of four.",
+    "Exhale gently and completely through pursed lips for a count of six.",
+    "Continue this serenity breath for 5-7 minutes, embracing a sense of calm and inner peace."
+  ],
+  "image": "assets/meditation/yoga38.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly and deeply through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale gently through pursed lips."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "pursed_lips"
+},
+        {
+  "title": "Euphoric Breath",
+  "purpose": "Mood Improvement",
+  "description": "Euphoric breath is an energizing breathing exercise that uplifts mood and fosters a sense of euphoria.",
+  "detail": "Euphoric breath involves quick and rhythmic inhalations and exhalations through the mouth. This technique activates the body's energy centers and can boost feelings of euphoria and positivity.",
+  "benefits": "1. Elevated Mood: Euphoric breath enhances mood and fosters a sense of euphoria.\n2. Increased Energy: It boosts energy levels and enthusiasm.\n3. Stress Reduction: This technique can help reduce stress and tension.\n4. Mind-Body Connection: It encourages mindfulness by focusing on the breath and positive emotions.",
+  "colorA": "FFE4E1",
+  "colorB": "FF69B4",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Inhale quickly and deeply through your mouth for a count of two.",
+    "Exhale quickly and completely through your mouth for a count of two.",
+    "Repeat this euphoric breath pattern for 5-7 minutes, focusing on elevated mood and positivity."
+  ],
+  "image": "assets/meditation/yoga39.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 2,
+      "message": "Inhale quickly and deeply through your mouth."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 2,
+      "message": "Exhale quickly through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+      ]
+    },
+    {
+      "category" :  "Mindfulness",
+      "tagline" : "Be Present, Find Inner Peace",
+      "image" : "https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/assets/category/cat8.jpg",
+      "data" : [
+        {
+  "title": "Calming Breath for Mindfulness",
+  "purpose": "Mindfulness",
+  "description": "Calming breath is a mindfulness exercise that focuses on grounding and tranquility.",
+  "detail": "Calming breath involves slow, deep inhalations through the nose and gentle exhalations through the mouth. This technique enhances mindfulness by promoting a sense of calmness and presence.",
+  "benefits": "1. Mindfulness: Calming breath fosters mindfulness and presence in the moment.\n2. Stress Reduction: It helps reduce stress, anxiety, and tension.\n3. Emotional Regulation: This exercise supports emotional balance and self-awareness.\n4. Grounding: It grounds you in the present and promotes a sense of tranquility.",
+  "colorA": "FFE4B5",
+  "colorB": "FFA07A",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly and deeply through your nose for a count of four.",
+    "Exhale gently and completely through your mouth for a count of six.",
+    "Focus on the sensation of calmness and presence with each breath.",
+    "Continue this calming breath for 5-7 minutes, embracing mindfulness and tranquility."
+  ],
+  "image": "assets/meditation/yoga40.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly and deeply through your nose."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale gently through your mouth."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+},
+        {
+  "title": "Gratitude Breath for Mindfulness",
+  "purpose": "Mindfulness",
+  "description": "Gratitude breath is a mindfulness exercise that cultivates feelings of gratitude and presence.",
+  "detail": "Gratitude breath involves slow inhalations and exhalations through the nose or mouth while focusing on feelings of gratitude. This technique can shift your perspective and improve your mindfulness.",
+  "benefits": "1. Mindfulness: Gratitude breath enhances mindfulness by focusing on gratitude and the breath.\n2. Emotional Well-being: It fosters emotional balance and positivity.\n3. Stress Reduction: This exercise can help reduce stress and promote relaxation.\n4. Perspective Shift: It encourages a shift toward more positive and present thinking.",
+  "colorA": "FFD1DC",
+  "colorB": "FFA07A",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a quiet and comfortable place to sit or lie down.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly and deeply through your nose or mouth, focusing on something you're grateful for.",
+    "Exhale slowly and completely, releasing any tension and negativity.",
+    "Continue this gratitude breath for 5-7 minutes, embracing mindfulness and gratitude."
+  ],
+  "image": "assets/meditation/yoga41.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 4,
+      "message": "Inhale slowly and deeply."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 6,
+      "message": "Exhale slowly and completely."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose_or_mouth"
+},
+        {
+  "title": "Ocean Breath for Mindfulness",
+  "purpose": "Mindfulness",
+  "description": "Ocean breath, also known as Ujjayi breath, is a mindfulness technique that enhances concentration and presence.",
+  "detail": "Ocean breath involves creating a soft, soothing sound during both inhalation and exhalation by partially closing the back of your throat. This technique enhances mindfulness by focusing on the rhythmic sound of your breath.",
+  "benefits": "1. Mindfulness: Ocean breath enhances mindfulness through its rhythmic sound.\n2. Concentration: It improves concentration and mental clarity.\n3. Stress Reduction: This exercise can help reduce stress and promote relaxation.\n4. Enhanced Breath Control: It aids in better breath control and respiratory efficiency.",
+  "colorA": "D9E6E6",
+  "colorB": "7BA1A1",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths.",
+    "Inhale slowly through your nose while partially closing the back of your throat to create a soft, ocean-like sound.",
+    "Exhale with the same sound through your nose.",
+    "Focus on the rhythmic nature of your breath and the soothing sound it creates.",
+    "Continue this ocean breath for 5-7 minutes, enhancing mindfulness and concentration."
+  ],
+  "image": "assets/meditation/yoga42.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 1,
+      "message": "Inhale with a soft, ocean-like sound."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 1,
+      "message": "Exhale with the same soothing sound."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "nose"
+},
+        {
+  "title": "Mindful Awareness Breath",
+  "purpose": "Mindfulness",
+  "description": "Mindful awareness breath is a simple yet powerful exercise that encourages mindfulness and presence.",
+  "detail": "Mindful awareness breath involves observing your natural breath without attempting to control it. This technique enhances mindfulness by directing your attention to the present moment and the sensation of breathing.",
+  "benefits": "1. Mindfulness: Mindful awareness breath fosters a sense of presence and mindfulness.\n2. Stress Reduction: It can help reduce stress and promote relaxation.\n3. Improved Concentration: This exercise enhances your ability to focus and concentrate.\n4. Emotional Regulation: It supports emotional balance and self-awareness.",
+  "colorA": "19fcff",
+  "colorB": "2dfd7f",
+  "average_time": "5-7 minutes",
+  "instructions": [
+    "Find a comfortable seated position with your spine straight and shoulders relaxed.",
+    "Close your eyes and take a few natural breaths to center yourself.",
+    "Observe your breath without trying to change it. Notice the sensation of each inhale and exhale.",
+    "If your mind wanders, gently bring your focus back to your breath.",
+    "Continue this mindful awareness breath for 5-7 minutes, staying fully present in the moment."
+  ],
+  "image": "assets/meditation/yoga43.png",
+  "durations": {
+    "breatheIn": {
+      "duration": 1,
+      "message": "Observe your natural breath."
+    },
+    "hold1": {
+      "duration": 0.1,
+      "message": ""
+    },
+    "breatheOut": {
+      "duration": 1,
+      "message": "Stay fully present in the moment."
+    },
+    "hold2": {
+      "duration": 0.1,
+      "message": ""
+    }
+  },
+  "exhaleThrough": "mouth"
+}
+      ]
     }
   ]
 }

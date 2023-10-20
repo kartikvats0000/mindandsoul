@@ -137,8 +137,10 @@ class _GridviewAState extends State<GridviewA> {
                         childrenDelegate: SliverChildBuilderDelegate(
                                 (context, index) =>
                                 GestureDetector(
-                                  onTap: (){
-                                    contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context, );
+                                  onTap: ()async{
+                                    await contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
+
+
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -213,7 +215,7 @@ class _GridviewAState extends State<GridviewA> {
                                         Positioned(
                                             top: 7,
                                             right: 7,
-                                            child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite)
+                                            child: Components(context).BlurBackgroundCircularButton(svg: (filteredItems()[index]['liked'])?MyIcons.favorite_filled : MyIcons.favorite)
                                         ),
                                         Positioned(
                                             top: 7,

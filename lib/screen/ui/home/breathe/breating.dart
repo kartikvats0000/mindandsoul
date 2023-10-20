@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/helper/components.dart';
-import 'package:mindandsoul/screen/ui/home/breathe/breatheList.dart';
+import 'package:mindandsoul/screen/ui/home/breathe/breatheCategory.dart';
 
 import '../../../../constants/iconconstants.dart';
 
@@ -21,9 +21,10 @@ class Breathing extends StatefulWidget {
   final String colorB;
   final int noOfCounts;
   final String exhaleThrough;
+  final List messageList;
 
 
-  const Breathing({super.key, required this.title,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.colorA,required this.colorB,required this.noOfCounts,required this.exhaleThrough});
+  const Breathing({super.key, required this.title,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.colorA,required this.colorB,required this.noOfCounts,required this.exhaleThrough, required this.messageList});
 
   @override
   State<Breathing> createState() => _BreathingState();
@@ -43,8 +44,7 @@ class _BreathingState extends State<Breathing> {
 
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
+
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.fromSeed(seedColor: myColor(widget.colorA))
@@ -76,7 +76,7 @@ class _BreathingState extends State<Breathing> {
                             );
                           },
                         ));*/
-                      }, child: Text('Exit')),
+                      }, child: const Text('Exit')),
                     ]));
                 return onwillpop;
               }
@@ -102,7 +102,7 @@ class _BreathingState extends State<Breathing> {
                    if(startAnimation == true){
                      showDialog(context: context, builder: (context)=> Components(context).confirmationDialog(context, title: 'Confirm Exit', message: 'Are you sure you want to exit the breathing exercise? Your progress will not be saved.',
                          actions: [
-                           FilledButton.tonal(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+                           FilledButton.tonal(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                            FilledButton.tonal(onPressed: (){
                              audioPlayer.dispose();
                              // Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation) =>BreatheList(),
@@ -118,7 +118,7 @@ class _BreathingState extends State<Breathing> {
                              // ));
                              Navigator.pop(context);
                              Navigator.pop(context);
-                           }, child: Text('Exit')),
+                           }, child: const Text('Exit')),
                          ]));
                    }else{Navigator.pop(context);}
                  },
@@ -130,7 +130,6 @@ class _BreathingState extends State<Breathing> {
                   gradient: LinearGradient(
                     begin: const Alignment(-1,-1),
                     end: const Alignment(1,1),
-                      //end: Alignment.bottomLeft,
                       colors: [
                         myColor(widget.colorA),
                         myColor(widget.colorB),
@@ -175,7 +174,7 @@ class _BreathingState extends State<Breathing> {
                                     fadeOutBegin: 0.11,
 
                                   ),
-                                  FadeAnimatedText('3',duration: Duration(milliseconds: 850),
+                                  FadeAnimatedText('3',duration: const Duration(milliseconds: 700),
                                     textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       fontSize: 20,
                                       color: Theme.of(context).colorScheme.primary,
@@ -184,7 +183,7 @@ class _BreathingState extends State<Breathing> {
                                     fadeOutBegin: 0.11,
 
                                   ),
-                                  FadeAnimatedText('2',duration: Duration(milliseconds: 850),
+                                  FadeAnimatedText('2',duration: const Duration(milliseconds: 700),
                                     textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                         fontSize: 20,
                                         color: Theme.of(context).colorScheme.primary
@@ -192,7 +191,7 @@ class _BreathingState extends State<Breathing> {
                                     fadeInEnd: 0.1,
                                     fadeOutBegin: 0.11,
                                   ),
-                                  FadeAnimatedText('1',duration: Duration(milliseconds: 850),
+                                  FadeAnimatedText('1',duration: const Duration(milliseconds: 700),
                                     textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                         fontSize: 20,
                                         color: Theme.of(context).colorScheme.primary
@@ -205,11 +204,10 @@ class _BreathingState extends State<Breathing> {
                               )
                               :Center(
                             child: SizedBox(
-                              //height: MediaQuery.of(context).size.height * 0.2,
                               child: PulsatingAnimation(
                                 key: const ValueKey<int>(2),
                                 //key: Key('anim'),
-                                breatheIn: widget.breatheIn,hold1: widget.hold1,breatheOut: widget.breatheOut,hold2: widget.hold2,noOfCounts: widget.noOfCounts,colorA: widget.colorA,colorB: widget.colorB, exhaleThrough: widget.exhaleThrough,),
+                                breatheIn: widget.breatheIn,hold1: widget.hold1,breatheOut: widget.breatheOut,hold2: widget.hold2,noOfCounts: widget.noOfCounts,colorA: widget.colorA,colorB: widget.colorB, exhaleThrough: widget.exhaleThrough,messageList: widget.messageList,),
                             ),
                           ),
                         )
@@ -236,9 +234,10 @@ class PulsatingAnimation extends StatefulWidget {
   final String colorA;
   final String colorB;
   final String exhaleThrough;
+  final List messageList;
 
 
-  const PulsatingAnimation({super.key,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.noOfCounts,required this.colorA,required this.colorB,required this.exhaleThrough});
+  const PulsatingAnimation({super.key,required this.breatheIn,required this.hold1,required this.breatheOut,required this.hold2,required this.noOfCounts,required this.colorA,required this.colorB,required this.exhaleThrough, required this.messageList});
 
   @override
   State<PulsatingAnimation> createState() => _PulsatingAnimationState();
@@ -360,7 +359,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                           const SizedBox(height: 20,),
                           Center(
                               child: InkWell(
-                                onTap: () => Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation) =>const BreatheList(),
+                                onTap: () => Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation) =>const BreatheCat(),
                                   transitionDuration: const Duration(
                                       milliseconds: 1000
                                   ),
@@ -404,12 +403,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
     );
   }
 
-  List texts = [
-    'Breathe In',
-    'Hold',
-    'Breathe Out',
-    'Relax'
-  ];
+  List texts = [];
 
   List icons = [];
 
@@ -431,6 +425,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
   void initState() {
     print(widget.exhaleThrough);
     setState(() {
+      texts = widget.messageList;
       if(widget.exhaleThrough == 'nose'){
         icons = [
           MyIcons.inhale,
@@ -452,8 +447,8 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
     initSound();
     _animationController = AnimationController(
         vsync: this,
-        duration: Duration(seconds: widget.breatheIn),
-        reverseDuration: Duration(seconds: widget.breatheOut)
+        duration: Duration(milliseconds: widget.breatheIn),
+        reverseDuration: Duration(milliseconds: widget.breatheOut)
     );
     _animation = Tween(begin: 0.0, end: 12.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut,reverseCurve: Curves.easeOut),
@@ -468,21 +463,21 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
         setState(() {
           startAnimation = true;
         });
-        Timer(Duration(seconds:widget.breatheIn),(){
+        Timer(Duration(milliseconds:widget.breatheIn),(){
           setState(() {
             selectedText = 1;
           });
         });
       }
       else if (status == AnimationStatus.reverse){
-        Timer(Duration(seconds:widget.breatheOut),(){
+        Timer(Duration(milliseconds:widget.breatheOut),(){
           setState(() {
             selectedText = 3;
           });
         });
       }
       else if(status == AnimationStatus.completed){
-        Future.delayed(Duration(seconds: widget.hold1),(){
+        Future.delayed(Duration(milliseconds: widget.hold1),(){
           _animationController.reverse();
           setState(() {
             selectedText = 2;
@@ -492,7 +487,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
       }
       else if (status == AnimationStatus.dismissed){
 
-        Future.delayed(Duration(seconds: widget.hold2),(){
+        Future.delayed(Duration(milliseconds: widget.hold2),(){
           setState(() {
             numberOfCounts++;
             selectedText = 0;
@@ -584,9 +579,9 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                    backgroundColor: Colors.white,svg: (audioPlayer.volume  == 0)?MyIcons.mute:MyIcons.volume_high),),
             Positioned(
              bottom:  0,//MediaQuery.of(context).padding.top,
-               right: 0,
-               left: 0,
-               top: MediaQuery.of(context).size.height * 0.5 + 20,
+               right: 5,
+               left: 5,
+               top: MediaQuery.of(context).size.height * 0.5 + 23.5,
                child: AnimatedSwitcher(
                  duration: const Duration(milliseconds: 1000),
                  child: Text(
@@ -596,10 +591,11 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                      fontSize: 15,
                      color: Theme.of(context).colorScheme.primary,
                    ),
+                   textAlign: TextAlign.center,
                  ),
                )
             )
-              /*  Positioned(
+                /*  Positioned(
                     bottom: 10,
                     //right: 25,
                     left: 10,

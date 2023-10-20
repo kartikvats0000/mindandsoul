@@ -54,8 +54,6 @@ class _EditProfileState extends State<EditProfile> {
 
 
   getCountries()async{
-    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
-    User user = Provider.of<User>(context,listen: false);
     String data = await DefaultAssetBundle.of(context).loadString("assets/countries.json");
     setState(() {
       countries = jsonDecode(data);
@@ -189,7 +187,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   showActionSheet(){
-    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     showModalBottomSheet(
         context: context,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,

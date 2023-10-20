@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,8 @@ class _AudioContentState extends State<AudioContent> {
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
 
+  bool audioInitialized = false;
+
   Map data = {};
 
   getData()async{
@@ -44,7 +47,10 @@ class _AudioContentState extends State<AudioContent> {
     setState(() {
       data = lst['data'];
     });
-    initAudio();
+    if(!audioInitialized){
+      initAudio();
+    }
+
   }
 
 
@@ -75,8 +81,12 @@ class _AudioContentState extends State<AudioContent> {
        }
      });
    });
+    setState(() {
+      audioInitialized = true;
+    });
    //audioPlayer.play();
   }
+
 
   @override
   void initState() {
@@ -128,7 +138,7 @@ class _AudioContentState extends State<AudioContent> {
                                     child: Hero(
                                       tag: data['_id'],
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
                                         child: AspectRatio(
                                           aspectRatio: 1,
                                           child: Image.network(data['image'],fit: BoxFit.cover,),
@@ -140,7 +150,7 @@ class _AudioContentState extends State<AudioContent> {
                                       child: Container(
                                         padding: const EdgeInsets.all(15),
                                         decoration:  BoxDecoration(
-                                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
                                             gradient:  LinearGradient(
                                                 begin: Alignment.topCenter,
                                                 end: Alignment.bottomCenter,
@@ -189,8 +199,8 @@ class _AudioContentState extends State<AudioContent> {
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     Icon(Icons.headphones_outlined,color: Colors.grey.withOpacity(0.7),size: 13,),
-                                                    SizedBox(width: 5,),
-                                                    Text('34.8k listens • ❤️ 12.2k likes',
+                                                    const SizedBox(width: 5,),
+                                                    Text('34.8k listens • ❤️ ${data['likes']} likes',
                                                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 11,
@@ -199,23 +209,6 @@ class _AudioContentState extends State<AudioContent> {
                                                       ),),
                                                   ],
                                                 ),
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Components(context).BlurBackgroundCircularButton(svg: (!like)?MyIcons.like:MyIcons.like_filled,onTap: (){
-                                                      HapticFeedback.lightImpact();
-                                                      setState(() {
-                                                        like = !like;
-                                                        if(like == false){
-                                                          likes--;
-                                                        }
-                                                        else{
-                                                          likes++;
-                                                        }
-                                                      });
-                                                    }),
-                                                  ],
-                                                )
                                               ],
                                             )
                                           ],
@@ -232,10 +225,41 @@ class _AudioContentState extends State<AudioContent> {
                                       right: 5,
                                       child: Row(
                                         children: [
-                                          Components(context).BlurBackgroundCircularButton(svg: MyIcons.share,onTap: (){}),
+                                          CircleAvatar(
+                                            backgroundColor: Colors.black38,
+                                            child: LikeButton(
+                                              onTap: (isLiked) async {
+                                                User user = Provider.of<User>(context,listen: false);
+                                                String message = await Services(user.token).likeContent(widget.id);
+                                                // Components(context).showSuccessSnackBar(message);
+                                                if(data['liked'] == true){
+                                                  HapticFeedback.mediumImpact();
+                                                }
+                                                else{
+                                                  HapticFeedback.lightImpact();
+                                                }
+                                                getData();
+                                                return !isLiked;
+                                              },
+
+                                              padding: EdgeInsets.zero,
+                                              likeCountPadding: EdgeInsets.zero,
+
+                                              size: 22,
+                                              isLiked : data['liked'],
+                                              likeBuilder: (bool isLiked) {
+                                                return Components(context).myIconWidget(
+                                                  icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                                                  //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                                                  color: Colors.white,
+                                                );
+                                              },
+                                            ),
+                                          ),
                                           const SizedBox(width: 5,),
-                                          Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){}),
-                                        ],
+                                          Components(context).BlurBackgroundCircularButton(svg: MyIcons.share,onTap: (){}),
+
+                                                                       ],
                                       )
                                   ),
 
@@ -343,7 +367,7 @@ class _AudioContentState extends State<AudioContent> {
                                               child: CircleAvatar(
                                                 backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
                                                 radius: 38,
-                                                child: Icon(Icons.play_arrow_rounded,size: 45,),
+                                                child: const Icon(Icons.play_arrow_rounded,size: 45,),
                                               ),
                                             );
                                           }
@@ -353,7 +377,7 @@ class _AudioContentState extends State<AudioContent> {
                                               child: CircleAvatar(
                                                 backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.38),
                                                 radius: 38,
-                                                child: Icon(Icons.pause_rounded,size: 45,),
+                                                child: const Icon(Icons.pause_rounded,size: 45,),
                                               ),
                                             );
                                           }

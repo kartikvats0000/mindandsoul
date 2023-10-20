@@ -1,8 +1,9 @@
 import 'dart:ui';
-
+import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
@@ -70,6 +71,13 @@ class _InfoGraphicState extends State<InfoGraphic> {
 
   bool like = false;
 
+  AudioPlayer audioPlayer = AudioPlayer();
+
+  popSound(){
+    audioPlayer.setAsset('assets/data/pop.mp3');
+    audioPlayer.play();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +99,38 @@ class _InfoGraphicState extends State<InfoGraphic> {
                     duration: const Duration(milliseconds: 200),
                     scrolledColor: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     actions: [
-                      Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite),
+                      CircleAvatar(
+                        backgroundColor: Colors.black38,
+                        child: LikeButton(
+                          onTap: (isLiked) async {
+                            User user = Provider.of<User>(context,listen: false);
+                            String message = await Services(user.token).likeContent(widget.id);
+                            // Components(context).showSuccessSnackBar(message);
+                            if(data['liked'] == false){
+                              HapticFeedback.mediumImpact();
+                              popSound();
+                            }
+                            else{
+                              HapticFeedback.lightImpact();
+                            }
+                            getData();
+                            return !isLiked;
+                          },
+
+                          padding: EdgeInsets.zero,
+                          likeCountPadding: EdgeInsets.zero,
+
+                          size: 22,
+                          isLiked : data['liked'],
+                          likeBuilder: (bool isLiked) {
+                            return Components(context).myIconWidget(
+                              icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                              //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
+                      ),
                       const SizedBox(width: 5,),
                       Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
                     ],
@@ -127,7 +166,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                 child: Hero(
                                   tag: data['_id'],
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
                                     child: AspectRatio(
                                       aspectRatio: 1,
                                       child: Image.network(data['image'],fit: BoxFit.cover,),
@@ -139,7 +178,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                   child: Container(
                                     padding: const EdgeInsets.all(15),
                                     decoration:  BoxDecoration(
-                                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
                                         gradient:  LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
@@ -165,7 +204,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                             Row(
                                               children: [
                                                 Icon(Icons.watch_later_outlined,color: Theme.of(context).colorScheme.surface.withOpacity(0.7),size: 13,),
-                                                SizedBox(width: 5,),
+                                                const SizedBox(width: 5,),
                                                 Text(DateFormat('MMMM d, yyyy').format(DateTime.parse(data['updatedAt'])),
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                       fontWeight: FontWeight.bold,
@@ -188,8 +227,8 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Icon(Icons.remove_red_eye_outlined,color: Colors.grey.withOpacity(0.7),size: 13,),
-                                                SizedBox(width: 5,),
-                                                Text('34.8k reads • ❤️ 12.2k likes',
+                                                const SizedBox(width: 5,),
+                                                Text('34.8k reads • ❤️ ${data['likes']} likes',
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 11,
@@ -198,17 +237,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                                   ),),
                                               ],
                                             ),
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Components(context).BlurBackgroundCircularButton(svg: (!like)?MyIcons.like:MyIcons.like_filled,onTap: (){
-                                                  HapticFeedback.lightImpact();
-                                                  setState(() {
-                                                    like = !like;
-                                                  });
-                                                }),
-                                              ],
-                                            )
+
                                           ],
                                         )
                                       ],
@@ -229,7 +258,7 @@ class _InfoGraphicState extends State<InfoGraphic> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

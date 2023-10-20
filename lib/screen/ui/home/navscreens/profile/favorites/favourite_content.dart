@@ -5,9 +5,10 @@ import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 
+import '../../../../../../constants/iconconstants.dart';
 import '../../../../../../provider/userProvider.dart';
+import '../favourites.dart';
 
 class FavouriteContent extends StatefulWidget {
   const FavouriteContent({super.key});
@@ -42,6 +43,60 @@ class _FavouriteContentState extends State<FavouriteContent> {
     }
   }
 
+  showOptionSheet(ThemeProvider theme, int index){
+    User user  = Provider.of<User>(context,listen: false);
+    showModalBottomSheet(
+      //showDragHandle: true,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        context: context, builder: (context)=>
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+          child: Wrap(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Options',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                      Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
+                    ],
+                  ),
+                  const SizedBox(height: 15,),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          onTap: ()async{
+                            String message = await Services(user.token).likeContent(data[index]['_id']);
+                            Navigator.pop(context);
+                            getData();
+                            // Components(context).showSuccessSnackBar(message);
+                          },
+                          leading: Components(context).BlurBackgroundCircularButton(
+                              backgroundColor: Colors.white12,
+                              svg: MyIcons.favorite_filled,
+                              iconColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)
+                          ),
+                          title: Text('Remove from Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+    );
+  }
+
   getData()async{
     User user = Provider.of<User>(context,listen: false);
     print('getting your favorites');
@@ -73,7 +128,9 @@ class _FavouriteContentState extends State<FavouriteContent> {
                 color: theme.themeColorA,
             ),
             child: Center(
-              child: (loader)? Column(
+              child: (loader)? (data.isEmpty)
+                  ? const NoFavourite()
+                  :  Column(
                 children: [
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -113,7 +170,11 @@ class _FavouriteContentState extends State<FavouriteContent> {
                           return GestureDetector(
                             onTap: (){
                               HapticFeedback.selectionClick();
-                              contentViewRoute(type: filteredItems()[index]['type'], id: filteredItems()[index]['_id'], context: context);
+                              contentViewRoute(type: filteredItems()[index]['type'], id: filteredItems()[index]['_id'], context: context,then: getData);
+                            },
+                            onLongPress: (){
+                              HapticFeedback.mediumImpact();
+                              showOptionSheet(theme, index);
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(vertical: 15,horizontal: 5),

@@ -8,9 +8,9 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 
 import '../../../../../../provider/userProvider.dart';
+import '../favourites.dart';
 
 class FavouriteQuote extends StatefulWidget {
   const FavouriteQuote({super.key});
@@ -56,8 +56,9 @@ class _FavouriteQuoteState extends State<FavouriteQuote> {
                   color: theme.themeColorA,
                 ),
                 child: Center(
-                    child: (loader)
-                        ? RefreshIndicator(
+                    child: (loader)? (data.isEmpty)
+                        ? const NoFavourite()
+                        :  RefreshIndicator(
                       onRefresh: ()async{
                         getData();
                       },
@@ -74,7 +75,7 @@ class _FavouriteQuoteState extends State<FavouriteQuote> {
                             return GestureDetector(
                               onTap: (){
                                 HapticFeedback.selectionClick();
-                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DailyQuotes(data: [data[index]]),fullscreenDialog: true));
+                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DailyQuotes(data: [data[index]],liked: const [true],),fullscreenDialog: true)).then((value) => getData());
                               },
                               child: Stack(
                                 children: [

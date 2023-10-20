@@ -301,9 +301,10 @@
 
 import 'dart:async';
 import 'dart:ui';
-
+import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -368,10 +369,13 @@ class _VideoContentState extends State<VideoContent> {
 
     setState(() {
       loader = false;
+      videoInitialized = true;
     });
   }
 
   Map data = {};
+  bool videoInitialized = false;
+
 
   getData()async{
     User user = Provider.of<User>(context,listen: false);
@@ -381,7 +385,10 @@ class _VideoContentState extends State<VideoContent> {
       data = lst['data'];
       print(data);
     });
-    initVideo();
+    if(!videoInitialized){
+      initVideo();
+    }
+
   }
 
   @override
@@ -438,11 +445,19 @@ class _VideoContentState extends State<VideoContent> {
                     color: Colors.white,
                     child: Column(
                       children: [
-                        AspectRatio(
-                          aspectRatio: videoPlayerController.value.aspectRatio,
-                          child: Chewie(
-                              controller: chewieController
-                          ),
+                        Stack(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: videoPlayerController.value.aspectRatio,
+                              child: Chewie(
+                                  controller: chewieController
+                              ),
+                            ),
+                            Positioned(
+                              left: 10,
+                                top: 10,
+                                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left))
+                          ],
                         ),
                         Expanded(
                           child: CustomScrollView(
@@ -471,7 +486,7 @@ class _VideoContentState extends State<VideoContent> {
                                           Row(
                                             children: [
                                               Icon(Icons.headphones_outlined,color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),size: 13,),
-                                              SizedBox(width: 5,),
+                                              const SizedBox(width: 5,),
                                               Text('34.8k listens',
                                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                     fontWeight: FontWeight.bold,
@@ -485,7 +500,7 @@ class _VideoContentState extends State<VideoContent> {
                                           Row(
                                             children: [
                                               Icon(Icons.watch_later_outlined,color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),size: 13,),
-                                              SizedBox(width: 5,),
+                                              const SizedBox(width: 5,),
                                               Text('August 18, 2023',
                                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                     fontWeight: FontWeight.bold,
@@ -506,7 +521,7 @@ class _VideoContentState extends State<VideoContent> {
                                 pinned: true,
                                 floating: true,
                                   delegate: MyDelegate(child:  PreferredSize(
-                                    preferredSize: Size(double.infinity, kToolbarHeight),
+                                    preferredSize: const Size(double.infinity, kToolbarHeight),
                                     child: Container(
                                       color: Colors.white,
                                       padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
@@ -514,24 +529,53 @@ class _VideoContentState extends State<VideoContent> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          _buildBox(context: context, icon: Components(context).myIconWidget(icon: (like)?MyIcons.like_filled:MyIcons.like,color: Theme.of(context).colorScheme.onSurface),label: likes.toString(),
-                                              onTap: (){
-                                           setState(() {
-                                             HapticFeedback.selectionClick();
-                                             like = !like;
-                                             if(like == false){
-                                               likes--;
-                                             }
-                                             else{
-                                               likes++;
-                                             }
-                                           });
-                                          }
+                                          Container(
+                                            height: 40,
+                                            width: 60,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black12,
+                                              borderRadius: BorderRadius.circular(25)
+                                            ),
+                                            child: LikeButton(
+                                              likeCount: data['likes'],
+                                              //countPostion: CountPostion.bottom,
+                                              onTap: (isLiked) async {
+
+                                                User user = Provider.of<User>(context,listen: false);
+                                                String message = await Services(user.token).likeContent(widget.id);
+                                                // Components(context).showSuccessSnackBar(message);
+                                                if(data['liked'] == true){
+                                                  HapticFeedback.mediumImpact();
+                                                }
+                                                else{
+                                                  HapticFeedback.lightImpact();
+                                                }
+                                                getData();
+
+                                                return !isLiked;
+                                              },
+
+                                              padding: EdgeInsets.zero,
+                                            //  likeCountPadding: EdgeInsets.zero,
+                                              countBuilder: (count,  liked, str){
+                                                return Text(count.toString(),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),fontSize: 13.5),);
+                                              },
+                                              size: 22,
+                                              isLiked : data['liked'],
+                                              likeBuilder: (bool isLiked) {
+                                                return Components(context).myIconWidget(
+                                                  icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                                                  //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                                                  color: Colors.black87,
+                                                );
+                                              },
+                                            ),
                                           ),
-                                          const SizedBox(width: 10,),
-                                          _buildBox(context: context, icon: Components(context).myIconWidget(icon: MyIcons.share,color: Theme.of(context).colorScheme.onSurface),label: 'Share'),
-                                          const SizedBox(width: 10,),
-                                          _buildBox(context: context, icon: Components(context).myIconWidget(icon: MyIcons.favorite,color: Theme.of(context).colorScheme.onSurface),label: 'Favorite'),
+                                          const SizedBox(width: 5,),
+                                          Components(context).BlurBackgroundCircularButton(
+                                            iconColor: Colors.black87,
+                                              backgroundColor: Colors.black12,
+                                              svg: MyIcons.share)
                                         ],
                                       ),
                                     ),
@@ -553,7 +597,7 @@ class _VideoContentState extends State<VideoContent> {
 
                                           )).toList()
                                       ),
-                                      SizedBox(height: 15,),
+                                      const SizedBox(height: 15,),
                                       //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
                                       Text('${data['desc']}',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),)
 

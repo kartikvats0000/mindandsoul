@@ -1,30 +1,35 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/services/notificationServices.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'dart:io';
 
 import '../../../../constants/iconconstants.dart';
+import '../../../../provider/userProvider.dart';
+import '../../../../services/services.dart';
 
 
 class DailyQuotes extends StatefulWidget {
   final List data;
-  const DailyQuotes({super.key, required this.data});
+  final List<bool> liked;
+  const DailyQuotes({super.key, required this.data, required this.liked});
 
   @override
   State<DailyQuotes> createState() => _DailyQuotesState();
@@ -143,8 +148,8 @@ class _DailyQuotesState extends State<DailyQuotes> {
           ),
         ),
         Positioned(
-            bottom: 0,
-            right: 10,
+            top: 5,
+            right: 5,
             child: Image.asset(
               'assets/logo/brainnsoul_white.png',
               height: 100,
@@ -154,7 +159,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
         ),
         Positioned.fill(
             child: AnimatedContainer(
-              color: showDate?Colors.red.withOpacity(0.15):Colors.transparent,
+              color: showDate?Colors.black.withOpacity(0.15):Colors.transparent,
               duration: const Duration(milliseconds: 1500),
             )
         ),
@@ -165,16 +170,16 @@ class _DailyQuotesState extends State<DailyQuotes> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.45),
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-                  child: AnimatedOpacity(
-                    curve: Curves.easeIn,
-                    opacity: showDate?1:0,
-                    duration: const Duration(milliseconds: 1500),
+                AnimatedOpacity(
+                  curve: Curves.easeIn,
+                  opacity: showDate?1:0,
+                  duration: const Duration(milliseconds: 1500),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.45),
+                        borderRadius: BorderRadius.circular(20)
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -188,15 +193,15 @@ class _DailyQuotesState extends State<DailyQuotes> {
                   ),
                 ),
                 const SizedBox(height: 25,),
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.45),
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-                  child: AnimatedOpacity(
-                    opacity: showQuote?1:0,
-                    duration: const Duration(milliseconds: 2800),
+                AnimatedOpacity(
+                  opacity: showQuote?1:0,
+                  duration: const Duration(milliseconds: 2800),
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.45),
+                        borderRadius: BorderRadius.circular(20)
+                    ),
                     child: Text.rich(
                       TextSpan(
                         text: '“${widget.data[selectedIndex]['quote']}”',
@@ -222,7 +227,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
   }
 
   wallpaperScreen(){
-    return  Stack(
+    return Stack(
       children: [
         Positioned.fill(
           child: CachedNetworkImage(
@@ -274,8 +279,8 @@ class _DailyQuotesState extends State<DailyQuotes> {
 
   bool shareLoading = false;
 
-
   ScreenshotController screenshotController = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -296,93 +301,12 @@ class _DailyQuotesState extends State<DailyQuotes> {
                     itemBuilder: (context,index){
                       return Stack(
                         children: [
-                          Positioned.fill(
-                            child: CachedNetworkImage(
-                              placeholder: (context,url) => Center(
-                                child: Container(
-                                    margin: EdgeInsets.all(40),
-                                    height: 60,
-                                    width: 60,
-                                    child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,)),
-                              ),
-                              imageUrl: widget.data[index]['image'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                              bottom: 0,
-                              right: 10,
-                              child: Image.asset(
-                                'assets/logo/brainnsoul_white.png',
-                                height: 100,
-                                width: 100,
-                                opacity: const AlwaysStoppedAnimation(.6),
-                              )
-                          ),
+                          quoteScreen(),
                           Positioned.fill(
                               child: AnimatedContainer(
-                                color: showDate?(shareLoading)?Colors.black.withOpacity(0.65):Colors.black.withOpacity(0.15):Colors.transparent,
+                                color: showDate?(shareLoading)?Colors.black.withOpacity(0.65):Colors.black.withOpacity(0.01):Colors.transparent,
                                 duration: const Duration(milliseconds: 1200),
                               )
-                          ),
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  AnimatedOpacity(
-                                    curve: Curves.easeIn,
-                                    opacity: showDate?1:0,
-                                    duration: const Duration(milliseconds: 1300),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.45),
-                                          borderRadius: BorderRadius.circular(20)
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('  ${DateFormat('MMM').format(date)}',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 15,color: Colors.white),),
-                                          Text(date.day.toString().padLeft(2,'0'),style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                              color: Colors.white,
-                                              height: 1
-                                          ),),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20,),
-                                  AnimatedOpacity(
-                                    opacity: showQuote?1:0,
-                                    duration: const Duration(milliseconds: 1600),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.45),
-                                          borderRadius: BorderRadius.circular(20)
-                                      ),
-                                      child: Text.rich(
-                                        TextSpan(
-                                          text: '“${widget.data[index]['quote']}”',
-                                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                                              fontSize: 22,
-                                              color: Colors.white.withOpacity(0.9),
-                                              height: 1.3
-                                          ),
-                                          children: <TextSpan>[
-                                            TextSpan(text: '\n\n  - ${(widget.data[index]['author'].toString().isNotEmpty)?widget.data[index]['author']:'Unknown'}', style: TextStyle(fontSize: 15)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 50,)
-                                ],
-                              ),
-                            ),
                           ),
                         ],
                       );
@@ -421,165 +345,187 @@ class _DailyQuotesState extends State<DailyQuotes> {
             Positioned(
               bottom: 10,
                 left: 15,
+                right: 15,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    (Platform.isAndroid)
-                        ? SpeedDial(
-                      switchLabelPosition: true,
-                      //childMargin: const EdgeInsets.only(left: 0),
-                      overlayColor: Colors.grey.withOpacity(0.05),
-                      elevation: 0.0,
-                      backgroundColor: Colors.black45,
-                      buttonSize: const Size(40,40),
-                      childrenButtonSize: const Size(40,40),
-                      animatedIcon: AnimatedIcons.menu_close,
-                      animatedIconTheme: IconThemeData(color: Colors.white),
-                      spacing: 10,
-                      //child: Components(context).myIconWidget(icon: MyIcons.download,size: 30,color: Colors.white),
+                    Row(
                       children: [
-                        SpeedDialChild(
-                          onTap: (){
-                            // downloadAndSaveImage(images[selectedIndex],images[selectedIndex].toString().split('/').last);
-                            downloadWallpaper();
-
-                          },
+                        SpeedDial(
+                          switchLabelPosition: true,
+                          //childMargin: const EdgeInsets.only(left: 0),
+                          overlayColor: Colors.grey.withOpacity(0.05),
                           elevation: 0.0,
-                          backgroundColor: Colors.black87,
-                          child: Components(context).myIconWidget(icon: MyIcons.download,size: 15),
-                          shape: const CircleBorder(),
-                          label: 'Download Wallpaper',
-                          labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)?.copyWith(color: Colors.white)
-                        ),
-                        SpeedDialChild(
-                          elevation: 0.0,
-                          onTap: (){
-                            downloadQuote();
-                          },
-                          backgroundColor: Colors.black87,
-                          child: Components(context).myIconWidget(icon: MyIcons.quotes,size: 15),
-                          shape: const CircleBorder(),
-                          label: 'Download Quote',
-                          labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
-                        ),
-                        SpeedDialChild(
-                          visible: !Platform.isIOS,
-                          onTap: () async {
-                            setState(() {
-                              shareLoading = true;
-                            });
-                            screenshotController.captureFromWidget(
-                              wallpaperScreen()
-                            ).then((value) async{
-                              int location = WallpaperManager.HOME_SCREEN;
-                              final tempDir = await getTemporaryDirectory();
-                              File file = await File('${tempDir.path}/image.png').create();
-                              file.writeAsBytesSync(value);
-                              final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
-                              Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
-                              setState(() {
-                                shareLoading = false;
-                              });
-                            });
+                          backgroundColor: Colors.black45,
+                          buttonSize: const Size(40,40),
+                          childrenButtonSize: const Size(40,40),
+                          animatedIcon: AnimatedIcons.menu_close,
+                          animatedIconTheme: IconThemeData(color: Colors.white),
+                          spacing: 10,
+                          //child: Components(context).myIconWidget(icon: MyIcons.download,size: 30,color: Colors.white),
+                          children: [
+                            SpeedDialChild(
+                                onTap: (){
+                                  // downloadAndSaveImage(images[selectedIndex],images[selectedIndex].toString().split('/').last);
+                                  downloadWallpaper();
+
+                                },
+                                elevation: 0.0,
+                                backgroundColor: Colors.black87,
+                                child: Components(context).myIconWidget(icon: MyIcons.download,size: 15),
+                                shape: const CircleBorder(),
+                                label: 'Download Wallpaper',
+                                labelBackgroundColor: Colors.black54,
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)?.copyWith(color: Colors.white)
+                            ),
+                            SpeedDialChild(
+                                elevation: 0.0,
+                                onTap: (){
+                                  downloadQuote();
+                                },
+                                backgroundColor: Colors.black87,
+                                child: Components(context).myIconWidget(icon: MyIcons.quotes,size: 15),
+                                shape: const CircleBorder(),
+                                label: 'Download Quote',
+                                labelBackgroundColor: Colors.black54,
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                            ),
+                            SpeedDialChild(
+                                visible: !Platform.isIOS,
+                                onTap: () async {
+                                  setState(() {
+                                    shareLoading = true;
+                                  });
+                                  screenshotController.captureFromWidget(
+                                      wallpaperScreen()
+                                  ).then((value) async{
+                                    int location = WallpaperManager.HOME_SCREEN;
+                                    final tempDir = await getTemporaryDirectory();
+                                    File file = await File('${tempDir.path}/image.png').create();
+                                    file.writeAsBytesSync(value);
+                                    final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
+                                    Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
+                                    setState(() {
+                                      shareLoading = false;
+                                    });
+                                  });
 
 
-                          },
-                          elevation: 0.0,
-                          backgroundColor: Colors.black87,
-                          child: Components(context).myIconWidget(icon: MyIcons.home,size: 15),
-                          shape: const CircleBorder(),
-                          label: 'Set as Home Screen',
-                          labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                                },
+                                elevation: 0.0,
+                                backgroundColor: Colors.black87,
+                                child: Components(context).myIconWidget(icon: MyIcons.home,size: 15),
+                                shape: const CircleBorder(),
+                                label: 'Set as Home Screen',
+                                labelBackgroundColor: Colors.black54,
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                            ),
+                            SpeedDialChild(
+                                visible: !Platform.isIOS,
+                                onTap: () async {
+                                  setState(() {
+                                    shareLoading = true;
+                                  });
+                                  screenshotController.captureFromWidget(
+                                      wallpaperScreen()
+                                  ).then((value) async{
+                                    int location = WallpaperManager.LOCK_SCREEN;
+                                    final tempDir = await getTemporaryDirectory();
+                                    File file = await File('${tempDir.path}/image.png').create();
+                                    file.writeAsBytesSync(value);
+                                    final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
+                                    Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
+                                    setState(() {
+                                      shareLoading = false;
+                                    });
+                                  });
+                                },
+                                elevation: 0.0,
+                                backgroundColor: Colors.black87,
+                                child: Components(context).myIconWidget(icon: MyIcons.lock,size: 15),
+                                shape: const CircleBorder(),
+                                label: 'Set as Lock Screen',
+                                labelBackgroundColor: Colors.black54,
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                            ),
+                            SpeedDialChild(
+                                visible: !Platform.isIOS,
+                                onTap: () async {
+                                  setState(() {
+                                    shareLoading = true;
+                                  });
+                                  screenshotController.captureFromWidget(
+                                      wallpaperScreen()
+                                  ).then((value) async{
+                                    int location = WallpaperManager.BOTH_SCREEN;
+                                    final tempDir = await getTemporaryDirectory();
+                                    File file = await File('${tempDir.path}/image.png').create();
+                                    file.writeAsBytesSync(value);
+                                    final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
+                                    Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
+                                    setState(() {
+                                      shareLoading = false;
+                                    });
+                                  });
+
+
+                                },
+                                elevation: 0.0,
+                                backgroundColor: Colors.black87,
+                                child: Components(context).myIconWidget(icon: MyIcons.both,size: 15),
+                                shape: const CircleBorder(),
+                                label: 'Set Both',
+                                labelBackgroundColor: Colors.black54,
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                            ),
+                          ],
                         ),
-                        SpeedDialChild(
-                            visible: !Platform.isIOS,
-                            onTap: () async {
+                        const SizedBox(width: 10,),
+                        Components(context).BlurBackgroundCircularButton(
+                            svg: MyIcons.share,
+                            onTap: (){
                               setState(() {
                                 shareLoading = true;
                               });
                               screenshotController.captureFromWidget(
-                                  wallpaperScreen()
-                              ).then((value) async{
-                                int location = WallpaperManager.LOCK_SCREEN;
+                                  quoteScreen()).then((value) async{
                                 final tempDir = await getTemporaryDirectory();
                                 File file = await File('${tempDir.path}/image.png').create();
                                 file.writeAsBytesSync(value);
-                                final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
-                                Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
+                                await Share.shareXFiles([XFile(file.path)]);
                                 setState(() {
                                   shareLoading = false;
                                 });
                               });
-                            },
-                          elevation: 0.0,
-                          backgroundColor: Colors.black87,
-                          child: Components(context).myIconWidget(icon: MyIcons.lock,size: 15),
-                          shape: const CircleBorder(),
-                          label: 'Set as Lock Screen',
-                          labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
-                        ),
-                        SpeedDialChild(
-                            visible: !Platform.isIOS,
-                            onTap: () async {
-                              setState(() {
-                                shareLoading = true;
-                              });
-                              screenshotController.captureFromWidget(
-                                  wallpaperScreen()
-                              ).then((value) async{
-                                int location = WallpaperManager.BOTH_SCREEN;
-                                final tempDir = await getTemporaryDirectory();
-                                File file = await File('${tempDir.path}/image.png').create();
-                                file.writeAsBytesSync(value);
-                                final bool result = await WallpaperManager.setWallpaperFromFile(file.path, location);
-                                Components(context).showSuccessSnackBar('Wallpaper Set Successfully');
-                                setState(() {
-                                  shareLoading = false;
-                                });
-                              });
-
-
-                            },
-                          elevation: 0.0,
-                          backgroundColor: Colors.black87,
-                          child: Components(context).myIconWidget(icon: MyIcons.both,size: 15),
-                          shape: const CircleBorder(),
-                          label: 'Set Both',
-                          labelBackgroundColor: Colors.black54,
-                          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
+                            }
                         ),
                       ],
-                    )
-                        : Components(context).BlurBackgroundCircularButton(
-                        svg: MyIcons.download,
-                        onTap: (){
-                          downloadWallpaper();
-                          // downloadAndSaveImage(images[selectedIndex],images[selectedIndex].toString().split('/').last);
-
-
-                        }
                     ),
-                    const SizedBox(width: 10,),
-                    Components(context).BlurBackgroundCircularButton(
-                        svg: MyIcons.share,
-                        onTap: (){
-                          setState(() {
-                            shareLoading = true;
-                          });
-                          screenshotController.captureFromWidget(
-                              quoteScreen()).then((value) async{
-                            final tempDir = await getTemporaryDirectory();
-                            File file = await File('${tempDir.path}/image.png').create();
-                            file.writeAsBytesSync(value);
-                            await Share.shareXFiles([XFile(file.path)]);
-                            setState(() {
-                              shareLoading = false;
-                            });
-                          });
-                        }
+                    CircleAvatar(
+                      backgroundColor: Colors.black38,
+                      child: LikeButton(
+                        onTap: (isLiked) async {
+                          User user = Provider.of<User>(context,listen: false);
+                          String message = await Services(user.token).likeQuotes(widget.data[selectedIndex]['_id']);
+                          // Components(context).showSuccessSnackBar(message);
+
+                         // getData();
+                          return !isLiked;
+                        },
+                        isLiked: widget.liked[selectedIndex],
+                        padding: EdgeInsets.zero,
+                        likeCountPadding: EdgeInsets.zero,
+
+                        size: 22,
+                       // isLiked : data['liked'],
+                        likeBuilder: (bool isLiked) {
+                          return Components(context).myIconWidget(
+                            icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                            //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                            color: Colors.white,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 )
@@ -605,6 +551,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
     );
   }
   void _onTapDown(TapDownDetails tapDownDetails){
+    //Components(context).showSuccessSnackBar('Hello Test');
     final double screenWidth = MediaQuery.of(context).size.width;
     final double dx = tapDownDetails.globalPosition.dx;
     print(tapDownDetails.globalPosition);

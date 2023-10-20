@@ -21,7 +21,8 @@ import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/gridB.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listA.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
-import 'package:mindandsoul/screen/ui/home/breathe/breatheList.dart';
+import 'package:mindandsoul/screen/ui/home/breathe/breatheCategory.dart';
+import 'package:mindandsoul/screen/ui/home/breathe/breathingList.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
 import 'package:mindandsoul/screen/ui/home/wellness/wellness.dart';
@@ -67,8 +68,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
       });
     });
-
-  
     videoPlayerController.setVolume(0.60);
     videoPlayerController.play();
     videoPlayerController.setLooping(true);
@@ -90,13 +89,12 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
    }
   }
 
-
   Map weatherData = {};
 
   List quotesList  = [];
 
   getQuotes()async{
-    print(DateFormat('d-M').format(DateTime.now()).toString());
+    String todayDate = DateFormat('d-M').format(DateTime.now()).toString();
     User user = Provider.of<User>(context,listen: false);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var map = sharedPreferences.getString('quoteData');
@@ -107,20 +105,20 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
         log('quotes =  ${quotesList.toString()}');
       });
       await sharedPreferences.setString('quoteData', json.encode({
-        'date' : DateFormat('d-M').format(DateTime.now()).toString(),
+        'date' : todayDate,
         'data' : quotesList
       }));
     }
    else{
      var quoteData = json.decode(map);
-     if(quoteData['date'] != DateFormat('d-M').format(DateTime.now()).toString()){
+     if(quoteData['date'] != todayDate){
        var data = await Services(user.token).getQuotes(user.country);
        setState(() {
          quotesList = data;
          log('quotes =  ${quotesList.toString()}');
        });
        await sharedPreferences.setString('quoteData', json.encode({
-         'date' : DateFormat('d-M').format(DateTime.now()).toString(),
+         'date' : todayDate,
          'data' : quotesList
        }));
      }
@@ -198,14 +196,12 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     User user = Provider.of<User>(context,listen: false);
 
     var data = await Services(user.token).getHomeData(user.id);
-    String jsn = await DefaultAssetBundle.of(context).loadString("assets/data/breathingList.json");
-    print(jsn);
-    var all = json.decode(jsn);
+    var breath = await Services('').getBreathingData();
     setState(() {
       categoryList = data['data']['category'];
       wellnessData = data['data']['wellness'];
       harmonyData = data['data']['harmony'];
-      breatheData = all['data'];
+      breatheData = breath['data'];
     });
   }
 
@@ -251,14 +247,23 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   final GlobalKey themeKey = GlobalKey();
   final GlobalKey weatherKey = GlobalKey();
-  final GlobalKey volumeKey = GlobalKey();
+  final GlobalKey wellnessKey = GlobalKey();
+  final GlobalKey breathingKey = GlobalKey();
   final GlobalKey quoteKey = GlobalKey();
+
+  startShowCase()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if(sharedPreferences.getBool('showCaseDone') == null){
+      WidgetsBinding.instance.addPostFrameCallback((_) { ShowCaseWidget.of(context).startShowCase(
+          [themeKey,weatherKey,wellnessKey,breathingKey,quoteKey]);
+      });
+      sharedPreferences.setBool('showCaseDone', true);
+    }
+  }
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) { ShowCaseWidget.of(context).startShowCase(
-        [themeKey,quoteKey]);
-    });
+   startShowCase();
     //checkForInternet();
     fetchWeather();
     getQuotes();
@@ -288,13 +293,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     'Hazardous'
   ];
 
+
+  PageController pageController = PageController(viewportFraction: 0.95);
+
+
   @override
   Widget build(BuildContext context) {
     debugPrint('homepageRebuilt');
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
-    return Consumer<ThemeProvider>(
-      builder: (context,themeData,child) => Scaffold(
+    return Consumer<ThemeProvider>(builder: (context,themeData,child){
+      debugPrint('homepageRebuilt==============');
+      return Scaffold(
         backgroundColor: themeData.themeColorA,
         extendBody: true,
         extendBodyBehindAppBar: true,
@@ -335,14 +345,16 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Components(context).BlurBackgroundCircularButton(
-                                  svg: MyIcons.weather,
-                                  onTap: (){ HapticFeedback.selectionClick();
+                                ShowCaseView(
+                                  // shapeBorder: CircleBorder(),
+                                  globalKey: weatherKey,
+                                  title: "Nature's Aura",
+                                  description: 'Check out weather conditions around you',
+                                  child: Components(context).BlurBackgroundCircularButton(
+                                    svg: MyIcons.weather,
+                                    onTap: (){ HapticFeedback.selectionClick();
                                     var dialog = StatefulBuilder(
                                         builder:(context,_setState){
-                                          Timer(const Duration(seconds: 2),(){
-                                            _setState((){});
-                                          });
                                           return Padding(
                                             padding: const EdgeInsets.only(left: 15,top: 65,right: 15),
                                             child: Align(
@@ -457,37 +469,38 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         }
                                     );
                                     showModal(
-                                      configuration: const FadeScaleTransitionConfiguration(
-                                        transitionDuration: Duration(milliseconds: 400),
-                                        reverseTransitionDuration: Duration(milliseconds: 350)
-                                      ),
+                                        configuration: const FadeScaleTransitionConfiguration(
+                                            transitionDuration: Duration(milliseconds: 400),
+                                            reverseTransitionDuration: Duration(milliseconds: 350)
+                                        ),
                                         context: context,
                                         builder: (context) => dialog
                                     );
-                                  },
+                                    },
+                                  ),
                                 ),
                                 Row(
                                   children: [
                                     ShowCaseView(
-                                     // shapeBorder: CircleBorder(),
-                                      globalKey: themeKey,
-                                      title: 'Essence',
-                                      description: 'Change App Theme',
-                                      child: GestureDetector(
-                                        onTap: ()async{ HapticFeedback.selectionClick();
-                                        await videoPlayerController.pause();
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ThemePicker())).then((value) => initVideo());
-                                        },
-                                        child: ThemeButtonAnimation(),
-                                      )
+                                      // shapeBorder: CircleBorder(),
+                                        globalKey: themeKey,
+                                        title: 'Essence',
+                                        description: 'Change App Theme',
+                                        child: GestureDetector(
+                                          onTap: ()async{ HapticFeedback.selectionClick();
+                                          await videoPlayerController.pause();
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ThemePicker())).then((value) => initVideo());
+                                          },
+                                          child: ThemeButtonAnimation(),
+                                        )
                                     ),
                                     const SizedBox(width: 10,),
                                     Components(context).BlurBackgroundCircularButton(
                                       svg: (videoPlayerController.value.volume  == 0)?MyIcons.mute:MyIcons.volume_high,
                                       onTap: (){ HapticFeedback.selectionClick();
-                                        setState(() {
-                                          showVolumeSlider = !showVolumeSlider;
-                                        });
+                                      setState(() {
+                                        showVolumeSlider = !showVolumeSlider;
+                                      });
                                       },
                                     ),
                                   ],
@@ -530,7 +543,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                         colors: [
                           themeData.themeColorA.withOpacity(0.2),
                           themeData.themeColorA.withOpacity(0.7),
-                         // themeData.themeColorB,
+                          // themeData.themeColorB,
                           themeData.themeColorB.withOpacity(0.5),
                           themeData.themeColorB,
                         ],
@@ -559,46 +572,44 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(greeting, style: TextStyle(
-                                      fontSize: 16,
-                                      color: themeData.textColor,),
+                                    fontSize: 16,
+                                    color: themeData.textColor,),
                                     textAlign: TextAlign.start,
                                   ),
                                   Consumer<User>(
                                     builder: (context,user,child) =>
-                                     Text('${user.name}...', style: TextStyle(
-                                        fontSize: 24,
-                                        color: themeData.textColor,
-                                        fontWeight: FontWeight.bold,
-                                     ),
-                                      textAlign: TextAlign.start,
-                                    ),
+                                        Text('${user.name}...', style: TextStyle(
+                                          fontSize: 24,
+                                          color: themeData.textColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                          textAlign: TextAlign.start,
+                                        ),
                                   ),
                                 ],
                               ),
                             ),
-                           // const SizedBox(height: 10,),
+                            // const SizedBox(height: 10,),
                             Visibility(
                               visible: categoryList.isNotEmpty,
-                              child: Container(
+                              child: SizedBox(
                                 width: double.infinity,
                                 child: GridView.builder(
-                                  padding: const  EdgeInsets.symmetric(vertical: 10,horizontal: 7),
-                                  shrinkWrap: true,
+                                    padding: const  EdgeInsets.symmetric(vertical: 10,horizontal: 7),
+                                    shrinkWrap: true,
                                     physics: const BouncingScrollPhysics(),
-                                    //scrollDirection: Axis.horizontal,
                                     itemCount: categoryList.length,
                                     gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 2.5/1.5,//1.5 / 2.5,
-                                        crossAxisSpacing: 7,
-                                        mainAxisSpacing: 10,
-                                     // mainAxisExtent: w * 0.3, //maxCrossAxisExtent: 170/2
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 2.5/1.5,
+                                      crossAxisSpacing: 7,
+                                      mainAxisSpacing: 10,
                                     ),
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: (){ HapticFeedback.selectionClick();
-                                          videoPlayerController.pause();
-                                          contentPageRoute((index % 2 == 0)?'d':'d',categoryList[index]['_id'],categoryList[index]['title']);
+                                        videoPlayerController.pause();
+                                        contentPageRoute((index % 2 == 0)?'d':'d',categoryList[index]['_id'],categoryList[index]['title']);
                                         },
                                         child: Container(
                                           height: 60,
@@ -649,8 +660,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 children: [
                                   Expanded(child: Column(
                                     children: [
-                                      GestureDetector(
-                                        onTap: (){ HapticFeedback.selectionClick();
+                                      ShowCaseView(
+                                        // shapeBorder: CircleBorder(),
+                                        globalKey: wellnessKey,
+                                        title: 'Wellness',
+                                        description: 'Compilation of Soothing Audios',
+                                        child: GestureDetector(
+                                          onTap: (){ HapticFeedback.selectionClick();
                                           MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
                                           videoPlayerController.pause();
                                           setState(() {
@@ -664,15 +680,16 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                               videoPlayerController.play();
                                             }
                                           });
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.35),
-                                          radius: 33,
-                                          child: Components(context).myIconWidget(icon: MyIcons.wellness,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.35),
+                                            radius: 33,
+                                            child: Components(context).myIconWidget(icon: MyIcons.wellness,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 10,),
@@ -683,8 +700,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     children: [
                                       GestureDetector(
                                         onTap: (){ HapticFeedback.selectionClick();
-                                          videoPlayerController.pause();
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SoundsList())).then((value) => videoPlayerController.play());
+                                        videoPlayerController.pause();
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SoundsList())).then((value) => videoPlayerController.play());
                                         },
                                         child: CircleAvatar(
                                           backgroundColor: Theme
@@ -697,29 +714,29 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         ),
                                       ),
                                       const SizedBox(height: 10,),
-                                       Text('Harmonies',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
+                                      Text('Harmonies',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
                                     ],
                                   )),
                                   Expanded(
                                       child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: (){ HapticFeedback.selectionClick();},
-                                        child: CircleAvatar(
-                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.35),
-                                          radius: 33,
-                                          child: Components(context).myIconWidget(icon: MyIcons.knowYourself,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      Text('Know Yourself',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),maxLines: 1,)
-                                    ],
-                                  )),
+                                        children: [
+                                          GestureDetector(
+                                            onTap: (){ HapticFeedback.selectionClick();},
+                                            child: CircleAvatar(
+                                              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.35),
+                                              radius: 33,
+                                              child: Components(context).myIconWidget(icon: MyIcons.knowYourself,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10,),
+                                          Text('Know Yourself',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),maxLines: 1,)
+                                        ],
+                                      )),
                                   Expanded(child: Column(
                                     children: [
                                       GestureDetector(
                                         onTap: (){ HapticFeedback.selectionClick();
-                                         // videoPlayerController.pause();
+                                          // videoPlayerController.pause();
                                           //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MeditationList()));
                                         },
                                         child: CircleAvatar(
@@ -738,19 +755,25 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   )),
                                   Expanded(child: Column(
                                     children: [
-                                      GestureDetector(
-                                        onTap: (){ HapticFeedback.selectionClick();
+                                      ShowCaseView(
+                                        // shapeBorder: CircleBorder(),
+                                        globalKey: breathingKey,
+                                        title: 'Breathe',
+                                        description: 'Compilation of Breathing Exercises for all',
+                                        child: GestureDetector(
+                                          onTap: (){ HapticFeedback.selectionClick();
                                           videoPlayerController.pause();
-                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) =>videoPlayerController.play());
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.35),
-                                          radius: 33,
-                                          child: Components(context).myIconWidget(icon: MyIcons.breathe,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheCat())).then((value) =>videoPlayerController.play());
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.35),
+                                            radius: 33,
+                                            child: Components(context).myIconWidget(icon: MyIcons.breathe,color: themeData.textColor.withOpacity(0.9),size: 30),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 10,),
@@ -762,10 +785,22 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                             ),
                             const SizedBox(height: 20,),
                             GestureDetector(
-                              onTap: (quotesList.isEmpty)?null:(){
+                              onTap: (quotesList.isEmpty)?null:()async{
                                 HapticFeedback.selectionClick();
                                 videoPlayerController.pause();
-                                Navigator.push(context, CupertinoPageRoute(builder: (context) => DailyQuotes(data: quotesList,),fullscreenDialog: true)).then((value) => videoPlayerController.play());
+                                User user = Provider.of<User>(context,listen: false);
+                                List likedQuoteList = await Services(user.token).getFavouriteQuotes();
+                                List<bool> isLikedList = [];
+                                for (var todayQuote in quotesList) {
+                                  final quoteId = todayQuote["_id"];
+                                  if (quoteId != null && likedQuoteList.any((favorite) => favorite["_id"] == quoteId)) {
+                                    isLikedList.add(true);
+                                  }
+                                  else{
+                                    isLikedList.add(false);
+                                  }
+                                }
+                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DailyQuotes(data: quotesList,liked:isLikedList ,),fullscreenDialog: true)).then((value) => videoPlayerController.play());
                               },
                               child: Container(
                                 margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -786,46 +821,46 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   child: Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                            child: AspectRatio(
-                                              aspectRatio: 1,
-                                                child: (quotesList.isEmpty)
-                                                    ?SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,):ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                    child: Stack(
-                                                      children: [
-                                                        Positioned.fill(child: CachedNetworkImage(imageUrl: quotesList.first['image'],fit: BoxFit.cover,placeholder: (context,url) =>Container(color: Theme.of(context).colorScheme.primary,),)),
-                                                        Center(
-                                                          child: Text(DateTime.now().day.toString().padLeft(2,'0'),
-                                                            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white,fontSize: 18),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ))
-                                            )
-                                        ),
-                                        const SizedBox(width: 10,),
-                                         Expanded(
-                                          flex: 10,
-                                            child:Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Today's Quote",style: Theme.of(context).textTheme.labelLarge,),
-                                                const SizedBox(height: 5,),
-                                                (quotesList.isEmpty)?const Text('Loading...'): Text(quotesList.first['quote'],
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.8)),
-                                                  maxLines: 1,overflow: TextOverflow.ellipsis,)
-                                              ],
-                                            )
-                                        ),
-                                        const SizedBox(width: 5,),
-                                      Icon(Icons.chevron_right,color: themeData.textColor,)
-                                      //   TextButton(onPressed: null, style: TextButton.styleFrom(backgroundColor: Colors.white
-                                      //       .withOpacity(0.15),),child: Text('Show',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.black87),)),
-                                      // ],
-                                    ]
+                                        children: [
+                                          Expanded(
+                                              flex: 3,
+                                              child: AspectRatio(
+                                                  aspectRatio: 1,
+                                                  child: (quotesList.isEmpty)
+                                                      ?SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,):ClipRRect(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      child: Stack(
+                                                        children: [
+                                                          Positioned.fill(child: CachedNetworkImage(imageUrl: quotesList.first['image'],fit: BoxFit.cover,placeholder: (context,url) =>Container(color: Theme.of(context).colorScheme.primary,),)),
+                                                          Center(
+                                                            child: Text(DateTime.now().day.toString().padLeft(2,'0'),
+                                                              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white,fontSize: 18),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ))
+                                              )
+                                          ),
+                                          const SizedBox(width: 10,),
+                                          Expanded(
+                                              flex: 10,
+                                              child:Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("Today's Quote",style: Theme.of(context).textTheme.labelLarge,),
+                                                  const SizedBox(height: 5,),
+                                                  (quotesList.isEmpty)?const Text('Loading...'): Text(quotesList.first['quote'],
+                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.8)),
+                                                    maxLines: 1,overflow: TextOverflow.ellipsis,)
+                                                ],
+                                              )
+                                          ),
+                                          const SizedBox(width: 5,),
+                                          Icon(Icons.chevron_right,color: themeData.textColor,)
+                                          //   TextButton(onPressed: null, style: TextButton.styleFrom(backgroundColor: Colors.white
+                                          //       .withOpacity(0.15),),child: Text('Show',style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.black87),)),
+                                          // ],
+                                        ]
                                     ),
                                   ),
                                 ),
@@ -833,228 +868,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                             ),
                             const SizedBox(height: 20,),
                             ///wellness listview
-                            Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text('Wellness', style: Theme.of(context).textTheme.titleMedium,),
-                                    GestureDetector(
-                                      onTap: () { HapticFeedback.selectionClick();
-                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                        videoPlayerController.pause();
-                                        setState(() {
-                                          onThisPage = false;
-                                        });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
-                                          setState(() {
-                                            onThisPage = true;
-                                          });
-                                          if(!player.audioPlayer.playing){
-                                            videoPlayerController.play();
-                                          }
-                                        });
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets
-                                            .fromLTRB(10, 2, 0, 2),
-                                        child: Text(
-                                          "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 15,),
-                              SizedBox(
-                                //color: Colors.yellow,
-                                height: h * 0.32,
-                                child: ListView.builder(
-                                  // shrinkWrap: true,
-                                    itemCount: wellnessData.length ,
-                                    scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.only(
-                                        right: 15),
-                                    itemBuilder: (context, i) {
-                                      return Consumer<MusicPlayerProvider>(
-                                        builder: (context,player,child) =>
-                                            GestureDetector(
-                                              onTap: ()async{ HapticFeedback.selectionClick();
-                                              User user = Provider.of<User>(context,listen: false);
-                                              //Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
-                                              if(wellnessData[i]['image'] != player.currentTrack?.thumbnail){
-                                                  debugPrint('wellness details api hit');
-                                                  var data = await Services(user.token).getWellnessDetails(wellnessData[i]['_id']);
-                                                  var wellData = data['data'];
-                                                  player.play(Track(title: wellData['title'], thumbnail: wellData['image'], audioUrl:wellData['audio'], gif: wellData['anim']));
-                                                }
-                                              Components(context).showPlayerSheet();
-                                               // Navigator.push(context, CupertinoPageRoute(builder: (context) => WellnessPlayer(),fullscreenDialog: true));
-                                              },
-                                              child: Container(
-                                                width: w * 0.33,
-                                                padding: const EdgeInsets.only(
-                                                    left: 10
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius
-                                                          .circular(55),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: wellnessData[i]['image'],
-                                                        fit: BoxFit.cover,
-                                                        height: h * 0.25,
-                                                        placeholder: (context, str) =>
-                                                         Center(
-                                                          child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10,),
-                                                    Text(
-                                                      wellnessData[i]['title'],
-                                                      style: Theme
-                                                          .of(context)
-                                                          .textTheme
-                                                          .bodyLarge
-                                                          ?.copyWith(
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight
-                                                              .w700
-                                                      ),
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
-                                                    ),
-                                                    //   const SizedBox(height: 4,),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                      );
-                                    }
-                                ),
-                              ),
-                            ],
-                          ),
-                            Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text('Harmony', style: Theme.of(context).textTheme.titleMedium,),
-                                    GestureDetector(
-                                      onTap: () { HapticFeedback.selectionClick();
-                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                        videoPlayerController.pause();
-                                        setState(() {
-                                          onThisPage = false;
-                                        });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundsList())).then((value) {
-                                          setState(() {
-                                            onThisPage = true;
-                                          });
-                                          if(!player.audioPlayer.playing){
-                                            videoPlayerController.play();
-                                          }
-                                        });
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets
-                                            .fromLTRB(10, 2, 0, 2),
-                                        child: Text(
-                                          "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 15,),
-                              SizedBox(
-                                height: h * 0.32,
-                                child: ListView.builder(
-                                    itemCount: wellnessData.length ,
-                                    scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.only(
-                                        right: 10),
-                                    itemBuilder: (context, i) {
-                                      return  GestureDetector(
-                                        onTap: (){
-                                          HapticFeedback.selectionClick();
-                                          harmonyData[i]['colorA'] = harmonyData[i]['colorA'].toString().replaceAll('#', '');
-                                          harmonyData[i]['colorB'] =  harmonyData[i]['colorB'].toString().replaceAll('#', '');
-                                          harmonyData[i]['textColor'] = harmonyData[i]['textColor'] .toString().replaceAll('#', '');
-
-                                          Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: harmonyData[i],)));
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.only(left: 10),
-                                          width:  w * 0.4,
-                                          decoration:  BoxDecoration(
-                                              borderRadius: BorderRadius.circular(25)
-                                          ),
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Positioned.fill(
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(25),
-                                                  child: CachedNetworkImage(
-                                                    placeholder: (context,string)=> Container(
-                                                        padding: const EdgeInsets.all(30),
-                                                        alignment: Alignment.center,
-                                                        child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
-                                                    imageUrl: harmonyData[i]['image'],fit: BoxFit.cover,),
-                                                ),
-
-                                              ),
-                                              Positioned(
-                                                  bottom: 0,
-                                                  right: 0,
-                                                  left: 0,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
-
-                                                    child: Container(
-                                                      padding: const EdgeInsets.all(10),
-                                                      decoration:   BoxDecoration(
-                                                          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-                                                          color: Colors.black.withOpacity(0.7)
-
-                                                      ),
-                                                      child: Text(harmonyData[i]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
-                                                    ),
-                                                  )
-                                              ),
-                                              Positioned(
-                                                  top: 5,
-                                                  right: 5,
-                                                  child: Components(context).BlurBackgroundCircularButton(
-                                                      svg: MyIcons.premium,
-                                                      iconSize: 18,
-                                                      buttonRadius: 17,
-                                                      iconColor: Colors.white
-                                                  )
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                ),
-                              ),
-                              const SizedBox(height: 15,)
-                            ],
-                          ),
                             Column(
                               children: [
                                 Padding(
@@ -1064,9 +877,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Text('Breathe',
-                                        style: Theme.of(context).textTheme.titleMedium,
-                                      ),
+                                      Text('Wellness', style: Theme.of(context).textTheme.titleMedium,),
                                       GestureDetector(
                                         onTap: () { HapticFeedback.selectionClick();
                                         MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
@@ -1074,7 +885,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         setState(() {
                                           onThisPage = false;
                                         });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
                                           setState(() {
                                             onThisPage = true;
                                           });
@@ -1093,30 +904,258 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     ],
                                   ),
                                 ),
-                             //   const SizedBox(height: 15,),
+                                const SizedBox(height: 15,),
                                 SizedBox(
-                                  height: h * 0.25,
-                                  child: Visibility(
-                                    visible: breatheData.isNotEmpty,
-                                    child: PageView.builder(
+                                  //color: Colors.yellow,
+                                  height: h * 0.32,
+                                  child: ListView.builder(
+                                    // shrinkWrap: true,
+                                      itemCount: wellnessData.length ,
+                                      scrollDirection: Axis.horizontal,
+                                      padding: const EdgeInsets.only(
+                                          right: 15),
+                                      itemBuilder: (context, i) {
+                                        return Consumer<MusicPlayerProvider>(
+                                          builder: (context,player,child) =>
+                                              GestureDetector(
+                                                onTap: ()async{ HapticFeedback.selectionClick();
+                                                User user = Provider.of<User>(context,listen: false);
+                                                //Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
+                                                if(wellnessData[i]['image'] != player.currentTrack?.thumbnail){
+                                                  debugPrint('wellness details api hit');
+                                                  var data = await Services(user.token).getWellnessDetails(wellnessData[i]['_id']);
+                                                  var wellData = data['data'];
+                                                  player.play(Track(id:wellData['_id'],title: wellData['title'], thumbnail: wellData['image'], audioUrl:wellData['audio'], gif: wellData['anim'],liked: wellData['liked']));
+                                                }
+                                                showPlayerSheet(context);
+                                                  // Navigator.push(context, CupertinoPageRoute(builder: (context) => WellnessPlayer(),fullscreenDialog: true));
+                                                },
+                                                child: Container(
+                                                  width: w * 0.33,
+                                                  padding: const EdgeInsets.only(
+                                                      left: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius
+                                                            .circular(55),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: wellnessData[i]['image'],
+                                                          fit: BoxFit.cover,
+                                                          height: h * 0.25,
+                                                          placeholder: (context, str) =>
+                                                              Center(
+                                                                child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 10,),
+                                                      Text(
+                                                        wellnessData[i]['title'],
+                                                        style: Theme
+                                                            .of(context)
+                                                            .textTheme
+                                                            .bodyLarge
+                                                            ?.copyWith(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight
+                                                                .w700
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      //   const SizedBox(height: 4,),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                        );
+                                      }
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text('Harmony', style: Theme.of(context).textTheme.titleMedium,),
+                                      GestureDetector(
+                                        onTap: () { HapticFeedback.selectionClick();
+                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+                                        videoPlayerController.pause();
+                                        setState(() {
+                                          onThisPage = false;
+                                        });
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundsList())).then((value) {
+                                          setState(() {
+                                            onThisPage = true;
+                                          });
+                                          if(!player.audioPlayer.playing){
+                                            videoPlayerController.play();
+                                          }
+                                        });
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .fromLTRB(10, 2, 0, 2),
+                                          child: Text(
+                                            "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 15,),
+                                SizedBox(
+                                  height: h * 0.32,
+                                  child: ListView.builder(
+                                      itemCount: wellnessData.length ,
+                                      scrollDirection: Axis.horizontal,
+                                      padding: const EdgeInsets.only(
+                                          right: 10),
+                                      itemBuilder: (context, i) {
+                                        return  GestureDetector(
+                                          onTap: (){
+                                            HapticFeedback.selectionClick();
+                                            videoPlayerController.pause();
+                                            harmonyData[i]['colorA'] = harmonyData[i]['colorA'].toString().replaceAll('#', '');
+                                            harmonyData[i]['colorB'] =  harmonyData[i]['colorB'].toString().replaceAll('#', '');
+                                            harmonyData[i]['textColor'] = harmonyData[i]['textColor'] .toString().replaceAll('#', '');
 
-                                      pageSnapping: true,
+                                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: harmonyData[i],))).then((value) => videoPlayerController.play());
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 10),
+                                            width:  w * 0.4,
+                                            decoration:  BoxDecoration(
+                                                borderRadius: BorderRadius.circular(25)
+                                            ),
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned.fill(
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(25),
+                                                    child: CachedNetworkImage(
+                                                      placeholder: (context,string)=> Container(
+                                                          padding: const EdgeInsets.all(30),
+                                                          alignment: Alignment.center,
+                                                          child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
+                                                      imageUrl: harmonyData[i]['image'],fit: BoxFit.cover,),
+                                                  ),
+
+                                                ),
+                                                Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+
+                                                      child: Container(
+                                                        padding: const EdgeInsets.all(10),
+                                                        decoration:   BoxDecoration(
+                                                            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                                                            color: Colors.black.withOpacity(0.7)
+
+                                                        ),
+                                                        child: Text(harmonyData[i]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
+                                                      ),
+                                                    )
+                                                ),
+                                                Positioned(
+                                                    top: 5,
+                                                    right: 5,
+                                                    child: Components(context).BlurBackgroundCircularButton(
+                                                        svg: MyIcons.premium,
+                                                        iconSize: 18,
+                                                        buttonRadius: 17,
+                                                        iconColor: Colors.white
+                                                    )
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                  ),
+                                ),
+                                const SizedBox(height: 15,)
+                              ],
+                            ),
+                            const SizedBox(height: 15,),
+                            Visibility(
+                              visible: breatheData.isNotEmpty,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('Breathe',
+                                          style: Theme.of(context).textTheme.titleMedium,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () { HapticFeedback.selectionClick();
+                                          MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+                                          videoPlayerController.pause();
+                                          setState(() {
+                                            onThisPage = false;
+                                          });
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheCat())).then((value) {
+                                            setState(() {
+                                              onThisPage = true;
+                                            });
+                                            if(!player.audioPlayer.playing){
+                                              videoPlayerController.play();
+                                            }
+                                          });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .fromLTRB(10, 2, 0, 2),
+                                            child: Text(
+                                              "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  //   const SizedBox(height: 15,),
+                                  SizedBox(
+                                    height: h * 0.35,
+                                    child: PageView.builder(
+                                        padEnds: false,
+                                        controller: pageController,
+                                        pageSnapping: true,
                                         itemCount: 5 ,
                                         scrollDirection: Axis.horizontal,
-
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
-                                            onTap: (){
-                                              videoPlayerController.pause();
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheList())).then((value) =>videoPlayerController.play());
-                                            },
-                                            child: Container(width: w,margin: const EdgeInsets.all(5),child: buildBreahtheListItem(breatheData, index, context),)
+                                              onTap: (){
+                                                HapticFeedback.selectionClick();
+                                                videoPlayerController.pause();
+                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  BreathingList(title: breatheData[index]['category'], image: breatheData[index]['image'], desc: breatheData[index]['tagline'], data: breatheData[index]['data']))).then((value) =>videoPlayerController.play());
+                                              },
+                                              child: Container(width: w,margin: const EdgeInsets.all(15),alignment:Alignment.center,child:
+                                              buildBreatheCatItem(breatheData, index, context,'Home'))
                                           );
                                         }
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             Center(
                               child:ListView.builder(
@@ -1165,7 +1204,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                   return GestureDetector(
                                                     onTap: ()async{ HapticFeedback.selectionClick();
                                                     videoPlayerController.pause();
-                                                    await contentViewRoute(type: listingData[i]['type'],  id: listingData[i]['_id'], context: context);
+                                                    contentViewRoute(type: listingData[i]['type'],  id: listingData[i]['_id'], context: context);
                                                     },
                                                     child: Container(
                                                       width: w * 0.35,
@@ -1261,7 +1300,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
             ),
           ],
         ),
-      ),
+      );
+    }
     );
   }
 }

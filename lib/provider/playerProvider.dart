@@ -15,7 +15,7 @@ class MusicPlayerProvider extends ChangeNotifier {
   AudioPlayer get audioPlayer => _audioPlayer;
   PlayerState get playerState => _playerState;
   Track? get currentTrack => _currentTrack;
-  Track setTrack({title, thumbnail, audioUrl, gif}) => Track(title: title, thumbnail: thumbnail, audioUrl: audioUrl, gif: gif);
+  Track setTrack({id, title, thumbnail, audioUrl, gif, liked}) => Track(id:id,title: title, thumbnail: thumbnail, audioUrl: audioUrl, gif: gif, liked: liked);
   Duration get position => _position;
   Duration get duration => _duration;
 
@@ -129,15 +129,19 @@ enum PlayerState { playing, paused, stopped }
 
 
 class Track {
+  final String id;
   final String title;
   final String thumbnail;
   final String audioUrl;
   final String gif;
+  final bool liked;
 
   Track({
+    required this.id,
     required this.title,
     required this.thumbnail,
     required this.audioUrl,
-    required this.gif
+    required this.gif,
+    required this.liked
   });
 }

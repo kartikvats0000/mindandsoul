@@ -134,16 +134,6 @@ class _ProfileState extends State<Profile> {
                               Expanded(
                                 flex: 2,
                                 child: ListTile(
-                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
-                                  textColor: theme.textColor.withOpacity(0.75),
-                                  leading: Components(context).myIconWidget(icon:MyIcons.terms,color: Theme.of(context).colorScheme.inversePrimary),
-                                  title: Text('Terms and Conditions'),
-                                  onTap: (){HapticFeedback.selectionClick();},
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: ListTile(
                                   onTap: () {
                                     HapticFeedback.selectionClick();
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const Favourites()));
@@ -155,6 +145,17 @@ class _ProfileState extends State<Profile> {
 
                                 ),
                               ),
+                              Expanded(
+                                flex: 2,
+                                child: ListTile(
+                                  iconColor: Theme.of(context).colorScheme.inversePrimary,
+                                  textColor: theme.textColor.withOpacity(0.75),
+                                  leading: Components(context).myIconWidget(icon:MyIcons.terms,color: Theme.of(context).colorScheme.inversePrimary),
+                                  title: Text('Terms and Conditions'),
+                                  onTap: (){HapticFeedback.selectionClick();},
+                                ),
+                              ),
+
                               Expanded(
                                 flex: 2,
                                 child: ListTile(

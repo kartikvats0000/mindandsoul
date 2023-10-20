@@ -16,6 +16,8 @@ import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
 
 class Wellness extends StatefulWidget {
+  const Wellness({super.key});
+
 
   @override
   State<Wellness> createState() => _WellnessState();
@@ -71,7 +73,8 @@ class _WellnessState extends State<Wellness> {
     });
   }
 
-  showOptionSheet(ThemeProvider theme){
+  showOptionSheet(ThemeProvider theme, int index){
+     User user  = Provider.of<User>(context,listen: false);
      showModalBottomSheet(
        //showDragHandle: true,
          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -100,8 +103,18 @@ class _WellnessState extends State<Wellness> {
                      child: Column(
                        children: [
                          ListTile(
-                           leading: Components(context).myIconWidget(icon: MyIcons.favorite,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),
-                           title: Text('Add to Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
+                           onTap: ()async{
+                             String message = await Services(user.token).likeWellness(data[index]['_id']);
+                             Navigator.pop(context);
+                             getWellness();
+                            // Components(context).showSuccessSnackBar(message);
+                           },
+                           leading: Components(context).BlurBackgroundCircularButton(
+                             backgroundColor: Colors.white12,
+                         svg: (data[index]['liked'])?MyIcons.favorite_filled : MyIcons.favorite,
+                       iconColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)
+                     ),
+                           title: Text((data[index]['liked'])?'Remove from Favourites':'Add to Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
                          ),
                        ],
                      ),
@@ -154,7 +167,7 @@ class _WellnessState extends State<Wellness> {
                   itemCount: data.length,
                   separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
                   itemBuilder: (context,index){
-                    tracks = List.generate(data.length, (i) => Track(title: data[i]['title'], thumbnail: data[i]['image'], audioUrl: data[i]['audio'],gif: data[index]['anim'] ));
+                    tracks = List.generate(data.length, (i) => Track(id:data[i]['title'],title: data[i]['title'], thumbnail: data[i]['image'], audioUrl: data[i]['audio'],gif: data[index]['anim'],liked: data[index]['liked'] ));
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
                       child: ClipRRect(
@@ -165,22 +178,22 @@ class _WellnessState extends State<Wellness> {
                                 onTap: (){
                                   if(player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail){
                                     if(mounted){
-                                      Components(context).showPlayerSheet();
+                                      showPlayerSheet(context);
                                     }
                                   }else{
-                                    player.play(Track(gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio']));
+                                    player.play(Track(id : data[index]['title'],gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio'],liked: data[index]['liked'] ));
                                     if(player.duration.inSeconds.isNaN == false){
-                                      Components(context).showPlayerSheet();
+                                      showPlayerSheet(context);
                                     }
                                     else{
-                                      print('please wait!');
+                                      debugPrint('please wait!');
                                     }
                                   }
 
                                 },
                                 onLongPress: (){
                                   HapticFeedback.lightImpact();
-                                  showOptionSheet(theme);
+                                  showOptionSheet(theme,index);
                                 },
                                 child: Container(
                                   //height: MediaQuery.of(context).size.height * 0.12,
@@ -276,7 +289,7 @@ class _WellnessState extends State<Wellness> {
                                       Expanded(
                                           child: IconButton(onPressed: (){
                                             HapticFeedback.lightImpact();
-                                            showOptionSheet(theme);
+                                            showOptionSheet(theme,index);
                                           },icon: const Icon(CupertinoIcons.ellipsis),color: theme.textColor.withOpacity(0.6),)
                                       )
                                     ],

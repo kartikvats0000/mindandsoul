@@ -83,7 +83,7 @@ class _ListviewAState extends State<ListviewA> {
 
             child: (loading)
                 ?Components(context).Loader(textColor: theme.textColor)
-                :(items.isEmpty)?Center(child: Text('No data'),):Column(
+                :(items.isEmpty)?const Center(child: Text('No data'),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
@@ -122,7 +122,7 @@ class _ListviewAState extends State<ListviewA> {
                           padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
                           child: GestureDetector(
                             onTap: (){
-                              contentViewRoute(type: filteredItems()[index]['type'], context: context, id: filteredItems()[index]['_id']);
+                               contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
                             },
                             child: Container(
                               decoration: BoxDecoration(

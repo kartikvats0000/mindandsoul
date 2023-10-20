@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../provider/userProvider.dart';
 import '../../../../services/services.dart';
-
+import 'package:like_button/like_button.dart';
 
 class TextContent extends StatefulWidget {
   final String id;
@@ -23,6 +23,13 @@ class _TextContentState extends State<TextContent> {
 
   ScrollController scrollController = ScrollController();
   bool isScrolling = false;
+
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  popSound(){
+    audioPlayer.setAsset('assets/data/pop.mp3');
+    audioPlayer.play();
+  }
 
   @override
   void initState() {
@@ -84,7 +91,38 @@ class _TextContentState extends State<TextContent> {
                 duration: const Duration(milliseconds: 150),
                 scrolledColor: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                 actions: [
-                  Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,),
+                  CircleAvatar(
+                    backgroundColor: Colors.black38,
+                    child: LikeButton(
+                      onTap: (isLiked) async {
+                        User user = Provider.of<User>(context,listen: false);
+                        String message = await Services(user.token).likeContent(widget.id);
+                       // Components(context).showSuccessSnackBar(message);
+                        if(data['liked'] == false){
+                          HapticFeedback.mediumImpact();
+                          popSound();
+                        }
+                        else{
+                          HapticFeedback.lightImpact();
+                        }
+                        getData();
+                        return !isLiked;
+                      },
+
+                      padding: EdgeInsets.zero,
+                      likeCountPadding: EdgeInsets.zero,
+
+                      size: 22,
+                      isLiked : data['liked'],
+                      likeBuilder: (bool isLiked) {
+                        return Components(context).myIconWidget(
+                            icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                          //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                          color: Colors.white,
+                        );
+                      },
+                    ),
+                  ),
                   const SizedBox(width: 5,),
                   Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),
                 ],
@@ -164,29 +202,17 @@ class _TextContentState extends State<TextContent> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Icon(Icons.remove_red_eye_outlined,color: Colors.white.withOpacity(0.7),size: 13,),
-                                          SizedBox(width: 5,),
-                                          Text('34.8k reads • ❤️ 12.2k likes',
+                                          const SizedBox(width: 5,),
+                                          Text('34.8k reads • ❤️ ${data['likes']} likes',
                                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 11,
                                                 //letterSpacing: 1.3,
                                                 color: Colors.white.withOpacity(0.7)
                                             ),),
+
                                         ],
                                       ),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Components(context).BlurBackgroundCircularButton(svg: (like)?MyIcons.like:MyIcons.like_filled,onTap: (){
-                                            HapticFeedback.lightImpact();
-                                            setState(() {
-                                              like = !like;
-                                            });
-                                          }),
-                                          /*SizedBox(width: 15,),
-                                              Components(context).BlurBackgroundCircularButton(svg: MyIcons.share),*/
-                                        ],
-                                      )
                                     ],
                                   )
                                 ],

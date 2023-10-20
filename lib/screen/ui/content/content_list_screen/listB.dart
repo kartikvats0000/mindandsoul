@@ -133,7 +133,7 @@ class _ListviewBState extends State<ListviewB> {
                       itemBuilder: (context,index){
                         return GestureDetector(
                           onTap: (){
-                            contentViewRoute(type: filteredItems()[index]['type'], id: filteredItems()[index]['_id'], context: context,);
+                             contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
                           },
                           child: AspectRatio(
                             aspectRatio: 6/4,
@@ -207,7 +207,7 @@ class _ListviewBState extends State<ListviewB> {
                                     Positioned(
                                         top: 7,
                                         right: 7,
-                                        child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite)
+                                        child: Components(context).BlurBackgroundCircularButton(svg: (filteredItems()[index]['liked'])?MyIcons.favorite_filled : MyIcons.favorite)
                                     ),
                                   ],
                                 ),

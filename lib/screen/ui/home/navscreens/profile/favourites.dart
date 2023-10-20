@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/helper/miniplayer.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
-import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_content.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_quotes.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_wellness.dart';
@@ -108,7 +107,8 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
                   bottom: 8,
                     right: 1,
                     left: 1,
-                    child: MiniPlayer())
+                    child: MiniPlayer()
+                )
               ],
             ),
           ),
@@ -118,3 +118,24 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
 
 
 }
+
+class NoFavourite extends StatelessWidget {
+  const NoFavourite({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        LottieBuilder.asset('assets/animations/noFavourite.json',height: 300,),
+        const SizedBox(height: 10,),
+        Text('Nothing Here....',style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: theme.textColor.withOpacity(0.8)
+        ),)
+      ],
+    );
+  }
+}
+

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mindandsoul/helper/playersheet.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class MiniPlayer extends StatelessWidget {
      // visible: musicPlayerProvider.playerState != PlayerState.stopped,
       child: InkWell(
         onTap: (){
-          Components(context).showPlayerSheet();
+          showPlayerSheet(context);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),

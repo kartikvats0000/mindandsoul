@@ -198,7 +198,7 @@ class Services {
 
     try{
       http.Response response = await http.get(uri,headers: {
-        'authorization' : 'Bearer ${token}'
+        'authorization' : 'Bearer $token'
       });
 
       var data = json.decode(response.body);
@@ -211,14 +211,23 @@ class Services {
       print(e);
     }
   }
+  
+  Future<dynamic> getBreathingData()async{
+    http.Response response = await http.get(Uri.parse('https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/breathingList.json'));
 
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+      return data;
+    }
+  }
 
   ///PUT
   Future<dynamic> editProfile(Map<String,dynamic> params,String token) async {
     final uri = Uri.parse('${baseurl}user/update');
 
     http.Response response = await http.put(uri,body:params,headers: {
-      'authorization' : 'Bearer ${token}'
+      'authorization' : 'Bearer $token'
     });
     var data = json.decode(response.body);
     if(response.statusCode == 200){
@@ -260,6 +269,67 @@ class Services {
       return lst;
     }
   }
+
+  Future<dynamic> likeQuotes(String id)async{
+    final uri = Uri.parse('${baseurl}quote/like');
+
+    http.Response response = await http.post(
+        uri,
+        headers: {
+      'authorization' : 'Bearer $token'
+    },
+      body: {
+          "quoteId" : id
+      }
+    );
+
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+       return data['data'];
+    }
+  }
+
+  Future<dynamic> likeContent(String id)async{
+    final uri = Uri.parse('${baseurl}content/like');
+
+    http.Response response = await http.post(
+        uri,
+        headers: {
+      'authorization' : 'Bearer $token'
+    },
+      body: {
+          "contentId" : id
+      }
+    );
+
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+       return data['data'];
+    }
+  }
+
+  Future<dynamic> likeWellness(String id)async{
+    final uri = Uri.parse('${baseurl}wellness/like');
+
+    http.Response response = await http.post(
+        uri,
+        headers: {
+      'authorization' : 'Bearer $token'
+    },
+      body: {
+          "wellnessId" : id
+      }
+    );
+
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+       return data['data'];
+    }
+  }
+
 
   ///Multipart
 
