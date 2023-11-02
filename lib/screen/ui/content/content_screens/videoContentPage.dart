@@ -453,10 +453,6 @@ class _VideoContentState extends State<VideoContent> {
                                   controller: chewieController
                               ),
                             ),
-                            Positioned(
-                              left: 10,
-                                top: 10,
-                                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left))
                           ],
                         ),
                         Expanded(
@@ -464,11 +460,9 @@ class _VideoContentState extends State<VideoContent> {
                           // padding: const EdgeInsets.all(15),
                             slivers: [
                               SliverToBoxAdapter(
-
                                 child: Padding(
                                   padding: const EdgeInsets.fromLTRB(15.0,15.0,15,10),
                                   child: Column(
-
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Components(context).tags(

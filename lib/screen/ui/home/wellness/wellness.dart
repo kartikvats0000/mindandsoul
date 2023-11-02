@@ -136,8 +136,8 @@ class _WellnessState extends State<Wellness> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-        builder: (context,theme,child) => Scaffold(
+    return Consumer2<ThemeProvider,MusicPlayerProvider>(
+        builder: (context,theme,player,child) => Scaffold(
           backgroundColor: theme.themeColorA,
           appBar: Components(context).myAppBar('Wellness'),
           body: Stack(
@@ -172,130 +172,127 @@ class _WellnessState extends State<Wellness> {
                       padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(25),
-                        child: Consumer<MusicPlayerProvider>(
-                          builder: (context,player,child) =>
-                              GestureDetector(
-                                onTap: (){
-                                  if(player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail){
-                                    if(mounted){
-                                      showPlayerSheet(context);
-                                    }
-                                  }else{
-                                    player.play(Track(id : data[index]['title'],gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio'],liked: data[index]['liked'] ));
-                                    if(player.duration.inSeconds.isNaN == false){
-                                      showPlayerSheet(context);
-                                    }
-                                    else{
-                                      debugPrint('please wait!');
-                                    }
-                                  }
+                        child:  GestureDetector(
+                          onTap: (){
+                            if(player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail){
+                              if(mounted){
+                                showPlayerSheet(context);
+                              }
+                            }else{
+                              player.play(Track(id : data[index]['title'],gif: data[index]['anim'],title: data[index]['title'], thumbnail: data[index]['image'], audioUrl: data[index]['audio'],liked: data[index]['liked'] ));
+                              if(player.duration.inSeconds.isNaN == false){
+                                showPlayerSheet(context);
+                              }
+                              else{
+                                debugPrint('please wait!');
+                              }
+                            }
 
-                                },
-                                onLongPress: (){
-                                  HapticFeedback.lightImpact();
-                                  showOptionSheet(theme,index);
-                                },
-                                child: Container(
-                                  //height: MediaQuery.of(context).size.height * 0.12,
-                                  decoration: BoxDecoration(
-                                    // color: Colors.black12,
-                                      borderRadius: BorderRadius.circular(15)
-                                  ),
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  // height: MediaQuery.of(context).size.height * 0.15,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        flex:3,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Stack(
-                                            children: [
-                                              AspectRatio(
-                                                aspectRatio: 1,
-                                                //height: 70,
-                                               // width: 70,
-                                                child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    child: CachedNetworkImage(imageUrl: data[index]['image'],fit: BoxFit.cover,placeholder: (context,url) => Center(
-                                                      child: Container(
-                                                          margin: EdgeInsets.all(20),
-                                                          height: 60,
-                                                          width: 60,
-                                                          child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,)),
-                                                    ),)
+                          },
+                          onLongPress: (){
+                            HapticFeedback.lightImpact();
+                            showOptionSheet(theme,index);
+                          },
+                          child: Container(
+                            //height: MediaQuery.of(context).size.height * 0.12,
+                            decoration: BoxDecoration(
+                              // color: Colors.black12,
+                                borderRadius: BorderRadius.circular(15)
+                            ),
+                            padding: const EdgeInsets.only(bottom: 5),
+                            // height: MediaQuery.of(context).size.height * 0.15,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex:3,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Stack(
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: 1,
+                                          //height: 70,
+                                          // width: 70,
+                                          child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(15),
+                                              child: CachedNetworkImage(imageUrl: data[index]['image'],fit: BoxFit.cover,placeholder: (context,url) => Center(
+                                                child: Container(
+                                                    margin: EdgeInsets.all(20),
+                                                    height: 60,
+                                                    width: 60,
+                                                    child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,)),
+                                              ),)
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible: (player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail),
+                                          child: Positioned(
+                                            top: 20,
+                                            right: 20,
+                                            left: 20,
+                                            bottom: 20,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(50),
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
+                                                child:  CircleAvatar(
+                                                    backgroundColor: Colors.black12,
+                                                    child: Components(context).myIconWidget(icon: MyIcons.volume_high)
                                                 ),
                                               ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 7,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(data[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16,fontWeight: FontWeight.bold),),
+                                              const SizedBox(width: 10,),
                                               Visibility(
-                                                visible: (player.currentTrack != null && data[index]['image'] == player.currentTrack?.thumbnail),
-                                                child: Positioned(
-                                                  top: 20,
-                                                  right: 20,
-                                                  left: 20,
-                                                  bottom: 20,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(50),
-                                                    child: BackdropFilter(
-                                                      filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
-                                                      child:  CircleAvatar(
-                                                        backgroundColor: Colors.black12,
-                                                        child: Components(context).myIconWidget(icon: MyIcons.volume_high)
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                                  visible:  data[index]['isPaid'] == true ,
+                                                  child: Components(context).myIconWidget(icon: MyIcons.premium,size: 17,color: theme.textColor)
                                               )
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                          flex: 7,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                          const SizedBox(height: 10,),
+                                          _buildhms(data[index]['duration']),
+                                          const SizedBox(height: 15,),
+                                          Wrap(
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    Text(data[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16,fontWeight: FontWeight.bold),),
-                                                    const SizedBox(width: 10,),
-                                                    Visibility(
-                                                      visible:  data[index]['isPaid'] == true ,
-                                                        child: Components(context).myIconWidget(icon: MyIcons.premium,size: 17,color: theme.textColor)
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10,),
-                                                _buildhms(data[index]['duration']),
-                                                const SizedBox(height: 15,),
-                                               Wrap(
-                                                 children: [
-                                                   for(int i =0;i<taglist.length;i++)
-                                                     Text((i!=taglist.length-1)?'${taglist[i]}  •  ':'${taglist[i]}  ',
-                                                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                         color: theme.textColor.withOpacity(0.6),
-                                                         fontWeight: FontWeight.bold,
-                                                         fontSize: 11
-                                                       ),
-                                                     )
-                                                 ]
-                                               )
-                                              ],
-                                            ),
-                                          )),
-                                      Expanded(
-                                          child: IconButton(onPressed: (){
-                                            HapticFeedback.lightImpact();
-                                            showOptionSheet(theme,index);
-                                          },icon: const Icon(CupertinoIcons.ellipsis),color: theme.textColor.withOpacity(0.6),)
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                                for(int i =0;i<taglist.length;i++)
+                                                  Text((i!=taglist.length-1)?'${taglist[i]}  •  ':'${taglist[i]}  ',
+                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                        color: theme.textColor.withOpacity(0.6),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 11
+                                                    ),
+                                                  )
+                                              ]
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                Expanded(
+                                    child: IconButton(onPressed: (){
+                                      HapticFeedback.lightImpact();
+                                      showOptionSheet(theme,index);
+                                    },icon: const Icon(CupertinoIcons.ellipsis),color: theme.textColor.withOpacity(0.6),)
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     );
@@ -329,13 +326,13 @@ class _WellnessState extends State<Wellness> {
     var hr = obj['hour'] <= 1?'hour':'hours'; 
     var sec = obj['second'] <= 1?'second':'seconds'; 
     if(obj['hour']<1){
-      return Text('${obj['minute']} $min ${obj['second']} $sec',style: textStyle,);
+      return Text('${obj['minute'].toString().padLeft(2,'0')} $min ${obj['second'].toString().padLeft(2,'0')} $sec',style: textStyle,);
     }
     if(obj['minute']<1){
-      return Text('${obj['second']} $sec',style: textStyle,);
+      return Text('${obj['second'].toString().padLeft(2,'0')} $sec',style: textStyle,);
     }
     else{
-      return Text('${obj['hour']} $hr ${obj['minute']} $min',style: textStyle,);
+      return Text('${obj['hour'].toString().padLeft(2,'0')} $hr ${obj['minute'].toString().padLeft(2,'0')} $min ${obj['second'].toString().padLeft(2,'0')} $sec',style: textStyle,);
     }
   }
 }

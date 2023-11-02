@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 
 import 'package:mindandsoul/helper/components.dart';
@@ -59,7 +60,7 @@ class _ListviewBState extends State<ListviewB> {
 
   getData()async{
     User user = Provider.of<User>(context,listen: false);
-    var data = await Services(user.token).getContent(widget.categoryId);
+    var data = await Services(user.token).getContent(categoryId:widget.categoryId);
     setState(() {
       items = data;
       loading = false;
@@ -98,6 +99,7 @@ class _ListviewBState extends State<ListviewB> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
                   padding: const EdgeInsets.only(bottom:3.0,top: 0.0,left: 10),
                   scrollDirection: Axis.horizontal,
                   child: Padding(
@@ -106,6 +108,7 @@ class _ListviewBState extends State<ListviewB> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: types.map((e) => GestureDetector(
                         onTap: (){
+                          HapticFeedback.selectionClick();
                           setState(() {
                             selectedChip = e;
                           });
@@ -128,11 +131,13 @@ class _ListviewBState extends State<ListviewB> {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    physics: const ClampingScrollPhysics(),
                       itemCount: filteredItems().length,
                     //  separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
                       itemBuilder: (context,index){
                         return GestureDetector(
                           onTap: (){
+                            HapticFeedback.selectionClick();
                              contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
                           },
                           child: AspectRatio(

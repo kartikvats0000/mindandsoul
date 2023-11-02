@@ -116,13 +116,12 @@ class _InfoGraphicState extends State<InfoGraphic> {
                             getData();
                             return !isLiked;
                           },
-
                           padding: EdgeInsets.zero,
                           likeCountPadding: EdgeInsets.zero,
-
                           size: 22,
                           isLiked : data['liked'],
                           likeBuilder: (bool isLiked) {
+                            print('is liked $isLiked');
                             return Components(context).myIconWidget(
                               icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
                               //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,

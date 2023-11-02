@@ -18,7 +18,7 @@ class BreathingList extends StatefulWidget {
   final String image;
   final String desc;
   final List data;
-  const BreathingList({super.key,required this.title,required this.image,required this.desc, required this.data});
+  const BreathingList({super.key,required this.title,required this.image,required this.desc, required this.data,});
 
   @override
   State<BreathingList> createState() => _BreathingListState();
@@ -344,7 +344,7 @@ class _BreathingListState extends State<BreathingList> {
       builder: (context,theme,_){
         debugPrint('hiBreathingList');
         return Scaffold(
-          backgroundColor: theme.themeColorA,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(preferredSize: const Size.fromHeight(kToolbarHeight), child: Components(context).customAppBar(actions: [], title: const Text('Breathe'), isScrolling: isScrolling)),
           body: SingleChildScrollView(
@@ -357,18 +357,19 @@ class _BreathingListState extends State<BreathingList> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                    color: theme.themeColorA,
-                    gradient: LinearGradient(
+                    color: Theme.of(context).colorScheme.surface,
+                    gradient: const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        theme.themeColorA,
-                        theme.themeColorB,
+                        Color(0xff202327),
+                        Color(0xff1F2024),
+
                       ],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.themeColorA,
+                        color: Color(0xff202327),
                         blurRadius: 20,
                         spreadRadius: 30,
                       ),
@@ -414,7 +415,7 @@ class _BreathingListState extends State<BreathingList> {
                       Positioned(
                         top: 0,
                         child:Text('${widget.desc}...', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: theme.textColor.withOpacity(0.75),
+                            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
                             fontSize: 14.5
                         ),),
 

@@ -1,5 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mindandsoul/notification/notification_service.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/services/notificationServices.dart';
@@ -23,7 +26,9 @@ class _NotificationsState extends State<Notifications> {
            backgroundColor: Colors.transparent,
            elevation: 0.0,
            centerTitle: true,
-           title: Text('Notification',style: TextStyle(color: theme.textColor),),
+           title: Text('Notification',style: Theme.of(context).textTheme.displayLarge?.copyWith(
+             fontSize: 22
+           ),),
          ),
          extendBodyBehindAppBar: true,
          body: Container(
@@ -49,7 +54,7 @@ class _NotificationsState extends State<Notifications> {
                Text('Your notifications are serene and clear.\nNo updates at the moment',style: Theme.of(context).textTheme.titleMedium?.copyWith(
                color: theme.textColor.withOpacity(0.8)
                 ),
-               textAlign: TextAlign.center,)
+               textAlign: TextAlign.center,),
                /*ElevatedButton(onPressed: ()async{
                  NotificationServices().scheduleNotification(time: , title: title, body: body)
                }, child: Text('Now')),*/

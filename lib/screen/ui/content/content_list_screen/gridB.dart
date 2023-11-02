@@ -2,6 +2,7 @@
 
 
   import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
   import 'package:flutter_spinkit/flutter_spinkit.dart';
   import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
   import 'package:mindandsoul/constants/iconconstants.dart';
@@ -48,7 +49,7 @@
     getData()async{
       debugPrint('hello getData');
       User user = Provider.of<User>(context,listen: false);
-      var data = await Services(user.token).getContent(widget.categoryId);
+      var data = await Services(user.token).getContent(categoryId:widget.categoryId);
       setState(() {
         items = data;
         loading = false;
@@ -99,6 +100,7 @@
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: types.map((e) => GestureDetector(
                               onTap: (){
+                                HapticFeedback.selectionClick();
                                 setState(() {
                                   selectedChip = e;
                                 });
@@ -120,12 +122,14 @@
                       ),
                       Flexible(
                         child: MasonryGridView.count(
+                          physics: const ClampingScrollPhysics(),
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
                           itemCount: filteredItems().length,
                           itemBuilder: (context,index) =>
                               GestureDetector(
                                 onTap: ()async{
+                                  HapticFeedback.selectionClick();
                                  await contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
                                 },
                                 child: ClipRRect(

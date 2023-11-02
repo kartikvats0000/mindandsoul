@@ -172,7 +172,7 @@ buildBreatheCatItem(List data, int index, BuildContext context,String page){
             begin: Alignment.bottomLeft,
             end: Alignment.topCenter,
             colors: [
-              Colors.black,Colors.black54,Colors.transparent,Colors.transparent
+              Colors.black,Colors.black54,Colors.black38,Colors.transparent,Colors.transparent
             ]),
         borderRadius: (page == 'Home')
             ? BorderRadius.circular(radius)
@@ -191,10 +191,17 @@ buildBreatheCatItem(List data, int index, BuildContext context,String page){
         ),
       ))),
       Positioned(
-          bottom: 10,
+          bottom: 15,
           left: 10,
           right: 10,
-          child: Text(data[index]['category'],style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),))
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(data[index]['category'],style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize:  (page == 'Home') ? 30 : 15,color: Colors.white),),
+              Text('${data[index]['data'].length} Powerful Exercises',style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize:  (page == 'Home') ? 14 : 12,color: Colors.white70),),
+              Text('${data[index]['tagline']}',style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize:  (page == 'Home') ? 14 : 12,color: Colors.white70),),
+            ],
+          ))
     ],
   );
 }
@@ -214,9 +221,9 @@ _buildGrid(List data){
       itemCount: 4,
       itemBuilder: (context,index){
         return GestureDetector(
-          onTap: (){
+          onTap: ()async {
             HapticFeedback.selectionClick();
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreathingList(title: data[index]['category'],desc: data[index]['tagline'], image: data[index]['image'], data: data[index]['data'])));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreathingList(title: data[index]['category'],desc: data[index]['tagline'], image: data[index]['image'], data: data[index]['data'],)));
           },
           child: buildBreatheCatItem(data,index,context,'CatPage')
         );

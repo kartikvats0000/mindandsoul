@@ -534,9 +534,31 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                             ),
                                                                             const SizedBox(height: 10,),
                                                                             FilledButton.tonal(
-                                                                                onPressed: (){
+                                                                                onPressed: ()async{
+                                                                                  User user = Provider.of<User>(context,listen: false);
                                                                                   if(nameController.text.isEmpty){
                                                                                     Components(context).showSuccessSnackBar('The mix must be named');
+                                                                                  }
+                                                                                  else{
+                                                                                    Map body = {};
+                                                                                    List soundList  = [];
+                                                                                    for(AudioPlayerModel audio in audioplayers){
+                                                                                      soundList.add(
+                                                                                          {
+                                                                                            "soundId": audio.id,
+                                                                                            "volume": audio.player.volume
+                                                                                          }
+                                                                                      );
+                                                                                    }
+                                                                                    body = {
+                                                                                      "moodId" : widget.themeImage['_id'],
+                                                                                      "title" : nameController.text,
+                                                                                      "sounds" : soundList
+                                                                                    };
+                                                                                    var res = await Services(user.token).addFavouriteHarmony(body: body);
+                                                                                    Components(context).showSuccessSnackBar(res['message']);
+                                                                                    Navigator.pop(context);
+
                                                                                   }
                                                                                 },
                                                                               style: ElevatedButton.styleFrom(

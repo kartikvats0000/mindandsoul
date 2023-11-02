@@ -98,10 +98,11 @@ class _FavouriteQuoteState extends State<FavouriteQuote> {
                                         children: [
                                           Text(data[index]['quote'],
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.dancingScript(
+                                            style: GoogleFonts.lora(
                                             textStyle: const TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w800,
+                                              fontStyle: FontStyle.italic,
+                                              fontWeight: FontWeight.w500,
                                               color: Colors.white
                                             )
                                           ),),

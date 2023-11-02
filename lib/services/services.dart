@@ -78,8 +78,12 @@ class Services {
     }
   }
 
-  Future<dynamic> getContent(String categoryId)async{
-    final uri = Uri.parse('${baseurl}content?catId=$categoryId');
+  Future<dynamic> getContent({String categoryId = '', String search = ''})async{
+    final uri = Uri.http('13.200.60.212:8085','/content',{
+      'catId' : categoryId,
+      'search' : search
+    });
+    //final uri = Uri.parse('${baseurl}content?catId=$categoryId');
 
     http.Response response = await http.get(uri,headers: {
       'authorization' : 'Bearer ${token}'
@@ -116,20 +120,6 @@ class Services {
     }
   }
 
-  Future<dynamic> getContentDetails(String categoryId)async{
-
-    final uri = Uri.parse('${baseurl}content/detail');
-
-    http.Response response = await http.post(uri,body: {'contentId' : categoryId},headers: {
-      'authorization' : 'Bearer $token'
-    });
-
-    var data = json.decode(response.body);
-    return(data);
-
-
-  }
-
   Future<dynamic> getFavouriteWellness()async{
     final uri = Uri.parse('${baseurl}wellness/favourite');
 
@@ -143,20 +133,6 @@ class Services {
       var lst = data['data'];
       return lst;
     }
-  }
-
-  Future<dynamic> getWellnessDetails(String wellnessId)async{
-
-    final uri = Uri.parse('${baseurl}wellness/detail');
-
-    http.Response response = await http.post(uri,body: {'wellId' : wellnessId},headers: {
-      'authorization' : 'Bearer ${token}'
-    });
-
-    var data = json.decode(response.body);
-    return(data);
-
-
   }
 
   Future<dynamic> getWellnessContent()async{
@@ -211,7 +187,28 @@ class Services {
       print(e);
     }
   }
-  
+
+  Future<dynamic> getFavouriteHarmony()async{
+    final uri = Uri.parse('${baseurl}fvrt_harmony');
+
+
+      http.Response response = await http.get(
+          uri,
+          headers: {
+        'authorization' : 'Bearer $token'
+      }
+      );
+
+      var data = json.decode(response.body);
+
+      print(data);
+
+      if(response.statusCode == 200){
+        return data;
+      }
+
+  }
+
   Future<dynamic> getBreathingData()async{
     http.Response response = await http.get(Uri.parse('https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/breathingList.json'));
 
@@ -222,7 +219,23 @@ class Services {
     }
   }
 
+  Future<dynamic> getFavouriteQuotes()async{
+    final uri = Uri.parse('${baseurl}quote/favourite');
+
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    var data = json.decode(response.body);
+
+    if(response.statusCode == 200){
+      var lst = data['data'];
+      return lst;
+    }
+  }
+
   ///PUT
+
   Future<dynamic> editProfile(Map<String,dynamic> params,String token) async {
     final uri = Uri.parse('${baseurl}user/update');
 
@@ -236,6 +249,30 @@ class Services {
   }
 
   ///POST
+
+  Future<dynamic> addFavouriteHarmony({required Map body})async{
+    final uri = Uri.parse('${baseurl}fvrt_harmony/add');
+
+
+    http.Response response = await http.post(
+        uri,
+        body: json.encode(body),
+        headers: {
+          'authorization' : 'Bearer $token',
+          'Content-Type': 'application/json'
+        }
+    );
+
+    var data = json.decode(response.body);
+
+    print(data);
+
+    if(response.statusCode == 200){
+      return data;
+    }
+
+  }
+
   Future<dynamic> getQuotes(String country)async{
 
     final uri = Uri.parse('${baseurl}quote');
@@ -255,19 +292,25 @@ class Services {
     }
   }
 
-  Future<dynamic> getFavouriteQuotes()async{
-    final uri = Uri.parse('${baseurl}quote/favourite');
+  Future<dynamic> getWellnessDetails(String wellnessId)async{
 
-    http.Response response = await http.get(uri,headers: {
-      'authorization' : 'Bearer $token'
-    });
+    final uri = Uri.parse('${baseurl}wellness/detail');
+
+    http.Response response = await http.post(
+        uri,
+        body: {
+          'wellId' : wellnessId,
+          //'likes': [{'id':1, 'title':123}]
+        },
+        headers: {
+          'authorization' : 'Bearer $token'
+        }
+    );
 
     var data = json.decode(response.body);
+    return(data);
 
-    if(response.statusCode == 200){
-      var lst = data['data'];
-      return lst;
-    }
+
   }
 
   Future<dynamic> likeQuotes(String id)async{
@@ -330,6 +373,19 @@ class Services {
     }
   }
 
+  Future<dynamic> getContentDetails(String categoryId)async{
+
+    final uri = Uri.parse('${baseurl}content/detail');
+
+    http.Response response = await http.post(uri,body: {'contentId' : categoryId},headers: {
+      'authorization' : 'Bearer $token'
+    });
+
+    var data = json.decode(response.body);
+    return(data);
+
+
+  }
 
   ///Multipart
 
@@ -355,9 +411,6 @@ class Services {
 
     return imageurl;
   }
-
-
-
 
 }
 

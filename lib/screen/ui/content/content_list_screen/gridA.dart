@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,7 @@ class _GridviewAState extends State<GridviewA> {
 
   getData()async{
     User user = Provider.of<User>(context,listen: false);
-    var data = await Services(user.token).getContent(widget.categoryId);
+    var data = await Services(user.token).getContent(categoryId:widget.categoryId);
     setState(() {
       items = data;
       loading = false;
@@ -98,6 +99,7 @@ class _GridviewAState extends State<GridviewA> {
                          mainAxisAlignment: MainAxisAlignment.start,
                          children: types.map((e) => GestureDetector(
                            onTap: (){
+                             HapticFeedback.selectionClick();
                              setState(() {
                                selectedChip = e;
                              });
@@ -119,6 +121,7 @@ class _GridviewAState extends State<GridviewA> {
                    ),
                     Expanded(
                       child: GridView.custom(
+                        physics: const ClampingScrollPhysics(),
                         padding: const EdgeInsets.only(bottom: 15,top: 10),
                         gridDelegate: SliverWovenGridDelegate.count(
                           pattern: const [
@@ -138,6 +141,7 @@ class _GridviewAState extends State<GridviewA> {
                                 (context, index) =>
                                 GestureDetector(
                                   onTap: ()async{
+                                    HapticFeedback.selectionClick();
                                     await contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
 
 

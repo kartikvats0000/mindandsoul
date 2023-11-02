@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../constants/iconconstants.dart';
 import '../../../../provider/userProvider.dart';
 
 
@@ -46,7 +48,7 @@ class _ListviewAState extends State<ListviewA> {
 
   getData()async{
     User user = Provider.of<User>(context,listen: false);
-    var data = await Services(user.token).getContent(widget.categoryId);
+    var data = await Services(user.token).getContent(categoryId:widget.categoryId);
     setState(() {
       items = data;
       loading  = false;
@@ -94,6 +96,7 @@ class _ListviewAState extends State<ListviewA> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: types.map((e) => GestureDetector(
                         onTap: (){
+                          HapticFeedback.selectionClick();
                           setState(() {
                             selectedChip = e;
                           });
@@ -113,64 +116,80 @@ class _ListviewAState extends State<ListviewA> {
                     ),
                   ),
                 ),Expanded(
-                  child: ListView.separated(
+                  child: ListView.builder(
+                    physics: const ClampingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       shrinkWrap: true,
                       itemCount: filteredItems().length,
-                      separatorBuilder: (context,index) =>  Divider(indent: 20,endIndent: 20,thickness: 0.65,color: theme.textColor.withOpacity(0.2),),
                       itemBuilder: (context,index){
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3.5),
-                          child: GestureDetector(
-                            onTap: (){
-                               contentViewRoute(type: filteredItems()[index]['type'], id:  filteredItems()[index]['_id'], context: context,then: getData);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                // color: Colors.black12,
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              padding: const EdgeInsets.only(bottom: 5),
-                              // height: MediaQuery.of(context).size.height * 0.15,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
+                        return GestureDetector(
+                          onTap: (){
+                            HapticFeedback.selectionClick();
+                            contentViewRoute(type: filteredItems()[index]['type'], id: filteredItems()[index]['_id'], context: context,then: getData);
+                          },
+                          onLongPress: (){
+                            HapticFeedback.mediumImpact();
+                            showOptionSheet(theme, index);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8,horizontal: 5),
+                            padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 8),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.01),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
                                     flex: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: AspectRatio(
-                                        aspectRatio: 1,
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Hero(
-                                              tag: filteredItems()[index]['_id'],
-                                                child: CachedNetworkImage(imageUrl: filteredItems()[index]['image'],fit: BoxFit.cover,))),
+                                    child:Card(
+                                      elevation:10,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10)
                                       ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                      flex: 7,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: CachedNetworkImage(
+                                              imageUrl: filteredItems()[index]['image'],fit: BoxFit.fitWidth,)),
+                                    )
+                                ),
+                                const SizedBox(width: 12,),
+                                Expanded(
+                                    flex: 6,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16,fontWeight: FontWeight.bold),maxLines: 2,overflow: TextOverflow.ellipsis,),
-                                            SizedBox(height: 10,),
-                                            Components(context).tags(
-                                              title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
-                                              context: context,
-                                              textcolor: theme.textColor.withOpacity(0.7)
-                                            )
+                                            Expanded(
+                                              child: Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: theme.textColor,
+                                                fontSize: 13.5,
+                                              ),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 15,),
+                                            Components(context).myIconWidget(icon: (filteredItems()[index]['liked'])?MyIcons.favorite_filled:MyIcons.favorite)
                                           ],
                                         ),
-                                      )),
-                                  Expanded(
-                                      child: Icon(CupertinoIcons.ellipsis,color: theme.textColor.withOpacity(0.6),)
-                                  )
-                                ],
-                              ),
+                                        const SizedBox(height: 8,),
+                                        Components(context).tags(
+                                          textcolor: theme.textColor,
+                                          title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
+                                          context: context,
+                                        ),
+                                        const SizedBox(height: 15,),
+                                        Text('${filteredItems()[index]['desc']}\n',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontSize: 11.5),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                      ],
+                                    ) ),
+
+                              ],
                             ),
                           ),
                         );
@@ -183,6 +202,62 @@ class _ListviewAState extends State<ListviewA> {
         )
     );
   }
+  showOptionSheet(ThemeProvider theme, int index){
+    User user  = Provider.of<User>(context,listen: false);
+    showModalBottomSheet(
+      //showDragHandle: true,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        context: context, builder: (context)=>
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+          child: Wrap(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Options',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                      Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
+                    ],
+                  ),
+                  const SizedBox(height: 15,),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          onTap: ()async{
+                            String message = await Services(user.token).likeContent(items[index]['_id']);
+                            Navigator.pop(context);
+                            getData();
+                            // Components(context).showSuccessSnackBar(message);
+                          },
+                          leading: Components(context).BlurBackgroundCircularButton(
+                              backgroundColor: Colors.white12,
+                              svg: MyIcons.favorite_filled,
+                              iconColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)
+                          ),
+                          title: Text('Remove from Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+    );
+  }
+
 }
+
+
 
 

@@ -18,15 +18,37 @@ Future<void> contentViewRoute(
     Navigator.push(context, MaterialPageRoute(builder: (context) => InfoGraphic(id: id))).whenComplete((then != null)?then:(){});
   }
   if(type == 'Video'){
-    Navigator.of(context).push(
-        CupertinoPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => VideoContent(id: id,))).whenComplete((then != null)?then:(){});
+    // Navigator.of(context).push(
+    //     CupertinoPageRoute(
+    //         fullscreenDialog: true,
+    //         builder: (context) => VideoContent(id: id,))).whenComplete((then != null)?then:(){});
+    //
+
+
+    Navigator.of(context).push(_createRoute( VideoContent(id: id,))).whenComplete((then != null)?then:(){});
   }
   if(type == 'Audio'){
     Navigator.push(context, MaterialPageRoute(builder: (context) => AudioContent(id:id))).whenComplete((then != null)?then:(){});
   }
 
 
+}
+
+Route _createRoute(Widget route) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>  route,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
 

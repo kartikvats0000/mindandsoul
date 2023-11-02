@@ -97,7 +97,6 @@ class _TextContentState extends State<TextContent> {
                       onTap: (isLiked) async {
                         User user = Provider.of<User>(context,listen: false);
                         String message = await Services(user.token).likeContent(widget.id);
-                       // Components(context).showSuccessSnackBar(message);
                         if(data['liked'] == false){
                           HapticFeedback.mediumImpact();
                           popSound();
@@ -106,12 +105,11 @@ class _TextContentState extends State<TextContent> {
                           HapticFeedback.lightImpact();
                         }
                         getData();
+                        print('isliked${!isLiked}');
                         return !isLiked;
                       },
-
                       padding: EdgeInsets.zero,
                       likeCountPadding: EdgeInsets.zero,
-
                       size: 22,
                       isLiked : data['liked'],
                       likeBuilder: (bool isLiked) {

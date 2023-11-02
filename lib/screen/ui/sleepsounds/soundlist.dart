@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mindandsoul/helper/random_shape.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/sleepsounds/sound_player.dart';
 import 'package:mindandsoul/services/services.dart';
@@ -90,51 +92,22 @@ List playlist =  [
 
 ];
 
-List themesList = [
-  {
-    'name' : 'Forest',
-    'image' : 'https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_1280.jpg',
-    'themeColorA' : '4D5784',
-    'themeColorB' : '75706D',
-    'textColor' : 'FDFEFE'
-  },
-  {
-    'name' : 'Rain',
-    'image' : 'https://cdn.pixabay.com/photo/2014/09/21/14/39/surface-455124_640.jpg',
-    'themeColorA' : 'E1F2F1',
-    'themeColorB' : '9EC0C7',
-    'textColor' : '1A2C32'
-  },
-
-  {
-    'name' : 'Beach',
-    'image' : 'https://cdn.pixabay.com/photo/2012/02/23/08/38/rocks-15712_640.jpg',
-    'themeColorA' : '937551',
-    'themeColorB' : '9F9282',
-    'textColor' : '2D2827'
-  },
-  // {
-  //   'name' : 'City',
-  //   'image' : 'https://cdn.pixabay.com/photo/2017/01/28/02/24/japan-2014619_640.jpg'
-  // },
-  //
-  // {
-  //   'name' : 'Night',
-  //   'image' : 'https://cdn.pixabay.com/photo/2018/08/14/13/23/ocean-3605547_1280.jpg'
-  // },
-  // {
-  //   'name' : 'Desert',
-  //   'image' : 'https://cdn.pixabay.com/photo/2015/05/30/19/55/desert-790640_640.jpg'
-  // },
-  // {
-  //   'name' : 'Zen',
-  //   'image' : 'https://cdn.pixabay.com/photo/2017/01/13/08/08/tori-1976609_640.jpg'
-  // }
-];
 
 class _SoundsListState extends State<SoundsList> {
   
   List moodList = [];
+
+  List favourites = [];
+
+  getFavourites()async{
+    User user = Provider.of<User>(context,listen: false);
+    final data = await Services(user.token).getFavouriteHarmony();
+    log(data.toString());
+    setState(() {
+      favourites = data['data'];
+    });
+
+  }
   
   getMoods()async{
     User user = Provider.of<User>(context,listen: false);
@@ -142,6 +115,7 @@ class _SoundsListState extends State<SoundsList> {
     setState(() {
       moodList = data;
     });
+    getFavourites();
 
   }
 
@@ -195,20 +169,21 @@ class _SoundsListState extends State<SoundsList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
                   ///favourites
-                 /* Visibility(
-                    visible: playlist.isNotEmpty,
+                  Visibility(
+                    visible: favourites.isNotEmpty,
                       child: Text('Your Mixes',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,)),
-                  SizedBox(height: (playlist.isNotEmpty)?10:0,),
+                  SizedBox(height: (favourites.isNotEmpty)?10:0,),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: playlist.length,
+                    itemCount: favourites.length,
                       gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount:3,
                     mainAxisExtent: 150,
                     crossAxisSpacing: 15,
-                    mainAxisSpacing: 0,
+                    mainAxisSpacing: 15,
                   ),
                       itemBuilder: (context,index) {
                       return GestureDetector(
@@ -217,7 +192,7 @@ class _SoundsListState extends State<SoundsList> {
                           Navigator.of(context).push(
                               CupertinoPageRoute(
                                   fullscreenDialog: true,
-                                  builder: (context) => SoundPlayer(data: playlist[index],)));
+                                  builder: (context) => SoundPlayer(data: favourites[index],)));
                         },
                         child: Column(
                           children: [
@@ -229,20 +204,18 @@ class _SoundsListState extends State<SoundsList> {
                                   placeholder: (context,string)=> Container(
                                       padding: const EdgeInsets.all(30),
                                       alignment: Alignment.center,
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 1,
-                                      )),
-                                  imageUrl: playlist[index]['image'],fit: BoxFit.cover,),
+                                      child:  SpinKitSpinningLines(color: hexStringToColor(favourites[index]['moodId']['colorA']))),
+                                  imageUrl: favourites[index]['moodId']['image'] ,fit: BoxFit.cover,),
                               ),
                             ),
                             const SizedBox(height: 8,),
-                            Expanded(child: Text(playlist[index]['title'],style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),))
+                            Expanded(child: Text(favourites[index]['title'],style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),))
                           ],
                         ),
                       );
                     }
                   ),
-                  SizedBox(height: (playlist.isNotEmpty)?15:0,),*/
+                  SizedBox(height: (playlist.isNotEmpty)?15:0,),
 
                   ///new audio
                   Text('Select Mood',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,),
@@ -265,12 +238,11 @@ class _SoundsListState extends State<SoundsList> {
                         onTap: (){
                           HapticFeedback.selectionClick();
                           var data = moodList[index];
-
                           data['colorA'] = data['colorA'].toString().replaceAll('#', '');
                           data['colorB'] =  data['colorB'].toString().replaceAll('#', '');
                           data['textColor'] = data['textColor'] .toString().replaceAll('#', '');
 
-                          Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: data,)));
+                          Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: data,))).then((value) => getFavourites());
                         },
                         child: Container(
                           decoration:  BoxDecoration(
@@ -334,4 +306,15 @@ class _SoundsListState extends State<SoundsList> {
       ),
     );
   }
+}
+
+
+Color hexStringToColor(String hexColor) {
+  final buffer = StringBuffer();
+  if (hexColor.length == 7) {
+    // If the input includes the alpha channel, remove it.
+    hexColor = hexColor.replaceFirst('#', 'FF');
+  }
+  buffer.write('0x$hexColor');
+  return Color(int.parse(buffer.toString()));
 }

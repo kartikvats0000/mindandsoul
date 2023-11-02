@@ -8,6 +8,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/Home.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/notifications.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/profile.dart';
+import 'package:mindandsoul/screen/ui/home/navscreens/search.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -55,7 +56,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
         }
       ),
     ),
-    const Notifications(),
+    const SearchContent(),
     const Notifications(),
     const Profile()
   ];
@@ -130,7 +131,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> with TickerProviderSt
                                 //text: 'Home',
                               ),
                               Tab(
-                                child: Components(context).myIconWidget(icon: MyIcons.menu,color: Colors.white.withOpacity(0.8)),
+                                child: Components(context).myIconWidget(icon: MyIcons.search,color: Colors.white.withOpacity(0.8)),
                                 //text: 'Home',
                               ),
                               Tab(

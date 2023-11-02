@@ -165,6 +165,7 @@ class _FavouriteContentState extends State<FavouriteContent> {
                         getData();
                       },
                       child: ListView.builder(
+                        physics: const ClampingScrollPhysics(),
                         itemCount: filteredItems().length,
                           itemBuilder: (context,index){
                           return GestureDetector(
@@ -195,10 +196,10 @@ class _FavouriteContentState extends State<FavouriteContent> {
                                           Text(filteredItems()[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: theme.textColor,
-                                              fontSize: 13.5,
+                                              fontSize: 14,
                                           ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+
                                           ),
                                           const SizedBox(height: 8,),
                                           Components(context).tags(
@@ -207,7 +208,7 @@ class _FavouriteContentState extends State<FavouriteContent> {
                                             context: context,
                                           ),
                                           const SizedBox(height: 15,),
-                                          Text('${filteredItems()[index]['desc']}\n',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontSize: 13.5),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                          Text('${filteredItems()[index]['desc']}\n',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontSize: 13),maxLines: 2,overflow: TextOverflow.ellipsis,),
                                         ],
                                       ) ),
                                   const SizedBox(width: 8,),

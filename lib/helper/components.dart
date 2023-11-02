@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
@@ -43,6 +44,7 @@ class Components{
           child: Row(
           children: [
             Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){
+              HapticFeedback.selectionClick();
               Navigator.pop(context);
             }),
             const SizedBox(width: 10,),
@@ -73,7 +75,10 @@ class Components{
       automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.all(9),
-        child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: ()=>Navigator.pop(context)),
+        child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){
+          HapticFeedback.selectionClick();
+          Navigator.pop(context);
+        }),
       ),
       title: Text(title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 25),),
     );

@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
@@ -148,7 +149,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
           ),
         ),
         Positioned(
-            top: 5,
+            top: 10,
             right: 5,
             child: Image.asset(
               'assets/logo/brainnsoul_white.png',
@@ -183,7 +184,15 @@ class _DailyQuotesState extends State<DailyQuotes> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('  ${DateFormat('MMM').format(date)}',style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 15,color: Colors.white,),),
+                        Text('  ${DateFormat('MMM').format(date)}',style:GoogleFonts.lora(
+                            textStyle: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w400 ,
+                                fontSize: 15,
+                                color: Colors.white,
+                                height: 1.3
+                            )
+                        ),),
                         Text(date.day.toString().padLeft(2,'0'),style: Theme.of(context).textTheme.displayLarge?.copyWith(
                           height: 1,
                           color: Colors.white,
@@ -205,10 +214,14 @@ class _DailyQuotesState extends State<DailyQuotes> {
                     child: Text.rich(
                       TextSpan(
                         text: '“${widget.data[selectedIndex]['quote']}”',
-                        style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                            fontSize: 22,
-                            color: Colors.white.withOpacity(0.9),
-                            height: 1.3
+                        style: GoogleFonts.lora(
+                          textStyle: TextStyle(
+                            fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w400 ,
+                              fontSize: 22,
+                              color: Colors.white.withOpacity(0.9),
+                              height: 1.3
+                          )
                         ),
                         children:  <TextSpan>[
                           TextSpan(text: '\n\n  - ${widget.data[selectedIndex]['author']}', style: TextStyle(fontSize: 15)),
@@ -293,6 +306,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                 child: PageView.builder(
                     controller: pageController,
                     onPageChanged: (position){
+                      HapticFeedback.selectionClick();
                       setState(() {
                         selectedIndex = position;
                       });

@@ -29,8 +29,10 @@ class MyIcons{
   static const profile = 'assets/icons/profile.svg';
   static const quotes = 'assets/icons/quotes.svg';
   static const restart = 'assets/icons/restart.svg';
+  static const search = 'assets/icons/search.svg';
   static const settings = 'assets/icons/settings.svg';
   static const share = 'assets/icons/share.svg';
+  static const sound = 'assets/icons/sound.svg';
   static const terms = 'assets/icons/terms.svg';
   static const theme = 'assets/icons/theme.svg';
   static const timer = 'assets/icons/timer.svg';

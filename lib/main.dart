@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:mindandsoul/notification/notification_service.dart';
 import 'package:mindandsoul/provider/playerProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'firebase_options.dart';
@@ -15,7 +16,7 @@ import 'package:timezone/data/latest.dart' as tz;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //tz.initializeTimeZones();
+  tz.initializeTimeZones();
   //LocalNotifyManager.init();
   //NotificationServices().initializeNotification();
   // NotificationService().initialize();
@@ -38,6 +39,8 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  NotificationService().initLocalNotification();
 
   Paint.enableDithering = true;
 

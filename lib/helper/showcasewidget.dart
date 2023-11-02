@@ -7,18 +7,21 @@ class ShowCaseView extends StatelessWidget {
   final String description;
   final Widget child;
   final ShapeBorder shapeBorder;
+  VoidCallback? onTap;
 
-
-  ShowCaseView({super.key, required this.globalKey, required this.title, required this.description, required this.child, this.shapeBorder = const CircleBorder()});
+  ShowCaseView({super.key, required this.globalKey, required this.title, required this.description, required this.child, required this.shapeBorder, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Showcase(
+      onBarrierClick: (onTap == null)?(){}:onTap,
+   //   onTargetClick: (onTap == null)?(){}:onTap,
+      onToolTipClick: (onTap == null)?(){}:onTap,
       key: globalKey,
       title: title,
       description: description,
-      child: child,
       targetShapeBorder: shapeBorder,
+      child: child,
     );
   }
 }
