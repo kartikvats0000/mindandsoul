@@ -6,6 +6,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_content.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_quotes.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_wellness.dart';
+import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourite_yoga.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../helper/components.dart';
@@ -25,10 +26,12 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
   bool get wantKeepAlive => true;
 
 
+
   List<Widget> tabbarlist = const [
     FavouriteContent(),
     FavouriteQuote(),
     FavouriteWellnes(),
+    FavouriteYoga(),
   ];
 
 
@@ -38,7 +41,7 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
   void initState() {
      print('init tab');
     // TODO: implement initState
-     tabController = TabController(length: 3, vsync: this);
+     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
 
@@ -49,7 +52,7 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
           Scaffold(
             backgroundColor: theme.themeColorA,
             //extendBodyBehindAppBar: true,
-            appBar: Components(context).myAppBar('Favourites'),
+            appBar: Components(context).myAppBar(title: 'Favourites'),
             body: Stack(
               children: [
                 Container(
@@ -73,17 +76,18 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
                         onTap: (index){HapticFeedback.selectionClick();},
                         //tabAlignment: TabAlignment.start,
                        // isScrollable: true,
-                        labelStyle: Theme.of(context).textTheme.labelMedium,
+                          labelPadding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.12), // Space between tabs
+                          labelStyle: Theme.of(context).textTheme.labelMedium,
                           labelColor: theme.textColor,
                           padding: const EdgeInsets.all(5),
                           indicatorColor: theme.textColor,
                           unselectedLabelColor: theme.textColor.withOpacity(0.25),
                           dividerColor: Colors.transparent,
+                          isScrollable : true,
                         controller: tabController,
                           tabs: const [
                             Tab(
                               text: 'Content',
-
                             ),
                             Tab(
                               text: 'Quotes',
@@ -91,6 +95,9 @@ class _FavouritesState extends State<Favourites> with SingleTickerProviderStateM
                             Tab(
                               text: 'Wellness ',
                             ),
+                            Tab(
+                              text: 'Yoga',
+                            )
                           ]
                       ),
                       Expanded(

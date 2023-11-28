@@ -79,7 +79,7 @@ class _ListviewBState extends State<ListviewB> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: Components(context).myAppBar(widget.title),
+          appBar: Components(context).myAppBar(title : widget.title),
           body: Container(
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
@@ -95,7 +95,7 @@ class _ListviewBState extends State<ListviewB> {
 
             child: (loading)
                 ?Components(context).Loader(textColor: theme.textColor)
-                :(items.isEmpty)?Center(child: Text('No data'),):Column(
+                :(items.isEmpty)?const Center(child: Text('No data'),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
@@ -145,7 +145,7 @@ class _ListviewBState extends State<ListviewB> {
                             child: Hero(
                               tag: filteredItems()[index]['_id'],
                               child: Container(
-                                margin: EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: Colors.white70,

@@ -69,7 +69,7 @@ import 'package:flutter/services.dart';
       return Consumer<ThemeProvider>(
           builder: (context,theme,child) => Scaffold(
               backgroundColor: theme.themeColorA,
-              appBar: Components(context).myAppBar(widget.title),
+              appBar: Components(context).myAppBar(title : widget.title),
               body: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   height: MediaQuery.of(context).size.height,

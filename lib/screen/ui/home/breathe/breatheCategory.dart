@@ -93,7 +93,7 @@ class _BreatheCatState extends State<BreatheCat> {
       => Scaffold(
         backgroundColor: theme.themeColorA,
         extendBodyBehindAppBar: true,
-        appBar: PreferredSize(preferredSize: const Size.fromHeight(kToolbarHeight), child: Components(context).customAppBar(actions: [], title: Text('Breathe'), isScrolling: isScrolling)),
+        appBar: PreferredSize(preferredSize: const Size.fromHeight(kToolbarHeight), child: Components(context).customAppBar(actions: [], title: const Text('Breathe'), isScrolling: isScrolling)),
         body: (data.isEmpty)
             ? Components(context).Loader(textColor: theme.textColor)
             :Container(

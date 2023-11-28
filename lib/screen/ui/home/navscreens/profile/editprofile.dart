@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,7 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../constants/iconconstants.dart';
@@ -270,7 +268,7 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: theme.themeColorA,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight+25),
+          preferredSize: const Size.fromHeight(kToolbarHeight+25),
           child: AppBar(
             elevation: 0.0,
             scrolledUnderElevation: 0.0,
@@ -377,7 +375,7 @@ class _EditProfileState extends State<EditProfile> {
                                   builder: (context, _setState) {
                                     return Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                                        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                                         gradient: LinearGradient(
                                           begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
@@ -443,7 +441,7 @@ class _EditProfileState extends State<EditProfile> {
                                                ),
                                                   contentPadding : const EdgeInsets.all(12),
                                                 //prefix: Icon(Icons.search_rounded),
-                                                  prefixIcon: Icon(Icons.search),
+                                                  prefixIcon: const Icon(Icons.search),
                                                // prefixIconColor: theme.textColor.withOpacity(0.8),
                                                 isCollapsed: true
                                               ),
@@ -462,9 +460,9 @@ class _EditProfileState extends State<EditProfile> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 color: theme.themeColorB.withOpacity(0.4),
-                                                borderRadius: BorderRadius.vertical(top: Radius.circular(25))
+                                                borderRadius: const BorderRadius.vertical(top: Radius.circular(25))
                                               ),
-                                              margin: EdgeInsets.fromLTRB(5,5,5,0),
+                                              margin: const EdgeInsets.fromLTRB(5,5,5,0),
                                               padding: const EdgeInsets.all(7),
                                               child: CupertinoScrollbar(
                                                 controller: listController,
@@ -537,7 +535,7 @@ class _EditProfileState extends State<EditProfile> {
                       'profile_picture' : imageurl,
                       'country' : countryVal
                     };
-                    var data = await Services(user.token).editProfile(body, user.token);
+                    var data = await Services(user.token).editProfile(body);
                     SharedPreferences sharedpreference = await SharedPreferences.getInstance();
                     await sharedpreference.setString('loginData', json.encode(data['data']));
                     Components(context).showSuccessSnackBar('Profile Serenely Updated',margin: const EdgeInsets.only(bottom: kToolbarHeight+15,right: 15,left: 15));

@@ -7,7 +7,7 @@ class ShowCaseView extends StatelessWidget {
   final String description;
   final Widget child;
   final ShapeBorder shapeBorder;
-  VoidCallback? onTap;
+  final VoidCallback? onTap;
 
   ShowCaseView({super.key, required this.globalKey, required this.title, required this.description, required this.child, required this.shapeBorder, this.onTap});
 

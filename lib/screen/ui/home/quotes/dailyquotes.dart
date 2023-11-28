@@ -14,7 +14,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/helper/components.dart';
-import 'package:mindandsoul/services/notificationServices.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -390,7 +389,7 @@ class _DailyQuotesState extends State<DailyQuotes> {
                                 shape: const CircleBorder(),
                                 label: 'Download Wallpaper',
                                 labelBackgroundColor: Colors.black54,
-                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)?.copyWith(color: Colors.white)
+                                labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)
                             ),
                             SpeedDialChild(
                                 elevation: 0.0,

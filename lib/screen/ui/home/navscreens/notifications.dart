@@ -1,11 +1,7 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mindandsoul/notification/notification_service.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
-import 'package:mindandsoul/services/notificationServices.dart';
 import 'package:provider/provider.dart';
 
 class Notifications extends StatefulWidget {
@@ -50,7 +46,7 @@ class _NotificationsState extends State<Notifications> {
              mainAxisAlignment: MainAxisAlignment.center,
              children: [
                LottieBuilder.asset('assets/animations/noNotification.json'),
-               SizedBox(height: 10,),
+               const SizedBox(height: 10,),
                Text('Your notifications are serene and clear.\nNo updates at the moment',style: Theme.of(context).textTheme.titleMedium?.copyWith(
                color: theme.textColor.withOpacity(0.8)
                 ),

@@ -1,18 +1,15 @@
+import 'dart:math';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:just_audio/just_audio.dart' as just_audio;
-import 'package:just_audio/just_audio.dart';
 
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/iconconstants.dart';
-import '../provider/playerProvider.dart';
 
 export 'playersheet.dart';
 export 'contentviewroute.dart';
@@ -66,21 +63,28 @@ class Components{
     );
   }
 
-  AppBar myAppBar(String title){
+  PreferredSizeWidget myAppBar({required String title, List<Widget> actions = const [],TextStyle? titleStyle}){
+
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
-      scrolledUnderElevation: 0.0,
-      automaticallyImplyLeading: false,
-      leading: Padding(
-        padding: const EdgeInsets.all(9),
-        child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){
-          HapticFeedback.selectionClick();
-          Navigator.pop(context);
-        }),
+    titleStyle ??= Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 25);
+    return PreferredSize(
+      preferredSize: Size.fromHeight(kToolbarHeight+20),
+      child: AppBar(
+        toolbarHeight: kToolbarHeight+20,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        scrolledUnderElevation: 0.0,
+        automaticallyImplyLeading: false,
+        actions: actions,
+        leading: Padding(
+          padding: const EdgeInsets.all(9),
+          child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){
+            HapticFeedback.selectionClick();
+            Navigator.pop(context);
+          }),
+        ),
+        title: Text(title,style: titleStyle,),
       ),
-      title: Text(title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: theme.textColor,fontSize: 25),),
     );
   }
 
@@ -91,7 +95,8 @@ class Components{
   }
 
   Widget tags({required String title, required BuildContext context, Color textcolor = Colors.white})
-  {ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+  {
+    ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
 
@@ -116,8 +121,10 @@ class Components{
               ?.copyWith(
               color: textcolor.withOpacity(0.9),
               fontWeight: FontWeight.w900,
-              fontSize: 11
-          ),),
+              fontSize: 11,
+          ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
@@ -288,7 +295,6 @@ String getDurationString(Duration duration) {
 }
 
 Widget buildbreathsIndicatorList(Map durations,Color color, String exhaleTrough, BuildContext context){
-  ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
   return Theme(
     data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.fromSeed(seedColor: color)
@@ -299,8 +305,8 @@ Widget buildbreathsIndicatorList(Map durations,Color color, String exhaleTrough,
             children: [
               Row(
                 children: [
-                  Components(context).myIconWidget(icon: MyIcons.inhale,size: 16,color: theme.textColor),
-                  Text(' : ${durations['breatheIn']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor),),
+                  Components(context).myIconWidget(icon: MyIcons.inhale,size: 16,color: Colors.white70),
+                  Text(' : ${durations['breatheIn']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),),
                 ],
               ),
               const SizedBox(width: 9,),
@@ -308,16 +314,16 @@ Widget buildbreathsIndicatorList(Map durations,Color color, String exhaleTrough,
                 visible:durations['hold1'] != 0 ,
                 child: Row(
                   children: [
-                    Components(context).myIconWidget(icon: MyIcons.pause_circle,size: 16,color: theme.textColor),
-                    Text(' : ${durations['hold1']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor),),
+                    Components(context).myIconWidget(icon: MyIcons.pause_circle,size: 16,color: Colors.white70),
+                    Text(' : ${durations['hold1']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),),
                   ],
                 ),
               ),
               const SizedBox(width: 9,),
               Row(
                 children: [
-                  Components(context).myIconWidget(icon:(exhaleTrough == 'nose')? MyIcons.exhale:MyIcons.exhale_mouth,size: 16,color: theme.textColor),
-                  Text(' : ${durations['breatheOut']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: theme.textColor),),
+                  Components(context).myIconWidget(icon:(exhaleTrough == 'nose')? MyIcons.exhale:MyIcons.exhale_mouth,size: 16,color: Colors.white70),
+                  Text(' : ${durations['breatheOut']}s',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),),
                 ],
               ),
 
@@ -357,3 +363,18 @@ Color myColor(String color){
 
 
 
+String generateRandomHexId() {
+  // Create a Random object for generating random values
+  Random random = Random();
+
+  // Generate a random 5-digit hexadecimal number
+  int randomHexValue = random.nextInt(0xFFFFF); // 0xFFFFF is the maximum value for a 5-digit hexadecimal number
+
+  // Convert the random value to a hexadecimal string
+  String hexId = randomHexValue.toRadixString(16);
+
+  // Ensure that the string has exactly 5 characters by padding with zeros if needed
+  hexId = hexId.padLeft(5, '0');
+
+  return hexId.toUpperCase(); // Convert to uppercase for consistency
+}

@@ -1,11 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:android_id/android_id.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
@@ -14,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../provider/playerProvider.dart';
 import '../../provider/themeProvider.dart';
 import '../../services/services.dart';
 
@@ -151,27 +145,29 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
        Scaffold(
          backgroundColor: theme.themeColorA,
         extendBody: true,
-        body: FutureBuilder(
-          future: _initializeVideoPlayerFuture,
-          builder: (context,snapshot) {
-            if(snapshot.connectionState == ConnectionState.done){
-              videoPlayerController.play();
-              return Stack(
-                children: [
-                  Positioned.fill(child: VideoPlayer(videoPlayerController)),
-                  Positioned(
-                    bottom: 85,
-                      child: Visibility(
-                        visible: videoPlayerController.value.duration == videoPlayerController.value.position,
-                          child: const SpinKitSpinningLines(color: Colors.deepOrangeAccent,)))
-                ],
-              );
-            }
-            else{
-              return Container();
-            }
+        body: SizedBox.expand(
+          child: FutureBuilder(
+            future: _initializeVideoPlayerFuture,
+            builder: (context,snapshot) {
+              if(snapshot.connectionState == ConnectionState.done){
+                videoPlayerController.play();
+                return Stack(
+                  children: [
+                    Positioned.fill(child: VideoPlayer(videoPlayerController)),
+                    Positioned(
+                      bottom: 85,
+                        child: Visibility(
+                          visible: videoPlayerController.value.duration == videoPlayerController.value.position,
+                            child: const SpinKitSpinningLines(color: Colors.deepOrangeAccent,)))
+                  ],
+                );
+              }
+              else{
+                return Container();
+              }
 
-          }
+            }
+          ),
         )
       ),
     );

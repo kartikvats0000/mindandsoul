@@ -177,7 +177,7 @@ class _TextContentState extends State<TextContent> {
                                       Row(
                                         children: [
                                           Icon(Icons.watch_later_outlined,color: Colors.white.withOpacity(0.8),size: 13,),
-                                          SizedBox(width: 5,),
+                                          const SizedBox(width: 5,),
                                           Text(DateFormat('MMMM d, yyyy').format(DateTime.parse(data['updatedAt'])),
                                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                 fontWeight: FontWeight.bold,
@@ -217,16 +217,6 @@ class _TextContentState extends State<TextContent> {
                               ),
                             )
                         ),
-                        /* Positioned(
-                                top: 30,
-                                left: 5,
-                                child: Components(context).BlurBackgroundCircularButton(icon: Icons.chevron_left,onTap: (){Navigator.pop(context);})
-                            ),
-                            Positioned(
-                                top: 30,
-                                right: 5,
-                                child: Components(context).BlurBackgroundCircularButton(svg: MyIcons.favorite,onTap: (){})
-                            ),*/
                       ],
                     ),
                   ),
@@ -239,7 +229,7 @@ class _TextContentState extends State<TextContent> {
                             data['html']
                         ),
 
-                        SizedBox(height: 15,),
+                        const SizedBox(height: 15,),
                         Text('Tags:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.black,fontWeight: FontWeight.w800,fontSize: 14),),
                         Wrap(
                             spacing: 5,

@@ -57,7 +57,7 @@ class _BreathingState extends State<Breathing> {
               if(startAnimation == true){
                 showDialog(context: context, builder: (context)=> Components(context).confirmationDialog(context, title: 'Confirm Exit', message: 'Are you sure you want to exit the breathing exercise? Your progress will not be saved.',
                     actions: [
-                      FilledButton.tonal(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+                      FilledButton.tonal(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                       FilledButton.tonal(onPressed: (){
                         audioPlayer.dispose();
                         setState(() {
@@ -141,7 +141,7 @@ class _BreathingState extends State<Breathing> {
                     Center(
                       child:
                         AnimatedSwitcher(
-                            duration: Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 400),
                           child: (!startAnimation)
                               ?Center(
                             key: const ValueKey<int>(1),
@@ -156,7 +156,7 @@ class _BreathingState extends State<Breathing> {
                                   });
                                 },
                                 animatedTexts: [
-                                  FadeAnimatedText('',duration: Duration(seconds: 1),
+                                  FadeAnimatedText('',duration: const Duration(seconds: 1),
                                     textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       fontSize: 15,
                                       color: Theme.of(context).colorScheme.primary,
@@ -165,7 +165,7 @@ class _BreathingState extends State<Breathing> {
                                     fadeOutBegin: 0.11,
 
                                   ),
-                                  FadeAnimatedText('Make Yourself Calm and Relaxed\n',duration: Duration(seconds: 2),
+                                  FadeAnimatedText('Make Yourself Calm and Relaxed\n',duration: const Duration(seconds: 2),
                                     textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       fontSize: 15,
                                       color: Theme.of(context).colorScheme.primary,
@@ -300,14 +300,14 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                           ),
                               textAlign: TextAlign.center
                           ),
-                          const SizedBox(height: 10,),
+                          /*const SizedBox(height: 10,),
                           Divider(
                             indent: 10,
                             endIndent: 10,
                             color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                             thickness: 0.5,
-                          ),
-                          const SizedBox(height: 10,),
+                          ),*/
+                          /*const SizedBox(height: 10,),
                           Text("How Are You Feeling??",textAlign: TextAlign.center,style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 17),
@@ -325,7 +325,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                                    // borderRadius: BorderRadius.circular(15),
                                     border: Border.all()
                                   ),
-                                  child: Text('😞',style: TextStyle(fontSize: 22),),
+                                  child: const Text('😞',style: TextStyle(fontSize: 22),),
                                 ),
                               )),
                               Expanded(child: AspectRatio(
@@ -338,7 +338,7 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                                     //borderRadius: BorderRadius.circular(15),
                                     border: Border.all()
                                   ),
-                                  child: Text('😑',style: TextStyle(fontSize: 22),),
+                                  child: const Text('😑',style: TextStyle(fontSize: 22),),
                                 ),
                               )),
                               Expanded(child: AspectRatio(
@@ -351,11 +351,11 @@ class _PulsatingAnimationState extends State<PulsatingAnimation> with SingleTick
                                   //  borderRadius: BorderRadius.circular(15),
                                     border: Border.all()
                                   ),
-                                  child: Text('🙂',style: TextStyle(fontSize: 22),),
+                                  child: const Text('🙂',style: TextStyle(fontSize: 22),),
                                 ),
                               )),
                             ],
-                          ),
+                          ),*/
                           const SizedBox(height: 20,),
                           Center(
                               child: InkWell(

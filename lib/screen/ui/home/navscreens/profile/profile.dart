@@ -151,7 +151,7 @@ class _ProfileState extends State<Profile> {
                                   iconColor: Theme.of(context).colorScheme.inversePrimary,
                                   textColor: theme.textColor.withOpacity(0.75),
                                   leading: Components(context).myIconWidget(icon:MyIcons.terms,color: Theme.of(context).colorScheme.inversePrimary),
-                                  title: Text('Terms and Conditions'),
+                                  title: const Text('Terms and Conditions'),
                                   onTap: (){HapticFeedback.selectionClick();},
                                 ),
                               ),
@@ -162,7 +162,7 @@ class _ProfileState extends State<Profile> {
                                   iconColor: Theme.of(context).colorScheme.inversePrimary,
                                   textColor: theme.textColor.withOpacity(0.75),
                                   leading: Components(context).myIconWidget(icon:MyIcons.share,color: Theme.of(context).colorScheme.inversePrimary),
-                                  title: Text('Share App'),
+                                  title: const Text('Share App'),
                                   onTap: (){HapticFeedback.selectionClick();},
                                 ),
                               ),
@@ -182,7 +182,7 @@ class _ProfileState extends State<Profile> {
                                                 await user.updateLoginStatus(false);
                                                 SharedPreferences sharedPreference = await SharedPreferences.getInstance();
                                                 await sharedPreference.remove('loginData');
-                                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
+                                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const Login()), (route) => false);
                                               },
                                               child: const Text('Log Out')
                                           ),
@@ -207,14 +207,14 @@ class _ProfileState extends State<Profile> {
                              },*/
                                   textColor: theme.textColor.withOpacity(0.75),
                                   //tileColor: Theme.of(context).colorScheme.primary,
-                                  leading: Icon(Icons.logout,color: Colors.red,),
-                                  title: Text('Logout'),),
+                                  leading: const Icon(Icons.logout,color: Colors.red,),
+                                  title: const Text('Logout'),),
                               ),
                             ],
                           ),
                         )
                     ),
-                    Spacer(flex: 1,)
+                    const Spacer(flex: 1,)
                   ],
                 ),
               ),

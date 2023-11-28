@@ -250,7 +250,7 @@ class _SoundPlayerState extends State<SoundPlayer> {
                                           ),
                                           child: CupertinoTimerPicker(
                                               mode: CupertinoTimerPickerMode.ms,
-                                              initialTimerDuration: (timeleft == 0)?Duration.zero:Duration(seconds: timeleft!),
+                                              initialTimerDuration: (timeleft == 0)?Duration.zero:Duration(seconds: timeleft),
                                               onTimerDurationChanged: (timer){
                                                   temp = timer.inSeconds;
                                               }
@@ -350,7 +350,7 @@ class _SoundPlayerState extends State<SoundPlayer> {
                                                               return ListTile(
                                                                 // minLeadingWidth: MediaQuery.of(context).size.width * 0.25,
                                                                   horizontalTitleGap: 0,
-                                                                  contentPadding: EdgeInsets.all(10),
+                                                                  contentPadding: const EdgeInsets.all(10),
                                                                   leading: Container(
                                                                     width: MediaQuery.of(context).size.width * 0.17,
                                                                     child: Column(

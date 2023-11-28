@@ -139,7 +139,7 @@ class _WellnessState extends State<Wellness> {
     return Consumer2<ThemeProvider,MusicPlayerProvider>(
         builder: (context,theme,player,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: Components(context).myAppBar('Wellness'),
+          appBar: Components(context).myAppBar(title : 'Wellness'),
           body: Stack(
             children: [
               Container(
@@ -218,7 +218,7 @@ class _WellnessState extends State<Wellness> {
                                               borderRadius: BorderRadius.circular(15),
                                               child: CachedNetworkImage(imageUrl: data[index]['image'],fit: BoxFit.cover,placeholder: (context,url) => Center(
                                                 child: Container(
-                                                    margin: EdgeInsets.all(20),
+                                                    margin: const EdgeInsets.all(20),
                                                     height: 60,
                                                     width: 60,
                                                     child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,)),

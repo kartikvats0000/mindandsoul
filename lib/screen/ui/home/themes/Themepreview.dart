@@ -11,7 +11,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
-import '../bottomNavigationbarScreen.dart';
 
 class ThemePreview extends StatefulWidget {
   final dynamic themeDetails;

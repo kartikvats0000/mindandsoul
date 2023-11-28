@@ -69,7 +69,7 @@ class _GridviewAState extends State<GridviewA> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
             backgroundColor: theme.themeColorA,
-            appBar: Components(context).myAppBar(widget.title),
+            appBar: Components(context).myAppBar( title: widget.title),
             body: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: MediaQuery.of(context).size.height,
@@ -87,7 +87,7 @@ class _GridviewAState extends State<GridviewA> {
 
                 child: (loading)
                     ?Components(context).Loader(textColor: theme.textColor)
-                    :(items.isEmpty)?Center(child: Text('No data'),):Column(
+                    :(items.isEmpty)?const Center(child: Text('No data'),):Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

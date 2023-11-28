@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:just_audio/just_audio.dart';
-import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/iconconstants.dart';
 import '../provider/playerProvider.dart';
 import '../provider/themeProvider.dart';
-import '../provider/userProvider.dart';
-import '../services/services.dart';
 
 bool showVolumeSlider = false;
 

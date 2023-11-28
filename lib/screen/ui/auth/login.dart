@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
       if(data['statusCode'] == 200){
         await user.updateLoginStatus(true);
         await user.fromJson(data['data']);
-        var stringdata = await user.toEncodedJson();
+        var stringdata = user.toEncodedJson();
         await sharedPreferences.setString('loginData', stringdata);
         await sharedPreferences.setBool('isLogged', user.isLogged);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavScreen()));

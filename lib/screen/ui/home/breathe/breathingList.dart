@@ -351,9 +351,29 @@ class _BreathingListState extends State<BreathingList> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Hero(
-                    tag: widget.image,
-                    child: CachedNetworkImage(imageUrl: widget.image,height: MediaQuery.of(context).size.height * 0.25,width: MediaQuery.of(context).size.width,fit: BoxFit.cover,)),
+                Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Hero(
+                            tag: widget.image,
+                            child: CachedNetworkImage(imageUrl: widget.image,height: MediaQuery.of(context).size.height * 0.3,width: MediaQuery.of(context).size.width,fit: BoxFit.cover,)),
+                        Positioned.fill(child: Container(
+                          decoration:  const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                            Colors.transparent,
+                                //Color(0xff202327).withOpacity(0.7),
+                                Color(0xff202327),
+
+                          ])
+                        ),))
+                      ],
+                    ),
+                  ],
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
@@ -409,14 +429,20 @@ class _BreathingListState extends State<BreathingList> {
                         ],
                       ),
                       Positioned(
-                        top: -55,
-                        child:Text(widget.title, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 27, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
+                        top: -90,
+                        child:
+                        Text(widget.title, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 27, fontWeight: FontWeight.bold,color: Colors.white70), textAlign: TextAlign.start,),
+                      ),
+                      Positioned(
+                        top: -40,
+                        child:
+                        Text('${widget.data.length} Powerful Exercise', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white70), textAlign: TextAlign.start,),
                       ),
                       Positioned(
                         top: 0,
                         child:Text('${widget.desc}...', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
-                            fontSize: 14.5
+                            fontSize: 13
                         ),),
 
                       ),
@@ -433,7 +459,6 @@ class _BreathingListState extends State<BreathingList> {
 }
 
 buildBreathingListItem(List data, int index, BuildContext context){
-  ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
   return Stack(
     clipBehavior: Clip.none,
     children: [
@@ -464,7 +489,7 @@ buildBreathingListItem(List data, int index, BuildContext context){
                 crossAxisAlignment: (index%2==0)?CrossAxisAlignment.start:CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: theme.textColor,fontWeight: FontWeight.w700),),
+                  Text(data[index]['title'],style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white70,fontWeight: FontWeight.w700),),
                //   Text('For ${data[index]['purpose']}',style: Theme.of(context).textTheme.bodySmall?.copyWith(color: theme.textColor.withOpacity(0.7),fontWeight: FontWeight.w600),),
                   const SizedBox(height: 15,),
                   buildbreathsIndicatorList(

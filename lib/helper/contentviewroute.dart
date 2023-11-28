@@ -25,7 +25,7 @@ Future<void> contentViewRoute(
     //
 
 
-    Navigator.of(context).push(_createRoute( VideoContent(id: id,))).whenComplete((then != null)?then:(){});
+    Navigator.of(context).push(bottomToTopRoute( VideoContent(id: id,))).whenComplete((then != null)?then:(){});
   }
   if(type == 'Audio'){
     Navigator.push(context, MaterialPageRoute(builder: (context) => AudioContent(id:id))).whenComplete((then != null)?then:(){});
@@ -34,8 +34,7 @@ Future<void> contentViewRoute(
 
 }
 
-Route _createRoute(Widget route) {
-  return PageRouteBuilder(
+Route bottomToTopRoute(Widget route) => PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>  route,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
@@ -50,5 +49,17 @@ Route _createRoute(Widget route) {
       );
     },
   );
-}
+
+Route fadeRoute(Widget route) => PageRouteBuilder(
+  transitionDuration: const Duration(
+      milliseconds: 500
+  ),
+  pageBuilder: (context, animation, secondaryAnimation) =>  route,
+  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  },
+  );
 

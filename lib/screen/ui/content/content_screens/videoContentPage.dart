@@ -301,7 +301,6 @@
 
 import 'dart:async';
 import 'dart:ui';
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:like_button/like_button.dart';
@@ -593,7 +592,8 @@ class _VideoContentState extends State<VideoContent> {
                                       ),
                                       const SizedBox(height: 15,),
                                       //  Text('Description:\n',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.w800,fontSize: 15.5),),
-                                      Text('${data['desc']}',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),)
+                                      Text('${data['desc']}',style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
+                                      const SizedBox(height: 30 ,)
 
                                     ],
                                   ),

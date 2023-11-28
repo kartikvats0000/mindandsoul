@@ -6,7 +6,6 @@ import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +22,12 @@ import 'package:mindandsoul/screen/ui/content/content_list_screen/listA.dart';
 import 'package:mindandsoul/screen/ui/content/content_list_screen/listB.dart';
 import 'package:mindandsoul/screen/ui/home/breathe/breatheCategory.dart';
 import 'package:mindandsoul/screen/ui/home/breathe/breathingList.dart';
+import 'package:mindandsoul/screen/ui/home/community/community.dart';
+import 'package:mindandsoul/screen/ui/home/games/games.dart';
+import 'package:mindandsoul/screen/ui/home/knowYourself/knowYourselfResults.dart';
+import 'package:mindandsoul/screen/ui/home/knowYourself/knowyourselfintro.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
+import 'package:mindandsoul/screen/ui/home/talk_to_me/talktomeResults.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
 import 'package:mindandsoul/screen/ui/home/wellness/wellness.dart';
 import 'package:mindandsoul/screen/ui/sleepsounds/soundlist.dart';
@@ -37,8 +41,8 @@ import '../../../../provider/themeProvider.dart';
 import '../../../../services/services.dart';
 import '../../content/content_list_screen/gridA.dart';
 import '../../sleepsounds/soundmaker.dart';
-import '../guided_meditation/meditationList.dart';
-
+import '../dailyyoga/dailyyoga.dart';
+import '../myDairy/mydiary.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -211,16 +215,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   }
 
   String get greeting {
-    if(DateTime.now().hour < 12){
-      return 'Good Morning';
-    }
-    if(DateTime.now().hour <= 16){
-      return 'Good Afternoon';
-    }
-    else{
-      return 'Good Evening';
-    }
-
+    if(DateTime.now().hour < 12) return 'Good Morning';
+    if(DateTime.now().hour <= 16) return 'Good Afternoon';
+    else return 'Good Evening ';
   }
 
   contentPageRoute(String view, String id,String title){
@@ -243,18 +240,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   bool connected = true;
 
-  /*checkForInternet()async {
-    setState(() {
-      connected =  Internet().checkInternet();
-      print('$connected internet');
-    });
-  }*/
 
   final GlobalKey themeKey = GlobalKey();
   final GlobalKey weatherKey = GlobalKey();
   final GlobalKey wellnessKey = GlobalKey();
   final GlobalKey breathingKey = GlobalKey();
   final GlobalKey quoteKey = GlobalKey();
+
 
   startShowCase()async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -305,6 +297,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     debugPrint('homepageRebuilt');
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
@@ -352,7 +345,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 ShowCaseView(
-                                   shapeBorder: CircleBorder(),
+                                   shapeBorder: const CircleBorder(),
                                   globalKey: weatherKey,
                                   title: "Nature's Aura",
                                   description: 'Check out weather conditions around you',
@@ -410,7 +403,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                       Navigator.pop(context);
                                                                       fetchWeather();
                                                                     });
-                                                                  }, child: Text('Enable Location'))
+                                                                  }, child: const Text('Enable Location'))
                                                                 ],
                                                               )
                                                                   :(weatherData['weather'] == null)
@@ -488,7 +481,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 Row(
                                   children: [
                                     ShowCaseView(
-                                       shapeBorder: CircleBorder(),
+                                       shapeBorder: const CircleBorder(),
                                         globalKey: themeKey,
                                         title: 'Essence',
                                         description: 'Change App Theme',
@@ -497,7 +490,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                           await videoPlayerController.pause();
                                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ThemePicker())).then((value) => initVideo());
                                           },
-                                          child: ThemeButtonAnimation(),
+                                          child: const ThemeButtonAnimation(),
                                         )
                                     ),
                                     const SizedBox(width: 10,),
@@ -665,146 +658,40 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Row(
                                 children: [
-                                  Visibility(
-                                    visible: switches['wellness'] == null || switches['wellness'],
-                                    child: Expanded(child: Column(
-                                      children: [
-                                        ShowCaseView(
-                                           shapeBorder: CircleBorder(),
-                                          globalKey: wellnessKey,
-                                          title: 'Wellness',
-                                          description: 'Compilation of Soothing Audios',
-                                          child: GestureDetector(
-                                            onTap: (){ HapticFeedback.selectionClick();
-                                            MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                            videoPlayerController.pause();
-                                            setState(() {
-                                              onThisPage = false;
-                                            });
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Wellness())).then((value) {
-                                              setState(() {
-                                                onThisPage = true;
-                                              });
-                                              if(!player.audioPlayer.playing){
-                                                videoPlayerController.play();
-                                              }
-                                            });
-                                            },
-                                            child: CircleAvatar(
-                                              backgroundColor: Theme
-                                                  .of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.35),
-                                              radius: 33,
-                                              child: Components(context).myIconWidget(icon: MyIcons.wellness,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Text('Wellness',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
-                                      ],
-                                    )),
+                                  customRoundButton(
+                                      icon: MyIcons.wellness,
+                                      title: 'Wellness',
+                                      key: wellnessKey,
+                                      visible: switches['wellness'],
+                                      showcaseDesc: 'Compilation of soothing audios',
+                                      route: const Wellness()
                                   ),
-                                  Visibility(
-                                    visible: switches['harmony'] == null ||switches['harmony'],
-                                    child: Expanded(child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){ HapticFeedback.selectionClick();
-                                          videoPlayerController.pause();
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SoundsList())).then((value) => videoPlayerController.play());
-                                          },
-                                          child: CircleAvatar(
-                                            backgroundColor: Theme
-                                                .of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.35),
-                                            radius: 33,
-                                            child: Components(context).myIconWidget(icon: MyIcons.harmony,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Text('Harmonies',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
-                                      ],
-                                    )),
+                                  customRoundButton(
+                                      icon: MyIcons.harmony,
+                                      title: 'Harmonies',
+                                      visible: switches['harmony'],
+                                      route: const SoundsList()
                                   ),
-                                  Visibility(
-                                    visible: switches['knowYourself'] == null || switches['knowYourself'],
-                                    child: Expanded(
-                                        child: Column(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: (){ HapticFeedback.selectionClick();},
-                                              child: CircleAvatar(
-                                                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.35),
-                                                radius: 33,
-                                                child: Components(context).myIconWidget(icon: MyIcons.knowYourself,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10,),
-                                            Text('Know Yourself',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),maxLines: 1,)
-                                          ],
-                                        )),
+                                  customRoundButton(
+                                      icon: MyIcons.knowYourself,
+                                      title: 'Know Yourself',
+                                      visible: switches['knowYourself'],
+                                      route: const KnowYourselfResults()
                                   ),
-                                  Visibility(
-                                    visible: switches['meditation'] == null || switches['meditation'],
-                                    child: Expanded(child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){ HapticFeedback.selectionClick();
-                                            // videoPlayerController.pause();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DailyYoga()));
-                                          },
-                                          child: CircleAvatar(
-                                            backgroundColor: Theme
-                                                .of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.35),
-                                            radius: 33,
-                                            child: Components(context).myIconWidget(icon: MyIcons.meditation,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Text('Daily Yoga',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
-                                      ],
-                                    )),
+
+                                  customRoundButton(
+                                      icon: MyIcons.breathe,
+                                      title: 'Breathe',
+                                      visible: switches['breathe'],
+                                      key: breathingKey,
+                                      showcaseDesc: 'Breathing Exercise for all',
+                                      route: const BreatheCat()
                                   ),
-                                  Visibility(
-                                    visible: switches['breathe'] == null ||switches['breathe'],
-                                    child: Expanded(child: Column(
-                                      children: [
-                                        ShowCaseView(
-                                          onTap: (){
-                                            draggableScrollableController.animateTo(0.85, duration: const Duration(milliseconds: 250), curve: Curves.linear);
-                                          },
-                                          shapeBorder: const CircleBorder(),
-                                           //shapeBorder: RoundedRectangleBorder(side: BorderSide(),borderRadius: BorderRadius.circular(50)),
-                                          globalKey: breathingKey,
-                                          title: 'Breathe',
-                                          description: 'Breathing Exercises for Everything' ,
-                                          child: GestureDetector(
-                                            onTap: (){ HapticFeedback.selectionClick();
-                                            videoPlayerController.pause();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BreatheCat())).then((value) =>videoPlayerController.play());
-                                            },
-                                            child: CircleAvatar(
-                                              backgroundColor: Theme
-                                                  .of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.35),
-                                              radius: 33,
-                                              child: Components(context).myIconWidget(icon: MyIcons.breathe,color: themeData.textColor.withOpacity(0.9),size: 30),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Text('Breathe',style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
-                                      ],
-                                    )),
+                                  customRoundButton(
+                                      icon: MyIcons.candle,
+                                      title: 'Daily yoga',
+                                      visible: switches['meditation'],
+                                      route: const DailyYoga()
                                   ),
                                 ],
                               ),
@@ -898,6 +785,52 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                               ),
                             ),
                             const SizedBox(height: 20,),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                children: [
+                                  customRoundButton(
+                                      icon: MyIcons.diary,
+                                      title: 'My Diary',
+                                      visible: true,
+                                      route: const MyDiary()
+                                  ),
+                                  customRoundButton(
+                                      icon: MyIcons.games,
+                                      title: 'Games',
+                                      visible: true,
+                                      route: const GamesList()
+                                  ),
+                                  customRoundButton(
+                                      icon: MyIcons.podcast,
+                                      title: 'Podcast',
+                                      visible: true,
+                                      route: const GamesList()
+                                  ),
+
+                                  customRoundButton(
+                                      icon: MyIcons.community,
+                                      title: 'Community',
+                                      visible: true,
+                                      route: const Communities()
+                                  ),
+                                  customRoundButton(
+                                      icon: MyIcons.talkToMe,
+                                      title: 'Talk to me',
+                                      visible: true,
+                                      route: const TalkToMeResults()
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10,),
+                            Divider(
+                              thickness: 0.2,
+                              color: themeData.textColor.withOpacity(0.5),
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                            const SizedBox(height: 10,),
                             ///wellness listview
                             Column(
                               children: [
@@ -916,7 +849,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                         setState(() {
                                           onThisPage = false;
                                         });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wellness())).then((value) {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Wellness())).then((value) {
                                           setState(() {
                                             onThisPage = true;
                                           });
@@ -1091,7 +1024,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                     right: 0,
                                                     left: 0,
                                                     child: ClipRRect(
-                                                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                                                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
 
                                                       child: Container(
                                                         padding: const EdgeInsets.all(10),
@@ -1339,6 +1272,51 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
         ),
       );
     }
+    );
+  }
+
+  Widget customRoundButton({required String icon, required String title,  GlobalKey? key, required bool? visible, String showcaseDesc = '',required Widget route}){
+    ThemeProvider themeData = Provider.of<ThemeProvider>(context,listen: false);
+    var button = GestureDetector(
+      onTap: (){ HapticFeedback.selectionClick();
+      MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+      videoPlayerController.pause();
+      setState(() {
+        onThisPage = false;
+      });
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => route)).then((value) {
+        setState(() {
+          onThisPage = true;
+        });
+        if(!player.audioPlayer.playing){
+          videoPlayerController.play();
+        }
+      });
+      },
+      child: CircleAvatar(
+        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.35),
+        radius: 33,
+        child: Components(context).myIconWidget(icon: icon,color: themeData.textColor.withOpacity(0.9),size: 30),
+      ),
+    );
+    return Visibility(
+      visible: visible == null || visible,
+      child: Expanded(
+          child: Column(
+            children: [
+              (key == null)
+                  ? button
+                  :ShowCaseView(
+                shapeBorder: const CircleBorder(),
+                globalKey: key,
+                title: title,
+                description: showcaseDesc,
+                child: button
+              ),
+              const SizedBox(height: 10,),
+              Text(title,style: TextStyle(fontSize: 11,color: themeData.textColor.withOpacity(0.85)),)
+            ],
+          )),
     );
   }
 }

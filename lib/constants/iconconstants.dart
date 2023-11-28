@@ -1,17 +1,24 @@
 
+// ignore_for_file: constant_identifier_names
+
 class MyIcons{
   static const both = 'assets/icons/both.svg';
+  static const backward_skip = 'assets/icons/backward_skip.svg';
   static const breathe = 'assets/icons/breathe.svg';
   static const camera = 'assets/icons/camera.svg';
   static const candle = 'assets/icons/candle.svg';
+  static const community = 'assets/icons/community.svg';
   static const delete = 'assets/icons/delete.svg';
+  static const diary = 'assets/icons/diary.svg';
   static const download = 'assets/icons/download.svg';
   static const edit = 'assets/icons/edit.svg';
   static const exhale = 'assets/icons/exhale.svg';
   static const exhale_mouth = 'assets/icons/exhale_mouth.svg';
   static const favorite = 'assets/icons/favorite.svg';
   static const favorite_filled = 'assets/icons/favorite_filled.svg';
+  static const forward_skip = 'assets/icons/forward_skip.svg';
   static const gallery = 'assets/icons/gallery.svg';
+  static const games = 'assets/icons/games.svg';
   static const harmony = 'assets/icons/harmony.svg';
   static const home = 'assets/icons/home.svg';
   static const inhale = 'assets/icons/inhale.svg';
@@ -25,6 +32,7 @@ class MyIcons{
   static const menu = 'assets/icons/menu.svg';
   static const notification = 'assets/icons/notification.svg';
   static const pause_circle = 'assets/icons/pause_circle.svg';
+  static const podcast = 'assets/icons/podcast.svg';
   static const premium = 'assets/icons/premium.svg';
   static const profile = 'assets/icons/profile.svg';
   static const quotes = 'assets/icons/quotes.svg';
@@ -33,6 +41,7 @@ class MyIcons{
   static const settings = 'assets/icons/settings.svg';
   static const share = 'assets/icons/share.svg';
   static const sound = 'assets/icons/sound.svg';
+  static const talkToMe = 'assets/icons/talkToMe.svg';
   static const terms = 'assets/icons/terms.svg';
   static const theme = 'assets/icons/theme.svg';
   static const timer = 'assets/icons/timer.svg';

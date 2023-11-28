@@ -112,55 +112,55 @@ class MyApp extends StatelessWidget {
                           fontSize: 57,
                           color: themeProvider.textColor),
                     ),
-                    displayMedium: GoogleFonts.raleway(
+                    displayMedium: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 45,
                           color: themeProvider.textColor),
                     ),
-                    displaySmall: GoogleFonts.raleway(
+                    displaySmall: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 36,
                           color: themeProvider.textColor),
                     ),
-                    headlineLarge: GoogleFonts.raleway(
+                    headlineLarge: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 32,
                           color: themeProvider.textColor),
                     ),
-                    headlineMedium: GoogleFonts.raleway(
+                    headlineMedium: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 28,
                           color: themeProvider.textColor),
                     ),
-                    headlineSmall: GoogleFonts.raleway(
+                    headlineSmall: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 24,
                           color: themeProvider.textColor),
                     ),
-                    titleLarge: GoogleFonts.raleway(
+                    titleLarge: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
                           color: themeProvider.textColor),
                     ),
-                    titleMedium: GoogleFonts.raleway(
+                    titleMedium: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                           color: themeProvider.textColor),
                     ),
-                    titleSmall: GoogleFonts.raleway(
+                    titleSmall: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                           color: themeProvider.textColor),
                     ),
-                    labelLarge: GoogleFonts.raleway(
+                    labelLarge: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -172,25 +172,25 @@ class MyApp extends StatelessWidget {
                           fontSize: 12,
                           color: themeProvider.textColor),
                     ),
-                    labelSmall: GoogleFonts.raleway(
+                    labelSmall: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
                           color: themeProvider.textColor),
                     ),
-                    bodyLarge: GoogleFonts.raleway(
+                    bodyLarge: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
                           color: themeProvider.textColor),
                     ),
-                    bodyMedium: GoogleFonts.raleway(
+                    bodyMedium: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
                           color: themeProvider.textColor),
                     ),
-                    bodySmall: GoogleFonts.raleway(
+                    bodySmall: GoogleFonts.quattrocentoSans(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 12,

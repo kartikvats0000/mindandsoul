@@ -1,20 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favourites.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../constants/iconconstants.dart';
 import '../../../../provider/userProvider.dart';
-import '../../content/content_list_screen/gridA.dart';
-import '../../content/content_list_screen/gridB.dart';
-import '../../content/content_list_screen/listA.dart';
-import '../../content/content_list_screen/listB.dart';
 
 class SearchContent extends StatefulWidget {
   const SearchContent({super.key});
@@ -102,6 +95,13 @@ class _SearchContentState extends State<SearchContent> with AutomaticKeepAliveCl
                   },
                   textInputAction: TextInputAction.search,
                   decoration:  InputDecoration(
+                /*    suffixIcon: Offstage(
+                      offstage: searchController.text.isEmpty,
+                      child: GestureDetector(
+                        onTap: () => searchController.clear(),
+                        child:  Icon(Icons.clear,color: theme.textColor,),
+                      ),
+                    ),*/
                     prefixIcon: Icon(Icons.search_rounded,color: theme.textColor.withOpacity(0.7),),
                       hintText: "I'm looking for..."
                   ),

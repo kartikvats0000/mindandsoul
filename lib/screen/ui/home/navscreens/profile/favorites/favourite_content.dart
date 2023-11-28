@@ -199,7 +199,6 @@ class _FavouriteContentState extends State<FavouriteContent> {
                                               fontSize: 14,
                                           ),
                                             maxLines: 1,
-
                                           ),
                                           const SizedBox(height: 8,),
                                           Components(context).tags(

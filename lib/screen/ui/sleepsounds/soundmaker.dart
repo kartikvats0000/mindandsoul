@@ -37,7 +37,7 @@ class _SoundMixerState extends State<SoundMixer> {
   bool allplaying = false;
 
   pauseAll(){
-    DateTime start = DateTime.now();
+//    DateTime start = DateTime.now();
 
     for(int i = 0;i<audioplayers.length;i++){
       if(audioplayers[i].player.state == PlayerState.playing){

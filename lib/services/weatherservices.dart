@@ -14,7 +14,7 @@ class WeatherServices{
     };
 
     final url = Uri.https(baseurl, '/v1/current.json', params);
-    print('my url' + url.toString());
+    print('my url$url');
     try{
 
       http.Response response = await http.get(url);

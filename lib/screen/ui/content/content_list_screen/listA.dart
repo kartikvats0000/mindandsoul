@@ -68,7 +68,7 @@ class _ListviewAState extends State<ListviewA> {
     return Consumer<ThemeProvider>(
         builder: (context,theme,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: Components(context).myAppBar(widget.title),
+          appBar: Components(context).myAppBar(title : widget.title),
           body: Container(
 
             height: MediaQuery.of(context).size.height,

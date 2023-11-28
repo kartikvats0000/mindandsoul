@@ -27,7 +27,7 @@ class _ThemePickerState extends State<ThemePicker> {
     setState(() {
       loading = true;
     });
-    var data =  await Services('').getThemes();
+    var data =  await Services(user.token).getThemes();
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
     await theme.clearThemes();
     await theme.addThemes(data);
@@ -42,7 +42,7 @@ class _ThemePickerState extends State<ThemePicker> {
          backgroundColor: themeData.themeColorA,
         //extendBody: true,
         //extendBodyBehindAppBar: true,
-        appBar: Components(context).myAppBar('Essence'),
+        appBar: Components(context).myAppBar(title: 'Essence'),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
