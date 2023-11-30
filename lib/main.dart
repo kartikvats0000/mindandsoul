@@ -65,9 +65,9 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
         return MaterialApp(
             theme: ThemeData(
+
                 useMaterial3: true,
-                colorScheme:
-                    ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
+                    colorScheme : ColorScheme.fromSeed(seedColor: themeProvider.themeColorA),
                 sliderTheme: const SliderThemeData(
                   // overlayShape: SliderComponentShape.noOverlay,
                   // activeTrackColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
@@ -195,7 +195,8 @@ class MyApp extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
                           color: themeProvider.textColor),
-                    ))),
+                    ))
+            ),
             debugShowCheckedModeBanner: false,
             title: 'Brain N Soul',
             home: const Splash());
@@ -203,3 +204,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+

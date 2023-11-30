@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
@@ -119,6 +121,7 @@ class _LoginState extends State<Login> {
       var data = await Services('').login({
         'name' : googleUser.displayName,
         'email' : googleUser.email,
+        'profile_picture' : googleUser.photoUrl,
         'deviceId' : user.deviceId,
         'deviceType' : (Platform.isAndroid)?'android':'ios',
         'fcmToken' : user.fcmToken
@@ -152,77 +155,116 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xff576c21),
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      body: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff576c21))
-        ),
-        child: Builder(
-          builder: (context) {
-            return Stack(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.45,width: double.infinity,
-                        child: Image.asset('assets/login/login.jpg',fit: BoxFit.cover,)),
-                    Expanded(child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xff576c21),
-                              Color(0xff304B16)
-                            ]),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color(0xff576c21),
-                              blurRadius: 70,
-                              spreadRadius: 85,
-                              blurStyle: BlurStyle.normal
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              children: [
-                                Text('Enter the Sanctuary',style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                  fontSize: 40,
-                                  color: Colors.white.withOpacity(0.85)
-                                ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: Text('Unlock Inner Journey, Access Grace',textAlign: TextAlign.center,style: TextStyle(
-                                    fontSize: 16.5,
-                                      color: Colors.white.withOpacity(0.75),
-                                      height:2),)
-                                ),
-                              ],
+    log(Theme.of(context).textTheme.toString());
+    return Consumer<User>(
+      builder: (context,user,child) =>
+       Scaffold(
+        backgroundColor: Color(0xff576c21),
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        body: Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff576c21))
+          ),
+          child: Builder(
+            builder: (context) {
+              return Stack(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.45,width: double.infinity,
+                          child: Image.asset('assets/login/login.jpg',fit: BoxFit.cover,)),
+                      Expanded(child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xff576c21),
+                                Color(0xff304B16)
+                              ]),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color(0xff576c21),
+                                blurRadius: 70,
+                                spreadRadius: 85,
+                                blurStyle: BlurStyle.normal
+                            )
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                children: [
+                                  Text(user.languages[user.selectedLanguage]['login_screen']['title'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                    fontSize: 40,
+                                    color: Colors.white.withOpacity(0.85)
+                                  ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Text(user.languages[user.selectedLanguage]['login_screen']['body'],textAlign: TextAlign.center,style: TextStyle(
+                                      fontSize: 16.5,
+                                        color: Colors.white.withOpacity(0.75),
+                                        height:2),)
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Visibility(
-                                  visible: Platform.isIOS,
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 7),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Visibility(
+                                    visible: Platform.isIOS,
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(horizontal: 7),
+                                      height: kToolbarHeight + 5,
+                                      width: double.infinity,
+                                      child: FilledButton(
+                                        style: ButtonStyle(
+                                          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15)
+                                          )),
+                                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                                (Set<MaterialState> states) {
+                                              var colorr =Color(0xff161F17).withOpacity(0.4);
+                                              if (states.contains(MaterialState.pressed))
+                                                colorr = Color(0xff222e23).withOpacity(0.4);
+                                              else if (states.contains(MaterialState.disabled))
+                                                colorr = Theme.of(context).colorScheme.primary.withOpacity(0.65);
+                                              return colorr;// Use the component's default.
+                                            },
+                                          ),
+                                        ),
+                                        onPressed: (){
+                                          Components(context).showErrorSnackBar('Could not connect you');
+                                        },
+                                        child:
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset('assets/login/apple.svg',height: 28,width: 28,color: Colors.white,),
+                                            SizedBox(width: 10,),
+                                            Text('Connect with Apple',
+                                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Colors.white,)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:EdgeInsets.fromLTRB(7,25,7,0),
                                     height: kToolbarHeight + 5,
                                     width: double.infinity,
                                     child: FilledButton(
@@ -241,75 +283,40 @@ class _LoginState extends State<Login> {
                                           },
                                         ),
                                       ),
-                                      onPressed: (){
-                                        Components(context).showErrorSnackBar('Could not connect you');
-                                      },
+                                      onPressed: googleSignin,
                                       child:
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          SvgPicture.asset('assets/login/apple.svg',height: 28,width: 28,color: Colors.white,),
-                                          SizedBox(width: 10,),
-                                          Text('Connect with Apple',
+                                          SvgPicture.asset('assets/login/google.svg',height: 28,width: 28,color: Colors.white,),
+                                          const SizedBox(width: 10,),
+                                          Text(user.languages[user.selectedLanguage]['login_screen']['button'],
                                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Colors.white,)),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  margin:EdgeInsets.fromLTRB(7,25,7,0),
-                                  height: kToolbarHeight + 5,
-                                  width: double.infinity,
-                                  child: FilledButton(
-                                    style: ButtonStyle(
-                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15)
-                                      )),
-                                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                            (Set<MaterialState> states) {
-                                          var colorr =Color(0xff161F17).withOpacity(0.4);
-                                          if (states.contains(MaterialState.pressed))
-                                            colorr = Color(0xff222e23).withOpacity(0.4);
-                                          else if (states.contains(MaterialState.disabled))
-                                            colorr = Theme.of(context).colorScheme.primary.withOpacity(0.65);
-                                          return colorr;// Use the component's default.
-                                        },
-                                      ),
-                                    ),
-                                    onPressed: googleSignin,
-                                    child:
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        SvgPicture.asset('assets/login/google.svg',height: 28,width: 28,color: Colors.white,),
-                                        SizedBox(width: 10,),
-                                        Text('Connect with Google',
-                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Colors.white,)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                //SizedBox(height: 25,),
+                                  //SizedBox(height: 25,),
 
-                              ],
-                            )
-                          ),
-                        ],
+                                ],
+                              )
+                            ),
+                          ],
+                        )
                       )
-                    )
-                    )
-                  ],
-                ),
-                // Positioned(
-                //   top: MediaQuery.of(context).size.height/2 - 150,
-                //     right: 0,
-                //     left: 0,
-                //     child: Image.asset('assets/logo/mindnsoul_white.png',height: 100,width: 100,)
-                // )
-              ],
-            );
-          }
+                      )
+                    ],
+                  ),
+                  // Positioned(
+                  //   top: MediaQuery.of(context).size.height/2 - 150,
+                  //     right: 0,
+                  //     left: 0,
+                  //     child: Image.asset('assets/logo/mindnsoul_white.png',height: 100,width: 100,)
+                  // )
+                ],
+              );
+            }
+          ),
         ),
       ),
     );

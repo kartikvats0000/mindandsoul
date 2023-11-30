@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/bottomNavigationbarScreen.dart';
+import 'package:mindandsoul/screen/ui/selectlanguage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -110,6 +111,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var data = sharedPreferences.getString('loginData');
+    var lang = sharedPreferences.getString('lang');
+
+    await user.getAllLanguages();
 
     /*notificationService.requestNotificationPermission();
     notificationService.firebaseInit(context);
@@ -120,13 +124,26 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
     });*/
    // await user.updateSplashData(deviceId, fcmToken);
     if (data == null) {
-      Timer(
-          const Duration(milliseconds: 6200),
-              () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: ((context) => const Login()))));
-    } else {
+      if(lang == null){
+        user.changeUserLanguage('en');
+        Timer(
+            const Duration(milliseconds: 6200),
+                () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) =>  SelectLanguage()))));
+      }
+      else{
+        user.changeUserLanguage(lang);
+        Timer(
+            const Duration(milliseconds: 6200),
+                () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => const Login()))));
+      }
+    }
+    else {
       print(data);
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);

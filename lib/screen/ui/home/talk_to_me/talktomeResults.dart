@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
+import 'package:mindandsoul/screen/ui/home/talk_to_me/talktomecancellation.dart';
 import 'package:mindandsoul/screen/ui/home/talk_to_me/talktomeintro.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
@@ -132,14 +133,16 @@ class _TalkToMeResultsState extends State<TalkToMeResults> {
                   ),
                   const SizedBox(height: 15,),
                   Visibility(
-                    visible: data[index]['status'] != 'Completed' && data[index]['status'] != 'Rejected',
+                    visible: data[index]['status'] != 'Completed' && data[index]['status'] != 'Rejected' && data[index]['status'] != 'Cancelled',
                     child: TextButton(
-                        onPressed: (){},
-                        child: Text('Cancel'),
+                        onPressed: (){
+                          Navigator.of(context).push(bottomToTopRoute(TalkToMeCancellation(talkId: data[index]['_id'],))).then((value) => getData());
+                        },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         foregroundColor: Colors.redAccent
                       ),
+                        child: const Text('Cancel'),
                     ),
                   )
                 ],

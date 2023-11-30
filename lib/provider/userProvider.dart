@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:mindandsoul/services/services.dart';
 
 class User extends ChangeNotifier{
+
+
 
   String id = '';
   bool isLogged = false;
@@ -13,6 +17,20 @@ class User extends ChangeNotifier{
   String token = '';
   String deviceId='';
   String fcmToken = '';
+  String selectedLanguage = 'en';
+
+  Map languages = {};
+
+  getAllLanguages ()async{
+    languages = await Services('').getLanguagesContent();
+    log(languages.toString());
+    notifyListeners();
+  }
+
+  changeUserLanguage(String code){
+    selectedLanguage = code;
+    notifyListeners();
+  }
 
   updateUserData(String _id,String _name, String _email,String _country,String _profilePicture, String _token){
     id = _id;

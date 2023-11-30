@@ -57,6 +57,29 @@ class Services {
     }
   }
 
+  Future<dynamic> getSupportedLanguages()async{
+    final uri = Uri.parse('${baseurl}lang');
+
+    http.Response response = await http.get(uri,headers: {
+      'authorization' : 'Bearer $token'
+    });
+    if (response.statusCode == 200){
+      var data = json.decode(response.body);
+      return data['data'];
+    }
+  }
+
+  Future<dynamic> getLanguagesContent()async{
+    final uri = Uri.parse('https://brainsoul.s3.ap-south-1.amazonaws.com/language/language.json');
+
+    http.Response response = await http.get(uri);
+    log('res ${response.body}');
+    if (response.statusCode == 200){
+      var data = json.decode(utf8.decode(response.bodyBytes));
+      return data;
+    }
+  }
+
   Future<dynamic> getHomeData(String userId)async{
     final uri = Uri.parse('${baseurl}home?userId=$userId');
 
@@ -413,6 +436,23 @@ class Services {
     }
   }
 
+  Future<dynamic> getSubscriptions()async{
+    final uri = Uri.parse('${baseurl}plan');
+
+    http.Response response = await http.get(uri,
+        headers: {
+          'authorization' : 'Bearer $token',
+
+        }
+    );
+
+    var data = json.decode(response.body);
+    print(data);
+    if(response.statusCode == 200){
+      return data['data'];
+    }
+  }
+
 
   ///PUT
 
@@ -428,6 +468,45 @@ class Services {
         }
     );
     var data = json.decode(response.body);
+    if(response.statusCode == 200){
+      return data;
+    }
+  }
+
+  Future<dynamic> cancelTalktome(Map<String,dynamic> params) async {
+    final uri = Uri.parse('${baseurl}talk');
+
+    http.Response response = await http.put(
+        uri,
+        body: params,
+        headers: {
+          'authorization' : 'Bearer $token',
+        //  'Content-Type': 'application/json'
+
+        }
+    );
+    var data = json.decode(response.body);
+    print(response.statusCode);
+    if(response.statusCode == 200){
+      return data;
+    }
+  }
+
+  Future<dynamic> themeCounter(String themeId) async {
+    final uri = Uri.parse('${baseurl}theme/counter');
+
+    http.Response response = await http.put(
+        uri,
+        body: {
+          'themeId' : themeId
+        },
+        headers: {
+          'authorization' : 'Bearer $token',
+        //  'Content-Type': 'application/json'
+        }
+    );
+    var data = json.decode(response.body);
+    print(response.statusCode);
     if(response.statusCode == 200){
       return data;
     }

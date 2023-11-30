@@ -10,6 +10,7 @@ import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/downloads.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/editprofile.dart';
+import 'package:mindandsoul/screen/ui/home/navscreens/profile/subscriptions.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favourites.dart';
 import 'package:mindandsoul/services/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -123,12 +124,12 @@ class _ProfileState extends State<Profile> {
                                 child: ListTile(
                                   onTap: () {
                                     HapticFeedback.selectionClick();
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Downloads()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Subscriptions()));
                                   },
                                   iconColor: Theme.of(context).colorScheme.inversePrimary,
                                   textColor: theme.textColor.withOpacity(0.75),
-                                  leading: const Icon(Icons.download_outlined),
-                                  title: const Text('Downloads'),
+                                  leading:  Components(context).myIconWidget(icon: MyIcons.premium,color: Theme.of(context).colorScheme.inversePrimary),
+                                  title: const Text('Get Plus'),
                                 ),
                               ),
                               Expanded(

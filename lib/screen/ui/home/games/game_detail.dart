@@ -4,6 +4,7 @@ import 'package:like_button/like_button.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/screen/ui/home/games/game_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../constants/iconconstants.dart';
 import '../../../../provider/userProvider.dart';
@@ -13,8 +14,22 @@ class GameDetail extends StatelessWidget {
   final Map data;
   const GameDetail({super.key,required this.data});
 
+
+  Future<void> _launchUrl(String url) async {
+    Uri _url = Uri.parse(url);
+    if (!await launchUrl(
+        _url,
+        mode: LaunchMode.inAppWebView,
+        webOnlyWindowName: "Game"
+
+    )) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       extendBodyBehindAppBar: true,
@@ -113,7 +128,8 @@ class GameDetail extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-              Navigator.of(context).push(fadeRoute(GameScreen(url : data['url'])));
+              _launchUrl(data['url']);
+              //Navigator.of(context).push(fadeRoute(GameScreen(url : data['url'])));
             },
             child: Container(
               margin: const EdgeInsets.all(10),

@@ -6,6 +6,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/home/games/game_detail.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../services/services.dart';
 import 'game_screen.dart';
@@ -61,6 +62,18 @@ class _GamesListState extends State<GamesList> {
     // TODO: implement initState
     getData();
     super.initState();
+  }
+
+  Future<void> _launchUrl(String url) async {
+    Uri _url = Uri.parse(url);
+    if (!await launchUrl(
+        _url,
+        mode: LaunchMode.inAppWebView,
+      webOnlyWindowName: "Game"
+
+    )) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   @override
@@ -138,7 +151,8 @@ class _GamesListState extends State<GamesList> {
                             Expanded(child: Text(data[index]['title'],style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),)),
                             GestureDetector(
                                onTap: (){
-                                 Navigator.of(context).push(fadeRoute(GameScreen(url : data[index]['url'])));
+                                 _launchUrl(data[index]['url']);
+                                 //Navigator.of(context).push(fadeRoute(GameScreen(url : data[index]['url'])));
                                  },
                                child:  const CircleAvatar(
                                  backgroundColor: Colors.white60,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../constants/iconconstants.dart';
 import '../../../../helper/components.dart';
 import '../../../../provider/themeProvider.dart';
+import '../../../../provider/userProvider.dart';
 
 class ThemePreview extends StatefulWidget {
   final dynamic themeDetails;
@@ -216,6 +218,7 @@ class _ThemePreviewState extends State<ThemePreview> {
                                     onPressed: (themeData.id == widget.themeDetails['_id'])
                                               ?null
                                               :()async{
+                                      User user = Provider.of<User>(context,listen: false);
                                           /*  setState(() {
                                               buttonLoad = true;
                                             });*/
@@ -237,7 +240,7 @@ class _ThemePreviewState extends State<ThemePreview> {
                                                 MaterialPageRoute(builder: (context) => const BottomNavScreen()),
                                                     (Route<dynamic> route) => false
                                             );*/
-
+                                            await Services(user.token).themeCounter(widget.themeDetails['_id']);
                                             Timer(const Duration(milliseconds: 1000), () {
                                               //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>  const BottomNavScreen()), (route) => true);
                                               Navigator.pop(context);

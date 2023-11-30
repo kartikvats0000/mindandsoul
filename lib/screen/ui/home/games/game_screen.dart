@@ -17,6 +17,7 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     // TODO: implement initState
     webViewController = WebViewController()
+
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.grey.shade200)
       ..setNavigationDelegate(

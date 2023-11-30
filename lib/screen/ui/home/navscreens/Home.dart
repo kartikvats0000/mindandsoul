@@ -680,6 +680,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                   ),
 
                                   customRoundButton(
+                                    showCaseOnTap: (){
+                                      draggableScrollableController.animateTo(0.95, duration: const Duration(milliseconds: 300), curve: Curves.ease);
+                                    },
                                       icon: MyIcons.breathe,
                                       title: 'Breathe',
                                       visible: switches['breathe'],
@@ -1275,7 +1278,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     );
   }
 
-  Widget customRoundButton({required String icon, required String title,  GlobalKey? key, required bool? visible, String showcaseDesc = '',required Widget route}){
+  Widget customRoundButton({required String icon, required String title,  GlobalKey? key, required bool? visible, String showcaseDesc = '',required Widget route,VoidCallback? showCaseOnTap}){
     ThemeProvider themeData = Provider.of<ThemeProvider>(context,listen: false);
     var button = GestureDetector(
       onTap: (){ HapticFeedback.selectionClick();
@@ -1307,6 +1310,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
               (key == null)
                   ? button
                   :ShowCaseView(
+                onTap: showCaseOnTap ?? (){},
                 shapeBorder: const CircleBorder(),
                 globalKey: key,
                 title: title,
