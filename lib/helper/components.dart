@@ -10,6 +10,7 @@ import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/iconconstants.dart';
+import '../provider/userProvider.dart';
 
 export 'playersheet.dart';
 export 'contentviewroute.dart';
@@ -130,7 +131,9 @@ class Components{
     );
   }
 
-  Widget Loader({String title = 'Patience Breeds\nPeace',required Color textColor}){
+  Widget Loader({String? title ,required Color textColor}){
+    User user = Provider.of<User>(context,listen: false);
+    title = user.languages[user.selectedLanguage]['component_class']['loader_text']??'Patience Breeds\nPeace';
     return Center(
         child:
         Column(
@@ -138,7 +141,7 @@ class Components{
           children: [
             SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 15,),
-            Text(title,style: TextStyle(
+            Text(title!,style: TextStyle(
                 color: textColor
             ),textAlign: TextAlign.center,)
           ],

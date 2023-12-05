@@ -32,6 +32,20 @@ class _DailyYogaState extends State<DailyYoga> {
 
   List data = [];
 
+  void _showDisclaimerDialog(BuildContext context) {
+    User user = Provider.of<User>(context,listen: false);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Components(context).confirmationDialog(
+            context, title: user.languages[user.selectedLanguage]['breathe_screen']['disclaimer'] ?? user.languages["en"]['breathe_screen']['disclaimer'],
+            message: user.languages[user.selectedLanguage]['breathe_screen']['disclaimer_message'] ?? user.languages["en"]['breathe_screen']['disclaimer_message'],
+
+            actions: [FilledButton.tonal(onPressed: (){Navigator.pop(context);}, child: Text(user.languages[user.selectedLanguage]['breathe_screen']['disclaimer_close'] ?? user.languages["en"]['breathe_screen']['disclaimer_close']))]);
+      },
+    );
+  }
+
   getData()async{
     User user = Provider.of<User>(context,listen: false);
     var _data = await Services(user.token).getYogaList();
@@ -61,8 +75,8 @@ class _DailyYogaState extends State<DailyYoga> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context,theme,_)
+    return Consumer2<ThemeProvider,User>(
+      builder: (context,theme,user,_)
       => Scaffold(
         backgroundColor: theme.themeColorA,
         extendBodyBehindAppBar: true,
@@ -92,9 +106,13 @@ class _DailyYogaState extends State<DailyYoga> {
                 SizedBox(
                   height: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
                 ),
-                Text('Daily Yoga', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
+                Text(
+                    user.languages[user.selectedLanguage]['home_screen']['daily_yoga_top'] ?? user.languages['en']['home_screen']['daily_yoga_top'],
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
                 const SizedBox(height: 20,),
-                Text('Elevate your day with daily yoga. Discover a variety of routines designed to strengthen your body and calm your mind...', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                Text(
+                  '${ user.languages[user.selectedLanguage]['custom_round_button_class']['daily_yoga_desc'] ?? user.languages['en']['custom_round_button_class']['daily_yoga_desc']}',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: theme.textColor.withOpacity(0.75),
                     fontSize: 14.5
                 ),),
@@ -173,9 +191,11 @@ class _DailyYogaState extends State<DailyYoga> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-               //       _showDisclaimerDialog(context); // Show the disclaimer dialog.
+                      _showDisclaimerDialog(context); // Show the disclaimer dialog.
                     },
-                    child: Text('Disclaimer', style: Theme.of(context).textTheme.bodyMedium), // Style this link accordingly.
+                    child: Text(
+                        user.languages[user.selectedLanguage]['breathe_screen']['disclaimer'] ?? user.languages['en']['breathe_screen']['disclaimer'],
+                        style: Theme.of(context).textTheme.bodyMedium), // Style this link accordingly.
                   ),
                 ),
               ],

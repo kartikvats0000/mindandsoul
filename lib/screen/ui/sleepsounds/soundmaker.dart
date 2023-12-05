@@ -102,24 +102,29 @@ class _SoundMixerState extends State<SoundMixer> {
         builder: (context) =>
          WillPopScope(
           onWillPop: ()async{
+            User user = Provider.of<User>(context,listen: false);
             if(audioplayers.isNotEmpty){
               showDialog(context: context, builder: (context) => Components(context).confirmationDialog(context,
-                  title: 'Are you sure you want to leave this page?',
-                  message: 'This will stop the sound and discard this Mix',
+                  title: user.languages[user.selectedLanguage]['custom_round_button_class']['dialog_title_harmony'] ?? user.languages['en']['custom_round_button_class']['dialog_title_harmony']  ,
+                  message: user.languages[user.selectedLanguage]['custom_round_button_class']['dialog_message_harmony'] ?? user.languages['en']['custom_round_button_class']['dialog_message_harmony'],
                   actions: [
                     FilledButton.tonal(onPressed: (){
                       setState(() {
                         cangoback = false;
                         Navigator.pop(context);
                       });
-                    }, child: const Text('Stay here')),
+                    }, child:  Text(
+                        user.languages[user.selectedLanguage]['custom_round_button_class']['stay_here'] ?? user.languages['en']['custom_round_button_class']['stay_here']
+                    )),
                     FilledButton.tonal(onPressed: (){
                       setState(() {
                         cangoback = true;
                         Navigator.pop(context);
                         Navigator.pop(context);
                       });
-                    }, child: const Text('Leave')),
+                    }, child: Text(
+                        user.languages[user.selectedLanguage]['custom_round_button_class']['leave'] ?? user.languages['en']['custom_round_button_class']['leave']
+                    )),
                   ]
               )
               );
@@ -129,8 +134,8 @@ class _SoundMixerState extends State<SoundMixer> {
               return true;
             }
           },
-          child: Consumer<ThemeProvider>(
-            builder: (context,themeData,child) =>
+          child: Consumer2<ThemeProvider,User>(
+            builder: (context,themeData,user,child) =>
                 Builder(
                   builder: (context) =>
                       Scaffold(
@@ -148,16 +153,26 @@ class _SoundMixerState extends State<SoundMixer> {
                                 onTap: (){
                                   if(audioplayers.isNotEmpty){
                                     showDialog(context: context, builder: (context) => Components(context).confirmationDialog(context,
-                                        title: 'Are you sure you want to leave this page?',
-                                        message: 'This will stop the sound and discard this Mix',
+                                        title: user.languages[user.selectedLanguage]['custom_round_button_class']['dialog_title_harmony'] ?? user.languages['en']['custom_round_button_class']['dialog_title_harmony']  ,
+                                        message: user.languages[user.selectedLanguage]['custom_round_button_class']['dialog_message_harmony'] ?? user.languages['en']['custom_round_button_class']['dialog_message_harmony'],
                                         actions: [
                                           FilledButton.tonal(onPressed: (){
-                                            Navigator.pop(context);
-                                          }, child: const Text('Stay here')),
+                                            setState(() {
+                                              cangoback = false;
+                                              Navigator.pop(context);
+                                            });
+                                          }, child:  Text(
+                                              user.languages[user.selectedLanguage]['custom_round_button_class']['stay_here'] ?? user.languages['en']['custom_round_button_class']['stay_here']
+                                          )),
                                           FilledButton.tonal(onPressed: (){
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          }, child: const Text('Leave')),
+                                            setState(() {
+                                              cangoback = true;
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            });
+                                          }, child: Text(
+                                              user.languages[user.selectedLanguage]['custom_round_button_class']['leave'] ?? user.languages['en']['custom_round_button_class']['leave']
+                                          )),
                                         ]
                                     )
                                     );}
@@ -236,12 +251,12 @@ class _SoundMixerState extends State<SoundMixer> {
                                                   begin: Alignment.topCenter,
                                                   end: Alignment.bottomCenter,
                                                   colors: [Color(int.parse('0xff' + widget.themeImage['colorA'])), Colors.transparent, Colors.transparent, Colors.transparent],
-                                                  stops: [0.0, 0.1, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                                  stops: const [0.0, 0.1, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
                                                 ).createShader(rect);
                                               },
                                               blendMode: BlendMode.dstOut,
                                               child: ListView.builder(
-                                        padding: (audioplayers.isEmpty)?EdgeInsets.only(top: 30): EdgeInsets.only(bottom: 50,top: 30),
+                                        padding: (audioplayers.isEmpty)?const EdgeInsets.only(top: 30): const EdgeInsets.only(bottom: 50,top: 30),
                                               shrinkWrap: true,
                                               itemCount: contentList.length,
                                               itemBuilder: (context, index) {
@@ -298,7 +313,9 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                   audioplayers.removeAt(indexToRemove);
                                                                 } else {
                                                                   if(audioplayers.length >= 7){
-                                                                    Components(context).showSuccessSnackBar('Only 7 Harmonies can be added together');
+                                                                    Components(context).showSuccessSnackBar(
+                                                                        user.languages[user.selectedLanguage]['custom_round_button_class']['only_7_harmonies'] ?? user.languages['en']['custom_round_button_class']['only_7_harmonies']
+                                                                    );
                                                                   }
                                                                   else{
                                                                     print('adding');
@@ -445,7 +462,9 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                               child: Row(
                                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                 children: [
-                                                                                  Text('Save Harmony Mix',style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white.withOpacity(0.8)),textAlign: TextAlign.start,),
+                                                                                  Text(
+                                                                                    user.languages[user.selectedLanguage]['custom_round_button_class']['save_harmony_mix'] ?? user.languages['en']['custom_round_button_class']['save_harmony_mix'],
+                                                                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white.withOpacity(0.8)),textAlign: TextAlign.start,),
                                                                                   Components(context).BlurBackgroundCircularButton(icon: Icons.clear,iconSize: 17,buttonRadius: 17,iconColor: Colors.white70,onTap: ()=>Navigator.pop(context))
                                                                                 ],
                                                                               ),
@@ -454,8 +473,8 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                               padding: const EdgeInsets.all(8.0),
                                                                               child: TextField(
                                                                                 controller: nameController,
-                                                                                decoration: const InputDecoration(
-                                                                                    hintText: 'Give your mix a name'
+                                                                                decoration:  InputDecoration(
+                                                                                    hintText: user.languages[user.selectedLanguage]['custom_round_button_class']['harmony_mix_name'] ?? user.languages['en']['custom_round_button_class']['harmony_mix_name']
                                                                                 ),
                                                                               ),
                                                                             ),
@@ -537,7 +556,9 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                                 onPressed: ()async{
                                                                                   User user = Provider.of<User>(context,listen: false);
                                                                                   if(nameController.text.isEmpty){
-                                                                                    Components(context).showSuccessSnackBar('The mix must be named');
+                                                                                    Components(context).showSuccessSnackBar(
+                                                                                        user.languages[user.selectedLanguage]['custom_round_button_class']['this_mix_named'] ?? user.languages['en']['custom_round_button_class']['this_mix_named']
+                                                                                    );
                                                                                   }
                                                                                   else{
                                                                                     Map body = {};
@@ -568,7 +589,9 @@ class _SoundMixerState extends State<SoundMixer> {
                                                                                   borderRadius: BorderRadius.vertical(top: Radius.circular(15))
                                                                                 )
                                                                               ),
-                                                                                child: const Text('Save Custom Harmony Mix'),
+                                                                                child: Text(
+                                                                                  user.languages[user.selectedLanguage]['custom_round_button_class']['save_harmony_mix'] ?? user.languages['en']['custom_round_button_class']['save_harmony_mix'],
+                                                                                ),
                                                                             )
                                                                           ],
                                                                         ),

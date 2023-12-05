@@ -5,7 +5,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../../../provider/userProvider.dart';
 
 class VideoYoga extends StatefulWidget {
   final Map data;
@@ -26,6 +29,7 @@ class _VideoYogaState extends State<VideoYoga> {
   int repCount = 0;
 
   showCompletionSheet() {
+    User user = Provider.of<User>(context,listen :false);
     showModalBottomSheet(
         isScrollControlled: true,
         enableDrag: false,
@@ -61,7 +65,7 @@ class _VideoYogaState extends State<VideoYoga> {
                     height: 15,
                   ),
                   Text(
-                    "Congratulations on Completing Your Yoga Session!",
+          user.languages[user.selectedLanguage]['custom_round_button_class']['yoga_complete_title'] ?? user.languages['en']['custom_round_button_class']['yoga_complete_title'],
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
@@ -76,7 +80,7 @@ class _VideoYogaState extends State<VideoYoga> {
                     height: 20,
                   ),
                   Text(
-                      '✨ Keep up the fantastic work, and remember that the journey of a thousand miles begins with a single step. Your dedication will lead you to a more relaxed, energized, and centered self. ✨',
+                      '✨ ${user.languages[user.selectedLanguage]['custom_round_button_class']['yoga_complete_subtitle'] ?? user.languages['en']['custom_round_button_class']['yoga_complete_subtitle']} ✨',
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -90,7 +94,9 @@ class _VideoYogaState extends State<VideoYoga> {
                   const SizedBox(
                     height: 25,
                   ),
-                  Text("Through consistent practice, you'll discover a wide range of benefits, including reduced stress, increased flexibility, and improved mental clarity. Each session brings you closer to becoming your best self. 🌟",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  Text(
+                      "${user.languages[user.selectedLanguage]['custom_round_button_class']['video_yoga_complete_desc'] ?? user.languages['en']['custom_round_button_class']['video_yoga_complete_desc']} 🌟",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.black,
                       fontSize: 14
                   ),
@@ -130,7 +136,7 @@ class _VideoYogaState extends State<VideoYoga> {
                             ]),
                           ),
                           child: Text(
-                            'Done',
+                           user.languages[user.selectedLanguage]['breathe_screen']['btn_done'] ?? user.languages['en']['breathe_screen']['btn_done'],
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge
@@ -272,13 +278,14 @@ class _VideoYogaState extends State<VideoYoga> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        User user =  Provider.of<User>(context,listen: false);
         var onwillpop = true;
         if (yogaVideoPlayer.value.isPlaying) {
           showDialog(
               context: context,
               builder: (context) {
                 return Components(context).confirmationDialog(context,
-                    title: 'Confirm Exit',
+                    title: user.languages[user.selectedLanguage]['custom_round_button_class']['yoga_complete_title'] ?? user.languages['en']['custom_round_button_class']['yoga_complete_title'],
                     message:
                         'You are currently in between a yoga session. Do you really want to leave this page?',
                     actions: [

@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mindandsoul/constants/iconconstants.dart';
 import 'package:mindandsoul/helper/components.dart';
 
 class StepYoga extends StatefulWidget {
   final String title;
   final List steps;
-  final String difficulty;
+  final int difficulty;
   const StepYoga({super.key, required this.steps, required this.difficulty,required this.title});
 
   @override
@@ -28,13 +27,25 @@ class _StepYogaState extends State<StepYoga> {
     super.initState();
   }
 
-  String get difficulty {
+  /*String get difficulty {
     if(widget.difficulty == 'Moderate') {
       return 'moderator';
     } else {
       return widget.difficulty.toLowerCase();
     }
+  }*/
+
+  String get difficulty {
+    if(widget.difficulty == 0) {
+      return 'beginner';
+    } else if(widget.difficulty == 1) {
+      return 'moderator';
+    }
+    else{
+      return 'expert';
+    }
   }
+
 
   showCompletionSheet() {
     showModalBottomSheet(

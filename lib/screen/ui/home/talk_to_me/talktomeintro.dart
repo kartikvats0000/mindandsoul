@@ -42,64 +42,68 @@ class _TalktomeIntroState extends State<TalktomeIntro> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: (loading)
-            ?Components(context).Loader(textColor: Colors.black)
-            :Stack(
-          children: [
-            Positioned.fill(
-              child: Image.network(data['intro']['image'],fit: BoxFit.cover,),
-            ),
-            Positioned.fill(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: const BoxDecoration(
-                    //borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                          end: Alignment.topRight,
-                          begin: Alignment.bottomLeft,
-                          colors: [
-                            Colors.black87,
-                            Colors.black54,
-                            Colors.transparent,
-                            Colors.transparent,
-                          ]
-                      )
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('Talk To Me',style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 35,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900
-                      ),),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(data['intro']['desc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white70
-                      ),),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: (){
+    return Consumer<User>(
+      builder: (context,user,_)=>
+          Scaffold(
+          body: (loading)
+              ?Components(context).Loader(textColor: Colors.black)
+              :Stack(
+            children: [
+              Positioned.fill(
+                child: Image.network(data['intro']['image'],fit: BoxFit.cover,),
+              ),
+              Positioned.fill(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    decoration: const BoxDecoration(
+                      //borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                            end: Alignment.topRight,
+                            begin: Alignment.bottomLeft,
+                            colors: [
+                              Colors.black87,
+                              Colors.black54,
+                              Colors.transparent,
+                              Colors.transparent,
+                            ]
+                        )
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(user.languages[user.selectedLanguage]['home_screen']['talk_to_me'] ?? user.languages['en']['home_screen']['talk_to_me'],
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                            fontSize: 35,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900
+                        ),),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(data['intro']['desc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white70
+                        ),),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: (){
 
-                            Navigator.push(context, fadeRoute(TalktomeQuestions(questions: data['data'],))).then((value) => getData());
+                              Navigator.push(context, fadeRoute(TalktomeQuestions(questions: data['data'],))).then((value) => getData());
 
-                        }, label: const Text('Take Assessment'),icon: const Icon(Icons.chevron_right),),
+                          }, label:  Text(user.languages[user.selectedLanguage]['custom_round_button_class']['take_quiz_know'] ?? user.languages['en']['custom_round_button_class']['take_quiz_know']),icon: const Icon(Icons.chevron_right),),
 
-                      const SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  ),
-                )
-            ),
-          ],
-        )
+                        const SizedBox(
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  )
+              ),
+            ],
+          )
+      ),
     );
   }
 }

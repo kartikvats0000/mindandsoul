@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectLanguage extends StatefulWidget {
-   SelectLanguage({super.key});
+  final String source;
+   const SelectLanguage({super.key,required this.source});
 
   @override
   State<SelectLanguage> createState() => _SelectLanguageState();
@@ -19,10 +20,12 @@ class _SelectLanguageState extends State<SelectLanguage> {
   
   
   getData()async{
-    var lst = await Services('').getSupportedLanguages();
+    List lst = await Services('').getSupportedLanguages();
 
     setState(() {
       languages = lst;
+      selectedIndex = lst.indexWhere((element) => element['code'] == Provider.of<User>(context,listen: false).selectedLanguage) ?? -1;
+      selectedLanguage = lst[selectedIndex]['code'];
     });
   }
   List languages = [
@@ -49,6 +52,8 @@ class _SelectLanguageState extends State<SelectLanguage> {
   int selectedIndex = -1;
 
   String selectedLanguage = '';
+
+
 
   @override
   void initState() {
@@ -158,10 +163,15 @@ class _SelectLanguageState extends State<SelectLanguage> {
                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
                             await sharedPref.setString('lang', selectedLanguage.toLowerCase());
                             user.changeUserLanguage(selectedLanguage.toLowerCase());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
-                      }, child: const Text(
-                          'Continue',
-                      ))),
+                            if(widget.source == 'Splash'){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                            }
+                            else{
+                              Navigator.pop(context);
+                            }
+                      }, child: const Text('Continue',)
+                      )
+                  ),
                 ),
               ],
             ),

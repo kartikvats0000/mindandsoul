@@ -10,6 +10,7 @@ import 'package:mindandsoul/screen/ui/home/navscreens/profile/favorites/favourit
 import 'package:provider/provider.dart';
 
 import '../../../../../helper/components.dart';
+import '../../../../../provider/userProvider.dart';
 
 
 class Favourites extends StatefulWidget {
@@ -132,13 +133,14 @@ class NoFavourite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeProvider theme = Provider.of<ThemeProvider>(context,listen: false);
+    User user = Provider.of<User>(context,listen: false);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LottieBuilder.asset('assets/animations/noFavourite.json',height: 300,),
         const SizedBox(height: 10,),
-        Text('Nothing Here....',style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        Text('${ user.languages[user.selectedLanguage]['components_class']['no_data']}....',style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: theme.textColor.withOpacity(0.8)
         ),)
       ],

@@ -82,177 +82,181 @@ class _CommunitiesState extends State<Communities> {
   Widget build(BuildContext context) {
    // print('hi${data[0]['likeUsers'][0]['profile_picture']}');
     print(MediaQuery.of(context).size.height - 30);
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      appBar: Components(context).myAppBar(
-        title: 'Communities',
-        titleStyle: Theme.of(context)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 23, color: Colors.black),
-      ),
-      body: (loading)
-          ?Center(
-        child: Components(context).Loader(textColor: Colors.black),
-      )
-          :RefreshIndicator(
-        onRefresh: ()async{
-          await getData();
-        },
-            child: ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              List likedList = data[index]['likeUsers'];
-              return Card(
-                margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15),bottom:Radius.circular(10) )
-                ),
-                child: Container(
-                  //margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(15),bottom: Radius.circular(10)),
+    return Consumer<User>(
+      builder: (context,user,_) =>
+       Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        appBar: Components(context).myAppBar(
+          title: user.languages[user.selectedLanguage]['home_screen']['Community'] ?? user.languages['en']['home_screen']['Community'],
+          titleStyle: Theme.of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(fontSize: 23, color: Colors.black),
+        ),
+        body: (loading)
+            ?Center(
+          child: Components(context).Loader(textColor: Colors.black),
+        )
+            :RefreshIndicator(
+          onRefresh: ()async{
+            await getData();
+          },
+              child: ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                List likedList = data[index]['likeUsers'];
+                return Card(
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(15),bottom:Radius.circular(10) )
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 448,
-                        height: 252,
-                        //preferredSize: Size(16,9),
-                        //height: MediaQuery.of(context).size.height * 0.2,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: ClipRRect(
-                                borderRadius:
-                                    const BorderRadius.vertical(top: Radius.circular(15)),
-                                child: Image.network(
-                                  data[index]['image'],
-                                  key: ValueKey(index),
-                                  fit: BoxFit.cover,
-                                  /*loadingBuilder: (context,_,__){
-                                    return SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary);
-                                  },*/
+                  child: Container(
+                    //margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(15),bottom: Radius.circular(10)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 448,
+                          height: 252,
+                          //preferredSize: Size(16,9),
+                          //height: MediaQuery.of(context).size.height * 0.2,
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius:
+                                      const BorderRadius.vertical(top: Radius.circular(15)),
+                                  child: Image.network(
+                                    data[index]['image'],
+                                    key: ValueKey(index),
+                                    fit: BoxFit.cover,
+                                    /*loadingBuilder: (context,_,__){
+                                      return SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary);
+                                    },*/
+                                  ),
                                 ),
                               ),
-                            ),
-                            Positioned.fill(
-                                child: Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(15)),
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.black26,
-                                        Colors.transparent,
-                                        Colors.black26,
-                                        Colors.black87,
-                                      ])),
-                            )),
-                            Positioned(
-                                bottom: 10,
-                                left: 10,
-                                child: Text(data[index]['title'],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(color: Colors.white))),
-                            Positioned(
-                                top: 10,
-                                right: 10,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.black38,
-                                  child: LikeButton(
-                                    onTap: (isLiked) async {
-                                      User user = Provider.of<User>(context,listen: false);
-                                       await Services(user.token).likeCommunity(data[index]['_id']);
-                                      // Components(context).showSuccessSnackBar(message);
-                                      if(data[index]['liked'] == false){
-                                        HapticFeedback.mediumImpact();
-                                        popSound();
-                                      }
-                                      else{
-                                        HapticFeedback.lightImpact();
-                                      }
-                                      getData();
-                                      return !isLiked;
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    likeCountPadding: EdgeInsets.zero,
-                                    size: 22,
-                                    isLiked : data[index]['liked'],
-                                    likeBuilder: (bool isLiked) {
-                                      print('is liked $isLiked');
-                                      return Components(context).myIconWidget(
-                                        icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
-                                        //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
-                                        color: Colors.white,
-                                      );
-                                    },
-                                  ),
-                                ),
-                            ),
-                          ],
-                        ),
-                      ),
-                     //  Text(data[index]['desc'])
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(data[index]['desc'],style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black87),),
-                            const SizedBox(height: 15,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                FilledButton.tonalIcon(
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: Theme.of(context).colorScheme.primaryContainer
-                                  ),
-                                    onPressed: () async{
-                                    await _launchUrl(data[index]['url']);
-                                    },
-                                    icon: const Icon(Icons.chevron_right),
-                                    label: const Text('Join Community')),
-                                Row(
-                                  children: [
-                                    Row(
-                                      children: likedList.map((e) => Align(
-                                          widthFactor: 0.5,
-                                          child: CircleAvatar(
-                                            radius: 14,
-                                            backgroundColor: Colors.grey.shade100,
-                                            child: CircleAvatar(
-                                              radius: 13,
-                                              backgroundColor: Colors.white,
-                                              backgroundImage: CachedNetworkImageProvider(
-                                                e['profile_picture'],
-                                              ),
-                                            ),
-                                          ))).toList(),
+                              Positioned.fill(
+                                  child: Container(
+                                decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(15)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black26,
+                                          Colors.transparent,
+                                          Colors.black26,
+                                          Colors.black87,
+                                        ])),
+                              )),
+                              Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  child: Text(data[index]['title'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(color: Colors.white))),
+                              Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.black38,
+                                    child: LikeButton(
+                                      onTap: (isLiked) async {
+                                        User user = Provider.of<User>(context,listen: false);
+                                         await Services(user.token).likeCommunity(data[index]['_id']);
+                                        // Components(context).showSuccessSnackBar(message);
+                                        if(data[index]['liked'] == false){
+                                          HapticFeedback.mediumImpact();
+                                          popSound();
+                                        }
+                                        else{
+                                          HapticFeedback.lightImpact();
+                                        }
+                                        getData();
+                                        return !isLiked;
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      likeCountPadding: EdgeInsets.zero,
+                                      size: 22,
+                                      isLiked : data[index]['liked'],
+                                      likeBuilder: (bool isLiked) {
+                                        print('is liked $isLiked');
+                                        return Components(context).myIconWidget(
+                                          icon: (isLiked)?MyIcons.favorite_filled:MyIcons.favorite,
+                                          //color: (isLiked) ? Colors.redAccent.shade200 : Colors.white,
+                                          color: Colors.white,
+                                        );
+                                      },
                                     ),
-                                    const SizedBox(width: 20,),
-                                    Visibility(
-                                      visible: likedList.length == 4,
-                                        child: Text('+ ${data[index]['likes'] - 4}'.toString(),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),)),
-                                  ],
-                                )
-                              ],
-                            )
-                          ],
+                                  ),
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-                    ],
+                       //  Text(data[index]['desc'])
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(data[index]['desc'],style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black87),),
+                              const SizedBox(height: 15,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  FilledButton.tonalIcon(
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Theme.of(context).colorScheme.primaryContainer
+                                    ),
+                                      onPressed: () async{
+                                      await _launchUrl(data[index]['url']);
+                                      },
+                                      icon: const Icon(Icons.chevron_right),
+                                      label:  Text(user.languages[user.selectedLanguage]['custom_round_button_class']['join_community'] ?? user.languages['en']['custom_round_button_class']['join_community']
+                                      )),
+                                  Row(
+                                    children: [
+                                      Row(
+                                        children: likedList.map((e) => Align(
+                                            widthFactor: 0.5,
+                                            child: CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor: Colors.grey.shade100,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: CachedNetworkImageProvider(
+                                                  e['profile_picture'],
+                                                ),
+                                              ),
+                                            ))).toList(),
+                                      ),
+                                      const SizedBox(width: 20,),
+                                      Visibility(
+                                        visible: likedList.length == 4,
+                                          child: Text('+ ${data[index]['likes'] - 4}'.toString(),style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),)),
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
-          ),
+                );
+              }),
+            ),
+      ),
     );
   }
 }

@@ -474,22 +474,8 @@ class _VideoContentState extends State<VideoContent> {
                                       Text(data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface,fontWeight: FontWeight.w800,fontSize: 19),),
                                       const SizedBox(height: 20,),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Icon(Icons.headphones_outlined,color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),size: 13,),
-                                              const SizedBox(width: 5,),
-                                              Text('34.8k listens',
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                    //letterSpacing: 1.3,
-                                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)
-                                                ),),
-                                            ],
-                                          ),
-                                          const SizedBox(width: 35,),
                                           Row(
                                             children: [
                                               Icon(Icons.watch_later_outlined,color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),size: 13,),

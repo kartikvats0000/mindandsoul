@@ -32,11 +32,15 @@ import 'package:flutter/services.dart';
       'Info'
     ];
 
+    List typesToShow = [];
+
     List items = [];
 
     String selectedChip = 'All';
+    String selectedChipToShow = 'All';
 
     List filteredItems() {
+      User user = Provider.of<User>(context,listen: false);
       if (selectedChip == 'All') {
         return items;
       } else {
@@ -47,12 +51,13 @@ import 'package:flutter/services.dart';
     bool loading = true;
 
     getData()async{
-      debugPrint('hello getData');
       User user = Provider.of<User>(context,listen: false);
       var data = await Services(user.token).getContent(categoryId:widget.categoryId);
       setState(() {
         items = data;
-        loading = false;
+        loading  = false;
+        typesToShow = user.languages[user.selectedLanguage]['component_class']['content_type'] ?? user.languages['en']['component_class']['content_type'];
+        selectedChipToShow = typesToShow[0];
       });
     }
 
@@ -95,25 +100,26 @@ import 'package:flutter/services.dart';
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical:8.0),
+                          padding: const EdgeInsets.only(bottom:5.0,top: 0.0,left: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: types.map((e) => GestureDetector(
+                            children: typesToShow.asMap().entries.map((e) => GestureDetector(
                               onTap: (){
                                 HapticFeedback.selectionClick();
                                 setState(() {
-                                  selectedChip = e;
+                                  selectedChip = types[e.key];
+                                  selectedChipToShow = e.value;
                                 });
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 8),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
-                                    color:  (selectedChip == e)?Colors.black.withOpacity(0.23):Colors.transparent
+                                    color:  (selectedChipToShow == e.value)?Colors.black.withOpacity(0.23):Colors.transparent
                                 ),
-                                child: Text((e == 'Text')?'Article':e,style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: (selectedChip == e)?theme.textColor:theme.textColor.withOpacity(0.8),
-                                    fontWeight:(selectedChip == e)?FontWeight.w900:FontWeight.w500),textAlign: TextAlign.center,),
+                                child: Text((e.value == 'Text')?'Article':typesToShow[e.key],style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: (selectedChipToShow == e.value)?theme.textColor:theme.textColor.withOpacity(0.8),
+                                    fontWeight:(selectedChipToShow == e.value)?FontWeight.w900:FontWeight.w500),textAlign: TextAlign.center,),
                               ),
                             )
                             ).toList(),
@@ -174,10 +180,10 @@ import 'package:flutter/services.dart';
                                         Padding(
                                             padding: const EdgeInsets.only(bottom: 15.0,left: 8),
                                             child: Components(context).tags(
-                                              title:(filteredItems()[index]['type'] == 'Text')?'Article': filteredItems()[index]['type'],
-                                              context: context,
 
-                                            )
+                                              title:typesToShow.elementAt(types.indexWhere((element) => element == filteredItems()[index]['type'])),
+                                              context: context,
+                                            ),
                                         ),
                                       ],
                                     ),

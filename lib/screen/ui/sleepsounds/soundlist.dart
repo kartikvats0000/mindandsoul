@@ -71,11 +71,11 @@ class _SoundsListState extends State<SoundsList> {
   @override
   Widget build(BuildContext context) {
     print('moods rebuilt');
-    return Consumer<ThemeProvider>(
-      builder: (context,theme,child) =>
+    return Consumer2<ThemeProvider,User>(
+      builder: (context,theme,user,child) =>
       Scaffold(
         backgroundColor: theme.themeColorA,
-        appBar: Components(context).myAppBar(title: 'Harmony'),
+        appBar: Components(context).myAppBar(title: user.languages[user.selectedLanguage]['home_screen']['harmonies_top'] ?? 'Harmony'),
         body: Container(
           height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -103,7 +103,9 @@ class _SoundsListState extends State<SoundsList> {
                   ///favourites
                   Visibility(
                     visible: favourites.isNotEmpty,
-                      child: Text('Your Mixes',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,)),
+                      child: Text(
+                        user.languages[user.selectedLanguage]['custom_round_button_class']['your_mixes_harmony'] ?? 'Your Mixes',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,)),
                   SizedBox(height: (favourites.isNotEmpty)?10:0,),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -147,7 +149,9 @@ class _SoundsListState extends State<SoundsList> {
                   ),
 
                   ///new audio
-                  Text('Select Mood',style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,),
+                  Text(
+                    user.languages[user.selectedLanguage]['custom_round_button_class']['select_mood_harmony'] ?? "Select Mood" ,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: theme.textColor,fontWeight: FontWeight.bold,fontSize: 21),textAlign: TextAlign.start,),
                   const SizedBox(height: 10,),
                   (moodList.isEmpty)
                       ? Components(context).Loader(textColor: theme.textColor)

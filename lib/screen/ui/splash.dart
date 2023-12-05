@@ -131,7 +131,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
                 () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: ((context) =>  SelectLanguage()))));
+                    builder: ((context) =>  SelectLanguage(source: 'Splash',)))));
       }
       else{
         user.changeUserLanguage(lang);
@@ -144,6 +144,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin{
       }
     }
     else {
+      user.changeUserLanguage((lang == null) ? 'en':lang );
       print(data);
       await user.fromJson(json.decode(data));
       await user.updateLoginStatus(true);

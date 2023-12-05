@@ -80,11 +80,13 @@ class Services {
     }
   }
 
-  Future<dynamic> getHomeData(String userId)async{
-    final uri = Uri.parse('${baseurl}home?userId=$userId');
+  Future<dynamic> getHomeData(String language)async{
+    final uri = Uri.parse('${baseurl}home?lang=$language');
+
+    print(uri);
 
     http.Response response = await http.get(uri,headers: {
-      'authorization' : 'Bearer ${token}'
+      'authorization' : 'Bearer $token'
     });
     if (response.statusCode == 200){
       var data = json.decode(response.body);
@@ -256,7 +258,7 @@ class Services {
   Future<dynamic> getBreathingData()async{
     http.Response response = await http.get(Uri.parse('https://brainsoul.s3.ap-south-1.amazonaws.com/breathe/breathingList.json'));
 
-    var data = json.decode(response.body);
+    var data = json.decode(utf8.decode(response.bodyBytes));
 
     if(response.statusCode == 200){
       return data;
@@ -537,12 +539,12 @@ class Services {
 
   }
 
-  Future<dynamic> getQuotes(String country)async{
+  Future<dynamic> getQuotes(Map body)async{
 
     final uri = Uri.parse('${baseurl}quote');
 
-    http.Response response = await http.post(uri,body: {'country' : country},headers: {
-      'authorization' : 'Bearer ${token}'
+    http.Response response = await http.post(uri,body: body,headers: {
+      'authorization' : 'Bearer $token'
     });
 
 

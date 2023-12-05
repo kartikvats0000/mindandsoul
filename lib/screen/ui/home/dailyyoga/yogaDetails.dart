@@ -22,11 +22,7 @@ class YogaDetails extends StatefulWidget {
 class _YogaDetailsState extends State<YogaDetails> {
 
 
-  List<String> difficulty = [
-    'Beginner',
-    'Moderate',
-    'Expert',
-  ];
+  List difficulty = [];
 
   List<int> repetitions = [
     1,2,5
@@ -50,7 +46,12 @@ class _YogaDetailsState extends State<YogaDetails> {
 
   getDetails()async{
 
+
     User user = Provider.of<User>(context,listen: false);
+    setState(() {
+      difficulty =  user.languages[user.selectedLanguage]['custom_round_button_class']['difficulties'] ?? user.languages['en']['custom_round_button_class']['difficulties'];
+      selectedDifficulty = difficulty[0];
+    });
     var res = await Services(user.token).getYogaDetail(yogaId: widget.yogaId);
 
     //print('yoga details for ${widget.yogaId} : $res');
@@ -107,166 +108,174 @@ class _YogaDetailsState extends State<YogaDetails> {
         ]),
         body: (data.isEmpty)
             ? Components(context).Loader(textColor: Colors.black87)
-            :Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(bottom: 2 ),
+            :Consumer<User>(
+          builder: (context,user,_) =>
+              Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 2 ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1,
+                            child: Stack(
+                              children: [
+                                Positioned.fill(child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                                    child: CachedNetworkImage(imageUrl: data['image'],fit: BoxFit.cover,))),
+                                Positioned.fill(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(15),
+                                      decoration:  BoxDecoration(
+                                          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                                          gradient:  LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black12,
+                                                //Colors.transparent,
+                                                Colors.black.withOpacity(0.92)
+                                              ]
+                                          )
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          buildLikesViewer(likesList, theme),
+                                          const SizedBox(height: 20,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              customTag('${data['avgTime']} ${ user.languages[user.selectedLanguage]['component_class']['minutes'] ?? user.languages['en']['component_class']['minutes']}',Icon(Icons.watch_later,color: Theme.of(context).colorScheme.primary,size: 15,),  theme),
+                                              //const Spacer(flex: 1,),
+                                              const SizedBox(width: 10,),
+                                              customTag('${data['steps'].length} ${ user.languages[user.selectedLanguage]['custom_round_button_class']['steps_yoga'] ?? user.languages['en']['custom_round_button_class']['steps_yoga']}',Icon(Icons.featured_play_list_rounded,color: Theme.of(context).colorScheme.primary,size: 15,), theme)
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                )
+
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 10,),
+                                Text(data['shortDesc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
+                                    fontWeight: FontWeight.w500
+                                ),),
+                                const SizedBox(height: 15,),
+                                Text(
+                                    user.languages[user.selectedLanguage]['component_class']['description'] ?? user.languages['en']['component_class']['description'],
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    fontSize: 17),
+                                ),
+                                const SizedBox(height: 15,),
+                                Text(
+                                  data['desc'],
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 13
+                                  ),),
+                                const SizedBox(height: 15,),
+
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                      Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                    //color: Colors.green.withOpacity(0.05),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AspectRatio(
-                          aspectRatio: 1,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-                                  child: CachedNetworkImage(imageUrl: data['image'],fit: BoxFit.cover,))),
-                              Positioned.fill(
-                                  child: Container(
-                                    padding: const EdgeInsets.all(15),
-                                    decoration:  BoxDecoration(
-                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-                                        gradient:  LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              Colors.transparent,
-                                              Colors.black12,
-                                              //Colors.transparent,
-                                              Colors.black.withOpacity(0.92)
-                                            ]
-                                        )
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        buildLikesViewer(likesList, theme),
-                                        const SizedBox(height: 20,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            customTag('${data['avgTime']} mins',Icon(Icons.watch_later,color: Theme.of(context).colorScheme.primary,size: 15,),  theme),
-                                            //const Spacer(flex: 1,),
-                                            const SizedBox(width: 10,),
-                                            customTag('${data['steps'].length} Steps',Icon(Icons.featured_play_list_rounded,color: Theme.of(context).colorScheme.primary,size: 15,), theme)
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )
-                              )
-
-                            ],
-                          ),
-                        ),
                         const SizedBox(height: 10,),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 10,),
-                              Text(data['shortDesc'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
-                                  fontWeight: FontWeight.w500
-                              ),),
-                              const SizedBox(height: 15,),
-                              Text('Description',style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 17),
-                              ),
-                              const SizedBox(height: 15,),
-                              Text(
-                                data['desc'],
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 13
+                       exerciseStartSection(data['type']),
+                        Center(
+                            child: InkWell(
+                              onTap: (){
+                                if(data['type'] == 'Steps'){
+                                  var difficultyIndex = difficulty.indexWhere((element) => element == selectedDifficulty);
+                                  Navigator.push(context, fadeRoute(StepYoga(
+                                    steps: data['steps'],
+                                    difficulty: difficultyIndex,
+                                    title: data['title']
+                                  )));
+                                }
+                                else{
+                                  Navigator.push(context, fadeRoute(VideoYoga(data: {
+                                    'video' : data['video'],
+                                    'title' : data['title'],
+                                    'limit' : selectedRepetition
+                                  })));
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: kToolbarHeight,
+                                width: MediaQuery.of(context).size.width * 0.95,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    const BoxShadow(
+                                        offset: Offset(-0.5,-5),
+                                        color: Colors.white,
+                                        blurRadius: 8,
+                                        spreadRadius:5
+                                    ),
+                                    BoxShadow(
+                                      // /blurStyle: BlurStyle.solid,
+                                        offset: const Offset(0.15,5),
+                                        color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                                        blurRadius: 5,
+                                        spreadRadius: 5
+                                    ),
+                                  ],
+                                  borderRadius:  BorderRadius.circular(15),
+                                  color:Theme.of(context).colorScheme.primary,
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                        Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                                        Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                                        Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                      ]
+                                  ),
+                                ),
+                                child: Text(
+                                    user.languages[user.selectedLanguage]['component_class']['begin'] ?? user.languages['en']['component_class']['begin'],
+                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer
                                 ),),
-                              const SizedBox(height: 15,),
-
-                            ],
-                          ),
-                        )
+                              ),
+                            )
+                        ),
+                        const SizedBox(height: 15,),
                       ],
                     ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 13),
-                  //color: Colors.green.withOpacity(0.05),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10,),
-                     exerciseStartSection(data['type']),
-                      Center(
-                          child: InkWell(
-                            onTap: (){
-                              if(data['type'] == 'Steps'){
-                                Navigator.push(context, fadeRoute(StepYoga(
-                                  steps: data['steps'],
-                                  difficulty: selectedDifficulty,
-                                  title: data['title']
-                                )));
-                              }
-                              else{
-                                Navigator.push(context, fadeRoute(VideoYoga(data: {
-                                  'video' : data['video'],
-                                  'title' : data['title'],
-                                  'limit' : selectedRepetition
-                                })));
-                              }
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: kToolbarHeight,
-                              width: MediaQuery.of(context).size.width * 0.95,
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  const BoxShadow(
-                                      offset: Offset(-0.5,-5),
-                                      color: Colors.white,
-                                      blurRadius: 8,
-                                      spreadRadius:5
-                                  ),
-                                  BoxShadow(
-                                    // /blurStyle: BlurStyle.solid,
-                                      offset: const Offset(0.15,5),
-                                      color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
-                                      blurRadius: 5,
-                                      spreadRadius: 5
-                                  ),
-                                ],
-                                borderRadius:  BorderRadius.circular(15),
-                                color:Theme.of(context).colorScheme.primary,
-                                gradient: LinearGradient(
-                                    colors: [
-                                      Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                                      Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
-                                      Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
-                                      Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                                    ]
-                                ),
-                              ),
-                              child: Text('Begin',style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer
-                              ),),
-                            ),
-                          )
+                  )
+                ],
+              ),
+                        ],
                       ),
-                      const SizedBox(height: 15,),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
-        )
+            )
       )
     );
   }
@@ -363,10 +372,14 @@ class _YogaDetailsState extends State<YogaDetails> {
   }
 
   exerciseStartSection(String type){
+    User user = Provider.of<User>(context,listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text((type == 'Steps')?'Select Difficulty':'Select Repetition',style: Theme.of(context).textTheme.labelMedium?.copyWith(
+        Text((type == 'Steps')?
+    user.languages[user.selectedLanguage]['custom_round_button_class']['select_difficulty'] ?? user.languages['en']['custom_round_button_class']['select_difficulty']:
+  user.languages[user.selectedLanguage]['custom_round_button_class']['select_rep'] ?? user.languages['en']['custom_round_button_class']['select_rep'],
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
             color: Theme.of(context).colorScheme.primary,
             fontSize: 17),
         ),

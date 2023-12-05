@@ -17,7 +17,7 @@ class User extends ChangeNotifier{
   String token = '';
   String deviceId='';
   String fcmToken = '';
-  String selectedLanguage = 'en';
+  String selectedLanguage = '';
 
   Map languages = {};
 

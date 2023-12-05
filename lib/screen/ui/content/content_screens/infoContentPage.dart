@@ -218,27 +218,13 @@ class _InfoGraphicState extends State<InfoGraphic> {
                                         const SizedBox(height: 10,),
                                         Text(data['title'],style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white.withOpacity(0.9),fontWeight: FontWeight.w800,fontSize: 19),),
                                         const SizedBox(height: 10,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.remove_red_eye_outlined,color: Colors.grey.withOpacity(0.7),size: 13,),
-                                                const SizedBox(width: 5,),
-                                                Text('34.8k reads • ❤️ ${data['likes']} likes',
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 11,
-                                                      //letterSpacing: 1.3,
-                                                      color: Colors.white.withOpacity(0.7)
-                                                  ),),
-                                              ],
-                                            ),
-
-                                          ],
-                                        )
+                                        Text('❤️ ${data['likes']} likes',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                              //letterSpacing: 1.3,
+                                              color: Colors.white.withOpacity(0.7)
+                                          ),)
                                       ],
                                     ),
                                   )

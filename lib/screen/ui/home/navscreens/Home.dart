@@ -25,7 +25,6 @@ import 'package:mindandsoul/screen/ui/home/breathe/breathingList.dart';
 import 'package:mindandsoul/screen/ui/home/community/community.dart';
 import 'package:mindandsoul/screen/ui/home/games/games.dart';
 import 'package:mindandsoul/screen/ui/home/knowYourself/knowYourselfResults.dart';
-import 'package:mindandsoul/screen/ui/home/knowYourself/knowyourselfintro.dart';
 import 'package:mindandsoul/screen/ui/home/quotes/dailyquotes.dart';
 import 'package:mindandsoul/screen/ui/home/talk_to_me/talktomeResults.dart';
 import 'package:mindandsoul/screen/ui/home/themes/themePicker.dart';
@@ -34,6 +33,7 @@ import 'package:mindandsoul/screen/ui/sleepsounds/soundlist.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import '../../../../helper/components.dart';
@@ -106,7 +106,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var map = sharedPreferences.getString('quoteData');
     if(map == null){
-      var data = await Services(user.token).getQuotes(user.country);
+      var data = await Services(user.token).getQuotes({
+            'country' : user.country,
+            'lang' : user.selectedLanguage
+          });
       setState(() {
         quotesList = data;
         log('quotes =  ${quotesList.toString()}');
@@ -119,7 +122,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
    else{
      var quoteData = json.decode(map);
      if(quoteData['date'] != todayDate){
-       var data = await Services(user.token).getQuotes(user.country);
+       var data = await Services(user.token).getQuotes({
+         'country' : user.country,
+         'lang' : user.selectedLanguage
+       });
        setState(() {
          quotesList = data;
          log('quotes =  ${quotesList.toString()}');
@@ -203,21 +209,22 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
   getData()async{
     User user = Provider.of<User>(context,listen: false);
 
-    var data = await Services(user.token).getHomeData(user.id);
+    var data = await Services(user.token).getHomeData(user.selectedLanguage);
     var breath = await Services('').getBreathingData();
     setState(() {
       categoryList = data['data']['category'];
       wellnessData = data['data']['wellness'];
       harmonyData = data['data']['harmony'];
-      breatheData = breath['data'];
+      breatheData = breath[user.selectedLanguage];
       switches = data['data']['switches'];
     });
   }
 
   String get greeting {
-    if(DateTime.now().hour < 12) return 'Good Morning';
-    if(DateTime.now().hour <= 16) return 'Good Afternoon';
-    else return 'Good Evening ';
+    User user = Provider.of<User>(context,listen: false);
+    if(DateTime.now().hour < 12) return user.languages[user.selectedLanguage]['home_screen']['weather_good_morning'];
+    if(DateTime.now().hour <= 16) return user.languages[user.selectedLanguage]['home_screen']['weather_good_afternoon'];
+    else return user.languages[user.selectedLanguage]['home_screen']['weather_good_evening'];
   }
 
   contentPageRoute(String view, String id,String title){
@@ -233,6 +240,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     }
     if(view == 'd'){
       destination =  GridviewB(title: title, categoryId: id,);
+    }
+    else{
+      destination = ListviewA(categoryId: id, title: title,);
     }
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => destination)).then((value) => videoPlayerController.play());
@@ -264,10 +274,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     //checkForInternet();
     fetchWeather();
     getQuotes();
-    SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
-      statusBarColor: Colors.grey.shade50,
-      statusBarIconBrightness: Brightness.light, // status bar color
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarColor: Colors.grey.shade50,
+          statusBarIconBrightness: Brightness.light, // status bar color
+             ));
     initVideo();
     super.initState();
   }
@@ -281,15 +292,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
 
   bool showVolumeSlider = false;
 
-  List aqiLabels = [
-    'Good',
-    'Moderate',
-    'Unhealthy for sensitive group',
-    'Unhealthy',
-    'Very Unhealthy',
-    'Hazardous'
-  ];
-
   PageController pageController = PageController(viewportFraction: 0.95);
 
   double draggableSheetHeight = 0.51;
@@ -301,7 +303,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
     debugPrint('homepageRebuilt');
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
-    return Consumer<ThemeProvider>(builder: (context,themeData,child){
+    return Consumer2<ThemeProvider,User>(builder: (context,themeData,user,child){
       debugPrint('homepageRebuilt==============');
       return Scaffold(
         backgroundColor: themeData.themeColorA,
@@ -347,8 +349,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 ShowCaseView(
                                    shapeBorder: const CircleBorder(),
                                   globalKey: weatherKey,
-                                  title: "Nature's Aura",
-                                  description: 'Check out weather conditions around you',
+                                  title: user.languages[user.selectedLanguage]['home_screen']['tool_tip_3'],
+                                  description: user.languages[user.selectedLanguage]['home_screen']['tool_tip_4'],
                                   child: Components(context).BlurBackgroundCircularButton(
                                     svg: MyIcons.weather,
                                     onTap: (){ HapticFeedback.selectionClick();
@@ -389,7 +391,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                               Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  const  Text("Sorry, we need your location to show you the weather",style: TextStyle(
+                                                                    Text(user.languages[user.selectedLanguage]['home_screen']['weather_req'],style: TextStyle(
                                                                       color: Colors.black,
                                                                       //color: themeData.textColor,
                                                                       // color: Theme.of(context).colorScheme.primary,
@@ -403,14 +405,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                       Navigator.pop(context);
                                                                       fetchWeather();
                                                                     });
-                                                                  }, child: const Text('Enable Location'))
+                                                                  }, child: Text(user.languages[user.selectedLanguage]['home_screen']['weather_enable_req']))
                                                                 ],
                                                               )
                                                                   :(weatherData['weather'] == null)
                                                                   ?Center(child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary,size: 40,),)
                                                                   :Column(
                                                                 children: [
-                                                                  const Text("Nature's Aura Nearby",style: TextStyle(
+                                                                  Text(user.languages[user.selectedLanguage]['home_screen']['weather_nature'],style: TextStyle(
                                                                       color: Colors.black,
                                                                       //color: themeData.textColor,
                                                                       // color: Theme.of(context).colorScheme.primary,
@@ -422,7 +424,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                       SizedBox(
                                                                           width : MediaQuery.of(context).size.width * 0.40,
                                                                           //child: WeatherDetailCard('Weather', "${weatherData['weather']}")
-                                                                          child: Components(context).WeatherDetailCard('Weather', "${weatherData['weather']}")
+                                                                          child: Components(context).WeatherDetailCard(user.languages[user.selectedLanguage]['home_screen']['weather_weather'], "${weatherData['weather']}")
                                                                       ),
                                                                       const SizedBox(width: 10,),
                                                                       Expanded(
@@ -430,11 +432,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Components(context).WeatherDetailCard2('Humidity : ', "${weatherData['humidity']}%"),
+                                                                            Components(context).WeatherDetailCard2('${user.languages[user.selectedLanguage]['home_screen']['weather_humidity']} : ', "${weatherData['humidity']}%"),
                                                                             const SizedBox(width: 5,),
-                                                                            Components(context).WeatherDetailCard2('Wind Speed : ', "${weatherData['wind_speed']} kph"),
+                                                                            Components(context).WeatherDetailCard2('${user.languages[user.selectedLanguage]['home_screen']['weather_wind_speed']} : ', "${weatherData['wind_speed']} kph"),
                                                                             const SizedBox(width: 5,),
-                                                                            Components(context).WeatherDetailCard2('Cloud : ', "${weatherData['cloud']}%"),
+                                                                            Components(context).WeatherDetailCard2('${user.languages[user.selectedLanguage]['home_screen']['weather_cloud']} : ', "${weatherData['cloud']}%"),
                                                                           ],
                                                                         ),
                                                                       )
@@ -444,8 +446,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                                   Row(
                                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                                     children: [
-                                                                      Text('Air Quality : ',style: TextStyle(color: Colors.grey.shade700,fontSize: 12,fontWeight: FontWeight.w600),),
-                                                                      Text(aqiLabels[weatherData['air_quality'] - 1] ,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),)
+                                                                      Text('${user.languages[user.selectedLanguage]['home_screen']['weather_air_quality']} : ',style: TextStyle(color: Colors.grey.shade700,fontSize: 12,fontWeight: FontWeight.w600),),
+                                                                      Text(user.languages[user.selectedLanguage]['home_screen']['aqiLabels'][weatherData['air_quality'] - 1] ,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),)
                                                                     ],
                                                                   ),
                                                                   const SizedBox(height: 10,),
@@ -483,8 +485,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     ShowCaseView(
                                        shapeBorder: const CircleBorder(),
                                         globalKey: themeKey,
-                                        title: 'Essence',
-                                        description: 'Change App Theme',
+                                        title: user.languages[user.selectedLanguage]['home_screen']['tool_tip_1'],
+                                        description: user.languages[user.selectedLanguage]['home_screen']['tool_tip_2'],
                                         child: GestureDetector(
                                           onTap: ()async{ HapticFeedback.selectionClick();
                                           await videoPlayerController.pause();
@@ -609,7 +611,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       return GestureDetector(
                                         onTap: (){ HapticFeedback.selectionClick();
                                         videoPlayerController.pause();
-                                        contentPageRoute((index % 2 == 0)?'b':'b',categoryList[index]['_id'],categoryList[index]['title']);
+                                        contentPageRoute(categoryList[index]['view'],categoryList[index]['_id'],categoryList[index]['title']);
                                         },
                                         child: Container(
                                           height: 60,
@@ -660,39 +662,37 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 children: [
                                   customRoundButton(
                                       icon: MyIcons.wellness,
-                                      title: 'Wellness',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['wellness_top'],
                                       key: wellnessKey,
                                       visible: switches['wellness'],
-                                      showcaseDesc: 'Compilation of soothing audios',
+                                      showcaseDesc: user.languages[user.selectedLanguage]['home_screen']['tool_tip_6'],
                                       route: const Wellness()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.harmony,
-                                      title: 'Harmonies',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['harmonies_top'],
                                       visible: switches['harmony'],
                                       route: const SoundsList()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.knowYourself,
-                                      title: 'Know Yourself',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['know_yourself_top'],
                                       visible: switches['knowYourself'],
                                       route: const KnowYourselfResults()
                                   ),
 
                                   customRoundButton(
-                                    showCaseOnTap: (){
-                                      draggableScrollableController.animateTo(0.95, duration: const Duration(milliseconds: 300), curve: Curves.ease);
-                                    },
+                                    showCaseOnTap: () => draggableScrollableController.animateTo(0.98, duration: const Duration(milliseconds: 300), curve: Curves.ease),
                                       icon: MyIcons.breathe,
-                                      title: 'Breathe',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['breathe_top'],
                                       visible: switches['breathe'],
                                       key: breathingKey,
-                                      showcaseDesc: 'Breathing Exercise for all',
+                                      showcaseDesc: user.languages[user.selectedLanguage]['home_screen']['tool_tip_8'],
                                       route: const BreatheCat()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.candle,
-                                      title: 'Daily yoga',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['daily_yoga_top'],
                                       visible: switches['meditation'],
                                       route: const DailyYoga()
                                   ),
@@ -737,8 +737,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                     borderRadius: BorderRadius.all(Radius.circular(55))
                                   ),
                                   globalKey: quoteKey,
-                                  title: "Today's Quote",
-                                  description: 'New Motivational Quote Daily',
+                                  title: user.languages[user.selectedLanguage]['home_screen']['tool_tip_9'],
+                                  description: user.languages[user.selectedLanguage]['home_screen']['tool_tip_10'],
                                   child: Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: Row(
@@ -768,9 +768,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                               child:Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text("Today's Quote",style: Theme.of(context).textTheme.labelLarge,),
+                                                  Text(user.languages[user.selectedLanguage]['home_screen']['quote'] ?? "Today's Quote test",style: Theme.of(context).textTheme.labelLarge,),
                                                   const SizedBox(height: 5,),
-                                                  (quotesList.isEmpty)?const Text('Loading...'): Text(quotesList.first['quote'],
+                                                  (quotesList.isEmpty)?Text(user.languages[user.selectedLanguage]['home_screen']['quote_loading']): Text(quotesList.first['quote'],
                                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: themeData.textColor.withOpacity(0.8)),
                                                     maxLines: 1,overflow: TextOverflow.ellipsis,)
                                                 ],
@@ -794,32 +794,32 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 children: [
                                   customRoundButton(
                                       icon: MyIcons.diary,
-                                      title: 'My Diary',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['my_diary'],
                                       visible: true,
                                       route: const MyDiary()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.games,
-                                      title: 'Games',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['Games'],
                                       visible: true,
                                       route: const GamesList()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.podcast,
-                                      title: 'Podcast',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['Podcast'],
                                       visible: true,
                                       route: const GamesList()
                                   ),
 
                                   customRoundButton(
                                       icon: MyIcons.community,
-                                      title: 'Community',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['Community'],
                                       visible: true,
                                       route: const Communities()
                                   ),
                                   customRoundButton(
                                       icon: MyIcons.talkToMe,
-                                      title: 'Talk to me',
+                                      title: user.languages[user.selectedLanguage]['home_screen']['talk_to_me'],
                                       visible: true,
                                       route: const TalkToMeResults()
                                   ),
@@ -835,230 +835,233 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                             ),
                             const SizedBox(height: 10,),
                             ///wellness listview
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text('Wellness', style: Theme.of(context).textTheme.titleMedium,),
-                                      GestureDetector(
-                                        onTap: () { HapticFeedback.selectionClick();
-                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                        videoPlayerController.pause();
-                                        setState(() {
-                                          onThisPage = false;
-                                        });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Wellness())).then((value) {
+                            Visibility(
+                              visible: wellnessData.isNotEmpty,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(user.languages[user.selectedLanguage]['home_screen']['wellness_top'], style: Theme.of(context).textTheme.titleMedium,),
+                                        GestureDetector(
+                                          onTap: () { HapticFeedback.selectionClick();
+                                          MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+                                          videoPlayerController.pause();
                                           setState(() {
-                                            onThisPage = true;
+                                            onThisPage = false;
                                           });
-                                          if(!player.audioPlayer.playing){
-                                            videoPlayerController.play();
-                                          }
-                                        });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets
-                                              .fromLTRB(10, 2, 0, 2),
-                                          child: Text(
-                                            "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 15,),
-                                SizedBox(
-                                  //color: Colors.yellow,
-                                  height: h * 0.32,
-                                  child: ListView.builder(
-                                    physics: const ClampingScrollPhysics(),
-                                    // shrinkWrap: true,
-                                      itemCount: wellnessData.length ,
-                                      scrollDirection: Axis.horizontal,
-                                      padding: const EdgeInsets.only(
-                                          right: 15),
-                                      itemBuilder: (context, i) {
-                                        return Consumer<MusicPlayerProvider>(
-                                          builder: (context,player,child) =>
-                                              GestureDetector(
-                                                onTap: ()async{ HapticFeedback.selectionClick();
-                                                User user = Provider.of<User>(context,listen: false);
-                                                //Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
-                                                if(wellnessData[i]['image'] != player.currentTrack?.thumbnail){
-                                                  debugPrint('wellness details api hit');
-                                                  var data = await Services(user.token).getWellnessDetails(wellnessData[i]['_id']);
-                                                  var wellData = data['data'];
-                                                  player.play(Track(id:wellData['_id'],title: wellData['title'], thumbnail: wellData['image'], audioUrl:wellData['audio'], gif: wellData['anim'],liked: wellData['liked']));
-                                                }
-                                                showPlayerSheet(context);
-                                                  // Navigator.push(context, CupertinoPageRoute(builder: (context) => WellnessPlayer(),fullscreenDialog: true));
-                                                },
-                                                child: Container(
-                                                  width: w * 0.33,
-                                                  padding: const EdgeInsets.only(
-                                                      left: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius
-                                                            .circular(55),
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: wellnessData[i]['image'],
-                                                          fit: BoxFit.cover,
-                                                          height: h * 0.25,
-                                                          placeholder: (context, str) =>
-                                                              Center(
-                                                                child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 10,),
-                                                      Text(
-                                                        wellnessData[i]['title'],
-                                                        style: Theme
-                                                            .of(context)
-                                                            .textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight
-                                                                .w700
-                                                        ),
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      //   const SizedBox(height: 4,),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                        );
-                                      }
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text('Harmony', style: Theme.of(context).textTheme.titleMedium,),
-                                      GestureDetector(
-                                        onTap: () { HapticFeedback.selectionClick();
-                                        MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
-                                        videoPlayerController.pause();
-                                        setState(() {
-                                          onThisPage = false;
-                                        });
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundsList())).then((value) {
-                                          setState(() {
-                                            onThisPage = true;
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Wellness())).then((value) {
+                                            setState(() {
+                                              onThisPage = true;
+                                            });
+                                            if(!player.audioPlayer.playing){
+                                              videoPlayerController.play();
+                                            }
                                           });
-                                          if(!player.audioPlayer.playing){
-                                            videoPlayerController.play();
-                                          }
-                                        });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets
-                                              .fromLTRB(10, 2, 0, 2),
-                                          child: Text(
-                                            "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 15,),
-                                SizedBox(
-                                  height: h * 0.32,
-                                  child: ListView.builder(
-                                    physics: const ClampingScrollPhysics(),
-                                      itemCount: wellnessData.length ,
-                                      scrollDirection: Axis.horizontal,
-                                      padding: const EdgeInsets.only(
-                                          right: 10),
-                                      itemBuilder: (context, i) {
-                                        return  GestureDetector(
-                                          onTap: (){
-                                            HapticFeedback.selectionClick();
-                                            videoPlayerController.pause();
-                                            harmonyData[i]['colorA'] = harmonyData[i]['colorA'].toString().replaceAll('#', '');
-                                            harmonyData[i]['colorB'] =  harmonyData[i]['colorB'].toString().replaceAll('#', '');
-                                            harmonyData[i]['textColor'] = harmonyData[i]['textColor'] .toString().replaceAll('#', '');
-
-                                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: harmonyData[i],))).then((value) => videoPlayerController.play());
                                           },
-                                          child: Container(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            width:  w * 0.4,
-                                            decoration:  BoxDecoration(
-                                                borderRadius: BorderRadius.circular(25)
-                                            ),
-                                            child: Stack(
-                                              clipBehavior: Clip.none,
-                                              children: [
-                                                Positioned.fill(
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(25),
-                                                    child: CachedNetworkImage(
-                                                      placeholder: (context,string)=> Container(
-                                                          padding: const EdgeInsets.all(30),
-                                                          alignment: Alignment.center,
-                                                          child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
-                                                      imageUrl: harmonyData[i]['image'],fit: BoxFit.cover,),
-                                                  ),
-
-                                                ),
-                                                Positioned(
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    left: 0,
-                                                    child: ClipRRect(
-                                                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-
-                                                      child: Container(
-                                                        padding: const EdgeInsets.all(10),
-                                                        decoration:   BoxDecoration(
-                                                            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-                                                            color: Colors.black.withOpacity(0.7)
-
-                                                        ),
-                                                        child: Text(harmonyData[i]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
-                                                      ),
-                                                    )
-                                                ),
-                                                Positioned(
-                                                    top: 5,
-                                                    right: 5,
-                                                    child: Components(context).BlurBackgroundCircularButton(
-                                                        svg: MyIcons.premium,
-                                                        iconSize: 18,
-                                                        buttonRadius: 17,
-                                                        iconColor: Colors.white
-                                                    )
-                                                ),
-                                              ],
-                                            ),
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .fromLTRB(10, 2, 0, 2),
+                                            child: Text(
+                                              user.languages[user.selectedLanguage]['home_screen']['explore'], style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
                                           ),
-                                        );
-                                      }
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 15,)
-                              ],
+                                  const SizedBox(height: 15,),
+                                  SizedBox(
+                                    //color: Colors.yellow,
+                                    height: h * 0.32,
+                                    child: ListView.builder(
+                                      physics: const ClampingScrollPhysics(),
+                                      // shrinkWrap: true,
+                                        itemCount: wellnessData.length ,
+                                        scrollDirection: Axis.horizontal,
+                                        padding: const EdgeInsets.only(
+                                            right: 15),
+                                        itemBuilder: (context, i) {
+                                          return Consumer<MusicPlayerProvider>(
+                                            builder: (context,player,child) =>
+                                                GestureDetector(
+                                                  onTap: ()async{ HapticFeedback.selectionClick();
+                                                  User user = Provider.of<User>(context,listen: false);
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => Wellness()));
+                                                  if(wellnessData[i]['image'] != player.currentTrack?.thumbnail){
+                                                    debugPrint('wellness details api hit');
+                                                    var data = await Services(user.token).getWellnessDetails(wellnessData[i]['_id']);
+                                                    var wellData = data['data'];
+                                                    player.play(Track(id:wellData['_id'],title: wellData['title'], thumbnail: wellData['image'], audioUrl:wellData['audio'], gif: wellData['anim'],liked: wellData['liked']));
+                                                  }
+                                                  showPlayerSheet(context);
+                                                    // Navigator.push(context, CupertinoPageRoute(builder: (context) => WellnessPlayer(),fullscreenDialog: true));
+                                                  },
+                                                  child: Container(
+                                                    width: w * 0.33,
+                                                    padding: const EdgeInsets.only(
+                                                        left: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius: BorderRadius
+                                                              .circular(55),
+                                                          child: CachedNetworkImage(
+                                                            key: ValueKey(i),
+                                                            imageUrl: wellnessData[i]['image'],
+                                                            fit: BoxFit.cover,
+                                                            height: h * 0.25,
+                                                            placeholder: (context, str) =>
+                                                                Center(
+                                                                  child: SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary),),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 10,),
+                                                        Text(
+                                                          wellnessData[i]['title'],
+                                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w700
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                        //   const SizedBox(height: 4,),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                          );
+                                        }
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ///harmony listview
+                            Visibility(
+                              visible: harmonyData.isNotEmpty,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(user.languages[user.selectedLanguage]['home_screen']['harmony'], style: Theme.of(context).textTheme.titleMedium,),
+                                        GestureDetector(
+                                          onTap: () { HapticFeedback.selectionClick();
+                                          MusicPlayerProvider player = Provider.of<MusicPlayerProvider>(context,listen: false);
+                                          videoPlayerController.pause();
+                                          setState(() {
+                                            onThisPage = false;
+                                          });
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundsList())).then((value) {
+                                            setState(() {
+                                              onThisPage = true;
+                                            });
+                                            if(!player.audioPlayer.playing){
+                                              videoPlayerController.play();
+                                            }
+                                          });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .fromLTRB(10, 2, 0, 2),
+                                            child: Text(
+                                              user.languages[user.selectedLanguage]['home_screen']['explore'], style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15,),
+                                  SizedBox(
+                                    height: h * 0.32,
+                                    child: ListView.builder(
+                                      physics: const ClampingScrollPhysics(),
+                                        itemCount: wellnessData.length ,
+                                        scrollDirection: Axis.horizontal,
+                                        padding: const EdgeInsets.only(
+                                            right: 10),
+                                        itemBuilder: (context, i) {
+                                          return  GestureDetector(
+                                            onTap: (){
+                                              HapticFeedback.selectionClick();
+                                              videoPlayerController.pause();
+                                              harmonyData[i]['colorA'] = harmonyData[i]['colorA'].toString().replaceAll('#', '');
+                                              harmonyData[i]['colorB'] =  harmonyData[i]['colorB'].toString().replaceAll('#', '');
+                                              harmonyData[i]['textColor'] = harmonyData[i]['textColor'] .toString().replaceAll('#', '');
+
+                                              Navigator.push(context, CupertinoPageRoute(builder: (context) => SoundMixer(themeImage: harmonyData[i],))).then((value) => videoPlayerController.play());
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.only(left: 10),
+                                              width:  w * 0.4,
+                                              decoration:  BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(25)
+                                              ),
+                                              child: Stack(
+                                                clipBehavior: Clip.none,
+                                                children: [
+                                                  Positioned.fill(
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(25),
+                                                      child: CachedNetworkImage(
+                                                        placeholder: (context,string)=> Container(
+                                                            padding: const EdgeInsets.all(30),
+                                                            alignment: Alignment.center,
+                                                            child:SpinKitSpinningLines(color: Theme.of(context).colorScheme.primary)),
+                                                        imageUrl: harmonyData[i]['image'],fit: BoxFit.cover,),
+                                                    ),
+
+                                                  ),
+                                                  Positioned(
+                                                      bottom: 0,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: ClipRRect(
+                                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+
+                                                        child: Container(
+                                                          padding: const EdgeInsets.all(10),
+                                                          decoration:   BoxDecoration(
+                                                              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
+                                                              color: Colors.black.withOpacity(0.7)
+
+                                                          ),
+                                                          child: Text(harmonyData[i]['title'],style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700,color: Colors.white.withOpacity(0.85)),textAlign: TextAlign.center,),
+                                                        ),
+                                                      )
+                                                  ),
+                                                  Positioned(
+                                                      top: 5,
+                                                      right: 5,
+                                                      child: Components(context).BlurBackgroundCircularButton(
+                                                          svg: MyIcons.premium,
+                                                          iconSize: 18,
+                                                          buttonRadius: 17,
+                                                          iconColor: Colors.white
+                                                      )
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15,)
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 15,),
                             Visibility(
@@ -1072,7 +1075,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text('Breathe',
+                                        Text(user.languages[user.selectedLanguage]['home_screen']['breathe_top'],
                                           style: Theme.of(context).textTheme.titleMedium,
                                         ),
                                         GestureDetector(
@@ -1095,7 +1098,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                             padding: const EdgeInsets
                                                 .fromLTRB(10, 2, 0, 2),
                                             child: Text(
-                                              "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                              user.languages[user.selectedLanguage]['home_screen']['explore'], style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
                                           ),
                                         ),
                                       ],
@@ -1152,13 +1155,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                                 GestureDetector(
                                                   onTap: () { HapticFeedback.selectionClick();
                                                   videoPlayerController.pause();
-                                                  contentPageRoute((index % 2 == 0)?'d':'d',categoryList[index]['_id'],categoryList[index]['title']);
+                                                  contentPageRoute(categoryList[index]['view'],categoryList[index]['_id'],categoryList[index]['title']);
                                                   },
                                                   child: Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(10, 2, 0, 2),
                                                     child: Text(
-                                                      "Explore →", style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
+                                                      user.languages[user.selectedLanguage]['home_screen']['explore'], style: Theme.of(context).textTheme.labelSmall?.copyWith(color: themeData.textColor),),
                                                   ),
                                                 ),
                                               ],
@@ -1248,22 +1251,40 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Embrace\nInner Peace!',style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                  Text(user.languages[user.selectedLanguage]['home_screen']['embrace'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                       color: themeData.textColor.withOpacity(0.6),
                                       fontSize: 50,
                                       fontWeight: FontWeight.w500,
                                       height: 1
                                   ) ,),
-
-                                  Text('\nCrafted with ❤️️ in Gurugram, India',
-                                    style: TextStyle(
-                                        color: themeData.textColor.withOpacity(
-                                            0.54),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800),),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      for(int i =0 ; i<user.languages['social_media'].length;i++)
+                                        Visibility(
+                                          visible: user.languages['social_media'][i]['active'],
+                                            child: GestureDetector(
+                                              onTap: () => _launchUrl(user.languages['social_media'][i]['url']),
+                                              child: Container(
+                                                margin:  const EdgeInsets.only(right: 2),
+                                                  padding: const EdgeInsets.all(2),
+                                                child: SvgPicture.network(user.languages['social_media'][i]['image'].toString(),color: Colors.white70,height: 25,width: 25,),
+                                              ),
+                                            )
+                                        )
+                                    ]
+                                  )
+                                  // Text('\nCrafted with ❤️️ in Gurugram, India',
+                                  //   style: TextStyle(
+                                  //       color: themeData.textColor.withOpacity(
+                                  //           0.54),
+                                  //       fontSize: 14,
+                                  //       fontWeight: FontWeight.w800),),
                                 ],
                               ),
-                            )
+                            ),
+                           // const SizedBox(height: 5,),
+
                           ],
                         ),
                       ),
@@ -1276,6 +1297,17 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin{
       );
     }
     );
+  }
+  Future<void> _launchUrl(String url) async {
+    Uri _url = Uri.parse(url);
+    if (!await launchUrl(
+        _url,
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: "Game"
+
+    )) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   Widget customRoundButton({required String icon, required String title,  GlobalKey? key, required bool? visible, String showcaseDesc = '',required Widget route,VoidCallback? showCaseOnTap}){

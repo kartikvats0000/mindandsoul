@@ -52,7 +52,7 @@ class _BreatheCatState extends State<BreatheCat> {
     //String jsn = await DefaultAssetBundle.of(context).loadString("assets/data/breathingList.json");
 
     setState(() {
-      data  = jsn['data'];
+      data  = jsn[user.selectedLanguage];
       data2 = List.generate(4, (index) => data[ (data.length - 1) - index  ]).reversed.toList();
       //print(data);
     });

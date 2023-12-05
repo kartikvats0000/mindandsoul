@@ -8,10 +8,10 @@ import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/themeProvider.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/auth/login.dart';
-import 'package:mindandsoul/screen/ui/home/navscreens/profile/downloads.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/editprofile.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/subscriptions.dart';
 import 'package:mindandsoul/screen/ui/home/navscreens/profile/favourites.dart';
+import 'package:mindandsoul/screen/ui/selectlanguage.dart';
 import 'package:mindandsoul/services/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -115,8 +115,8 @@ class _ProfileState extends State<Profile> {
                                   iconColor: Theme.of(context).colorScheme.inversePrimary,
                                   textColor: theme.textColor.withOpacity(0.75),
                                   leading: Components(context).myIconWidget(icon:MyIcons.settings,color: Theme.of(context).colorScheme.inversePrimary),
-                                  title: const Text('Account Settings'),
-                                  onTap: (){HapticFeedback.selectionClick();},
+                                  title: const Text('Change Language'),
+                                  onTap: (){HapticFeedback.selectionClick();Navigator.push(context, MaterialPageRoute(builder: (context) => SelectLanguage(source: 'Profile',)));},
                                 ),
                               ),
                               Expanded(

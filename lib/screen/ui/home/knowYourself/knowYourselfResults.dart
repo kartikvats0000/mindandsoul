@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mindandsoul/helper/components.dart';
 import 'package:mindandsoul/provider/userProvider.dart';
 import 'package:mindandsoul/screen/ui/home/knowYourself/knowyourselfintro.dart';
+import 'package:mindandsoul/screen/ui/home/navscreens/profile/favourites.dart';
 import 'package:mindandsoul/services/services.dart';
 import 'package:provider/provider.dart';
 
@@ -67,122 +68,131 @@ class _KnowYourselfResultsState extends State<KnowYourselfResults> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      appBar: Components(context).myAppBar(title: 'Know Yourself',titleStyle: Theme.of(context).textTheme.displayLarge?.copyWith(color: Colors.black,fontSize: 19) ,actions: [
-        TextButton.icon(onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const KnowYourselfIntro())).then((value) => getData());
-        }, icon: const Icon(Icons.add),
-          label: Text('Take Quiz'),
-        ),
-      ]),
-      body: (loading)
-          ? Components(context).Loader(textColor: Colors.black)
-          :(data.isEmpty)
-          ? Center(
-        child: Text("Press '+' to start an assessment",style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),),
-      )
-          :ListView.builder(
-                  itemCount: data.length,
-          itemBuilder: (context,index){
-          List<PieChartSectionData> pieChartData = List.generate(data[index]['category'].length, (i) => PieChartSectionData(
-            title: data[index]['category'][i]['title'],
-            value: double.parse(data[index]['category'][i]['marks'].toString()),
-            color: pieChartColors[i],
-            showTitle: false,
-            radius: 100
+    return Consumer<User>(
+      builder: (context,user,child) =>
+       Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        appBar: Components(context).myAppBar(
+            title: user.languages[user.selectedLanguage]['home_screen']['know_yourself_top'] ??  user.languages['en']['home_screen']['know_yourself_top'],
+            titleStyle: Theme.of(context).textTheme.displayLarge?.copyWith(color: Colors.black,fontSize: 19) ,actions: [
+          TextButton.icon(onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const KnowYourselfIntro())).then((value) => getData());
+          }, icon: const Icon(Icons.add),
+            label: Text(
+              user.languages[user.selectedLanguage]['custom_round_button_class']['take_quiz_know'] ?? user.languages['en']['custom_round_button_class']['take_quiz_know'],
+            ),
+          ),
+        ]),
+        body: (loading)
+            ? Components(context).Loader(textColor: Colors.black)
+            :(data.isEmpty)
+            ? const Center(
+          child: NoFavourite()
+        )
+            :ListView.builder(
+                    itemCount: data.length,
+            itemBuilder: (context,index){
+            List<PieChartSectionData> pieChartData = List.generate(data[index]['category'].length, (i) => PieChartSectionData(
+              title: data[index]['category'][i]['title'],
+              value: double.parse(data[index]['category'][i]['marks'].toString()),
+              color: pieChartColors[i],
+              showTitle: false,
+              radius: 100
 
-          ));
+            ));
 
-          return GestureDetector(
-            onTap: (){
-              HapticFeedback.mediumImpact();
-              setState(() {
-                (selectedResult == index)
-                    ?selectedResult = -1
-                    :selectedResult = index;
-              });
-            },
-            child: Card(
-              //color: Colors.redAccent,
-              margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-              child: Padding(padding: const EdgeInsets.all(17),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Text('Test on ${DateFormat('MMMM dd, yyyy hh:mm a').format(DateTime.parse(data[index]['_id']).toLocal())}',
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
-                            )
-                        ),
-                        CircleAvatar(
-                          child: RotatedBox(
-                              quarterTurns: (selectedResult == index)?-1:1,
-                              child: const Icon(Icons.chevron_right)),
-                        )
-                      ],
-                    ),
-
-                    Visibility(
-                      visible: selectedResult == index,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            return GestureDetector(
+              onTap: (){
+                HapticFeedback.mediumImpact();
+                setState(() {
+                  (selectedResult == index)
+                      ?selectedResult = -1
+                      :selectedResult = index;
+                });
+              },
+              child: Card(
+                //color: Colors.redAccent,
+                margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Padding(padding: const EdgeInsets.all(17),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          const SizedBox(height: 25,),
-                          Text('Report:',style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black,),),
-                          const SizedBox(height: 15,),
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: Center(
-                                child: PieChartSample(pieChartData)
-                            ),
-                            /*PieChartSample(pieChartData)*/
+                          Expanded(
+                              child: Text('Test on ${DateFormat('MMMM dd, yyyy hh:mm a').format(DateTime.parse(data[index]['_id']).toLocal())}',
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
+                              )
                           ),
-                          const SizedBox(height: 15,),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: pieChartData.length,
-                            itemBuilder: (context, index) {
-                              final sectionData = pieChartData[index];
-                              return Container(
-                                margin: const EdgeInsets.all(10),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: sectionData.color,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        sectionData.title,
-                                        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${sectionData.value}%',
-                                      style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                          CircleAvatar(
+                            child: RotatedBox(
+                                quarterTurns: (selectedResult == index)?-1:1,
+                                child: const Icon(Icons.chevron_right)),
                           )
                         ],
                       ),
-                    )
-                  ],
-                ),),
-            ),
-          );
-          }),
+
+                      Visibility(
+                        visible: selectedResult == index,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 25,),
+                            Text(
+                              user.languages[user.selectedLanguage]['custom_round_button_class']['report'] ?? user.languages['en']['custom_round_button_class']['report'],
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black,),),
+                            const SizedBox(height: 15,),
+                            AspectRatio(
+                              aspectRatio: 1,
+                              child: Center(
+                                  child: PieChartSample(pieChartData)
+                              ),
+                              /*PieChartSample(pieChartData)*/
+                            ),
+                            const SizedBox(height: 15,),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: pieChartData.length,
+                              itemBuilder: (context, index) {
+                                final sectionData = pieChartData[index];
+                                return Container(
+                                  margin: const EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: sectionData.color,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          sectionData.title,
+                                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
+                                        ),
+                                      ),
+                                      Text(
+                                        '${sectionData.value}%',
+                                        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),),
+              ),
+            );
+            }),
+      ),
     );
   }
 }

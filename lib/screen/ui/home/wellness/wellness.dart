@@ -90,7 +90,9 @@ class _WellnessState extends State<Wellness> {
                    Row(
                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                      children: [
-                       Text('Options',style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
+                       Text(
+                         user.languages[user.selectedLanguage]['custom_round_button_class']['options_wellness'] ??  user.languages['en']['custom_round_button_class']['options_wellness'],
+                         style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 20,color: Theme.of(context).colorScheme.onPrimaryContainer),),
                        Components(context).BlurBackgroundCircularButton(buttonRadius: 15,icon: Icons.clear)
                      ],
                    ),
@@ -114,7 +116,10 @@ class _WellnessState extends State<Wellness> {
                          svg: (data[index]['liked'])?MyIcons.favorite_filled : MyIcons.favorite,
                        iconColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)
                      ),
-                           title: Text((data[index]['liked'])?'Remove from Favourites':'Add to Favourites',style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
+                           title: Text((data[index]['liked'])
+                               ?user.languages[user.selectedLanguage]['custom_round_button_class']['add_to_favourite_wellness'] ?? user.languages['en']['custom_round_button_class']['add_to_favourite_wellness']
+                               :user.languages[user.selectedLanguage]['custom_round_button_class']['remove_from_favourite_wellness'] ?? user.languages['en']['custom_round_button_class']['add_to_favourite_wellness'],
+                             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14,color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.9)),),
                          ),
                        ],
                      ),
@@ -136,10 +141,10 @@ class _WellnessState extends State<Wellness> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeProvider,MusicPlayerProvider>(
-        builder: (context,theme,player,child) => Scaffold(
+    return Consumer3<ThemeProvider,MusicPlayerProvider,User>(
+        builder: (context,theme,player,user,child) => Scaffold(
           backgroundColor: theme.themeColorA,
-          appBar: Components(context).myAppBar(title : 'Wellness'),
+          appBar: Components(context).myAppBar(title : user.languages[user.selectedLanguage]['home_screen']['wellness_top'] ?? "Wellness"),
           body: Stack(
             children: [
               Container(

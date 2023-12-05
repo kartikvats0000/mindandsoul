@@ -78,11 +78,12 @@ class _GamesListState extends State<GamesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context,theme,_) =>
+    return Consumer2<ThemeProvider,User>(
+      builder: (context,theme,user,_) =>
         Scaffold(
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          appBar: Components(context).myAppBar(title: 'Games',titleStyle:  Theme.of(context).textTheme.labelMedium?.copyWith(
+          appBar: Components(context).myAppBar(title:  user.languages[user.selectedLanguage]['home_screen']['Games'] ?? user.languages['en']['home_screen']['Games'],
+            titleStyle:  Theme.of(context).textTheme.labelMedium?.copyWith(
               fontSize: 23,
               color: Colors.black
           ),),
